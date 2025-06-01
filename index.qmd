@@ -1,6 +1,5 @@
 ---
-title: ""
-page-title: "Vignesh Somjit"
+title-block: none
 toc: false
 ---
 

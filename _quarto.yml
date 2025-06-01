@@ -8,15 +8,25 @@ website:
 
   navbar:
     tools:
-      - icon: github 
-        href: https://github.com/vigneshsomjit
-      - icon: linkedin
-        href: https://www.linkedin.com/in/vignesh-somjit/
-      - toggle-appearance: true
+      - toggle-appearance: true  
+    right: 
+       - href: blog/blog-index.qmd
+         text: Blog
 
   page-footer:
     left: |
       &#169; 2025 Vignesh Somjit &#8729; Made with [Quarto](https://quarto.org)
+    center: |
+      <a class="link-dark" href="mailto:somjit.vignesh@gmail.com" title="Email" style="margin-right: 24px;">
+        <i class="bi bi-envelope-fill" style="font-size: 1.25rem;"></i>
+      </a>
+      <a class="link-dark" href="https://www.linkedin.com/in/vignesh-somjit/" title="LinkedIn" target="_blank" rel="noopener" style="margin-right: 24px;">
+        <i class="bi bi-linkedin" style="font-size: 1.25rem;"></i>
+      </a>
+      <a class="link-dark" href="https://github.com/vigneshsomjit" title="GitHub" target="_blank" rel="noopener">
+        <i class="bi bi-github" style="font-size: 1.25rem;"></i>
+      </a>
+
 
 format:
   html:

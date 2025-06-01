@@ -1,0 +1,10 @@
+---
+title-block: none
+listing:
+  type: default
+  sort: "date desc"
+  categories: true
+  fields: [date, title, description, categories]
+  page-size: 10
+---
+
