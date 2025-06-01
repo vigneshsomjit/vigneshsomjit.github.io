@@ -1,11 +1,9 @@
 ---
-title: "vigneshsomjit.github.io"
+title: ""
+page-title: "Vignesh Somjit"
+toc: false
 ---
 
-This is a Quarto website.
+## About Me
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+I recently graduated from Boston University, where I studied Economics and Mathematics. Starting in Summer 2025, I will be joining the University of Chicago Booth School of Business as a Research Professional. My current research interests lie in causal inference, applied econometrics, and machine learning.

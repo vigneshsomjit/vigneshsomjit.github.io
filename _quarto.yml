@@ -4,17 +4,23 @@ project:
 
 website:
   title: "Vignesh Somjit"
+  site-url: https://vigneshsomjit.github.io
+
   navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+    tools:
+      - icon: github 
+        href: https://github.com/vigneshsomjit
+      - icon: linkedin
+        href: https://www.linkedin.com/in/vignesh-somjit/
+      - toggle-appearance: true
+
+  page-footer:
+    left: |
+      &#169; 2025 Vignesh Somjit &#8729; Made with [Quarto](https://quarto.org)
 
 format:
   html:
     theme: cosmo
+    appearance: "auto"
     css: styles.css
     toc: true
-
-
-

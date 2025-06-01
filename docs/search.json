@@ -2,15 +2,22 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "vigneshsomjit.github.io",
+    "title": "Vignesh Somjit",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+    "text": "I recently graduated from Boston University, where I studied Economics and Mathematics. Starting in Summer 2025, I will be joining the University of Chicago Booth School of Business as a Research Professional. My current research interests lie in causal inference, applied econometrics, and machine learning."
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this site\n\n1 + 1\n\n[1] 2"
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html#about-me",
+    "href": "index.html#about-me",
+    "title": "Vignesh Somjit",
+    "section": "",
+    "text": "I recently graduated from Boston University, where I studied Economics and Mathematics. Starting in Summer 2025, I will be joining the University of Chicago Booth School of Business as a Research Professional. My current research interests lie in causal inference, applied econometrics, and machine learning."
   }
 ]
