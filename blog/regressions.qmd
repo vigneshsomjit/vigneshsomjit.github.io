@@ -5,38 +5,36 @@ date: today
 categories: [Econometrics]
 ---
 
-# Linear Regression Approximates the Conditional Expectation Function 
+# Linear Regression Approximates the Conditional Expectation Function
 
-Recall the canonical problem that contextualizes the use of linear regression. We have a random variable $Y_i$, called the **outcome**, and a random vector $X_i$ of **covariates**. We are interested in predicting the value of $Y_i$ given some value of $X_i$. 
+Recall the canonical problem that contextualizes the use of linear regression. We have a random variable $Y_i$, called the **outcome**, and a random vector $X_i$ of **covariates**. We are interested in predicting the value of $Y_i$ given some value of $X_i$.
 
-As a starting point, suppose for generality that our predictions are a function of $X_i$ and we want our predictions to minimize the mean squared error (MSE) objective function: 
+As a starting point, suppose for generality that our predictions are a function of $X_i$ and we want our predictions to minimize the mean squared error (MSE) objective function:
 
 $$
 \mathbb{E} [Y_i - f(X_i)]^2.
-$$
-With the law of iterated expectation and some calculus, we can show that for every possible realized value $X_i = x$, the optimal function that solves the minimum mean squared error problem is the **conditional expectation function (CEF)**
+$$ With the law of iterated expectation and some calculus, we can show that for every possible realized value $X_i = x$, the optimal function that solves the minimum mean squared error problem is the **conditional expectation function (CEF)**
 
 $$
 \mu(x) = \mathbb{E}[Y_i | X_i = x].
 $$
 
-In most empirical cases, the CEF has no analytic form. Thus, it is more practical to *model* the relationship between the outcome and covariates using a simpler function. One option is to find a *linear approximation* of the CEF of the form 
+In most empirical cases, the CEF has no analytic form. Thus, it is more practical to *model* the relationship between the outcome and covariates using a simpler function. One option is to find a *linear approximation* of the CEF of the form
 
 $$
 \ell(x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k = x^T\beta.
-$${#eq-linearreg}
-@eq-linearreg is our **linear regression model**, and the word "linear" here emphasizes the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is given by solving
+$$ {#eq-linearreg} @eq-linearreg is our **linear regression model**, and the word "linear" here emphasizes the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is given by solving
 
 $$
 \beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2.
 $$
 
-The main takeaway here is that linear regression provides a linear approximation to the conditional expectation function, allowing us to model the potentially complicated relationship between an outcome $Y_i$ and covariates $X_i$ with a simpler function. 
+The main takeaway here is that linear regression provides a linear approximation to the conditional expectation function, allowing us to model the potentially complicated relationship between an outcome $Y_i$ and covariates $X_i$ with a simpler function.
 
-# Interpreting Indicators and Interactions 
+# Interpreting Indicators and Interactions
 
 *TODO*
 
-# Fixed Effects as Baselines 
+# Fixed Effects as Baselines
 
 *TODO*

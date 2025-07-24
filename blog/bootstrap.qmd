@@ -1,8 +1,0 @@
----
-title: "Understanding the Bootstrap Method"
-description: "Walking through the Efron (1979) bootstrap method."
-date: 2025-06-01
-categories: [Statistics]
----
-
-## Introduction
