@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-07-24">
+<meta name="dcterms.date" content="2025-07-25">
 <meta name="description" content="Linear regression can be motivated as a tool to approximate the conditional expectation function. I discuss this perspective and build intuition for interpreting regression parameters.">
 
 <title>Vignesh Somjit - An Applied Econometrics Rationale for Linear Regression</title>
@@ -203,7 +203,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 24, 2025</p>
+      <p class="date">July 25, 2025</p>
     </div>
   </div>
   
@@ -215,25 +215,25 @@ window.Quarto = {
 </header>
 
 
-<section id="regression-approximates-conditional-averages" class="level1">
-<h1>Regression Approximates Conditional Averages</h1>
-<p>We are interested in predicting the value of a random variable <span class="math inline">\(Y_i\)</span>, called the <strong>outcome</strong>, given some realized value of a random vector <span class="math inline">\(X_i\)</span> of covariates. As a starting point, we let our predictions be a function of <span class="math inline">\(X_i\)</span> and want our predictions to minimize the mean squared error (MSE) objective function</p>
+<section id="regression-approximates-conditional-averages" class="level2">
+<h2 class="anchored" data-anchor-id="regression-approximates-conditional-averages">Regression Approximates Conditional Averages</h2>
+<p>For observations <span class="math inline">\(i = 1, \ldots, n\)</span>, suppose there is a <strong>data generating process (DGP)</strong> that describes the <em>joint distribution</em> of a random <strong>outcome</strong> variable <span class="math inline">\(Y_i\)</span> and a random vector <span class="math inline">\(X_i =(X_{1i}, X_{2i}, \ldots, X_{ki})\)</span> of <strong>covariates</strong>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> We are interested in predicting <span class="math inline">\(Y_i\)</span> given some realized values of the covariates, denoted by <span class="math inline">\(x_i = (x_{1i}, x_{2i}, \ldots, x_{ki})\)</span>. In general, any prediction can thus be expressed as a function <span class="math inline">\(f(X_i)\)</span> of the covariates. As a starting point, we consider choosing <span class="math inline">\(f\)</span> to minimize the <strong>mean squared error (MSE)</strong> between our predictions and the observed outcomes:</p>
 <p><span class="math display">\[
 \mathbb{E} [Y_i - f(X_i)]^2.
-\]</span> With the law of iterated expectation and some calculus, we can show that for every possible realized value <span class="math inline">\(X_i = x\)</span>, the optimal function that solves the minimum mean squared error problem is the <strong>conditional expectation function (CEF)</strong></p>
+\]</span> With the law of iterated expectation and some calculus, we can show that for every possible realized value <span class="math inline">\(X_i = x_i\)</span>, the optimal function that solves the minimum mean squared error problem is the <strong>conditional expectation function (CEF)</strong></p>
 <p><span class="math display">\[
-\mu(x) = \mathbb{E}[Y_i | X_i = x].
+m(x) = \mathbb{E}[Y_i | X_i = x_i].
 \]</span></p>
-<p>In most empirical cases, however, the CEF of interest has no analytic form. Thus, it is more practical to <em>model</em> the relationship between the outcome and covariates using a simpler function. One option is to find a <em>linear approximation</em> of the CEF, which takes the form</p>
+<p>In most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to <em>model</em> the relationship between the outcome and covariates using a simpler function. One option is to find a <em>linear approximation</em> of the CEF, which takes the form</p>
 <p><span class="math display">\[
-\ell(x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k = x^T\beta.
-\]</span></p>
-<p>Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is found by setting the coefficients as</p>
+\ell(x_i) = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots + \beta_k x_{ki} = x_i^T\beta,
+\]</span> where <span class="math inline">\(x_i = (1, x_{1i}, x_{2i}, \ldots, x_{ki})\)</span>. Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is found by setting the coefficients as</p>
 <p><span class="math display">\[
 \beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2 = \mathbb{E}[X_i X_i^T]^{-1}\mathbb{E}[X_iY_i].
-\]</span> Thus, the <strong>linear regression model</strong> that describes the relationship between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(X_i\)</span> is given by <span class="math display">\[
-Y_i = \underbrace{X_i^T \beta^\star}_{\text{best linear predictor}} + \underbrace{\epsilon_i}_{\text{residual}},
-\]</span> where <span class="math inline">\(\epsilon_i\)</span> captures the difference between the realized outcome and the best linear predictor.</p>
+\]</span></p>
+<p>Thus, the <strong>linear regression model</strong> that describes the relationship between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(X_i\)</span> is given by <span class="math display">\[
+Y_i = \underbrace{X_i^T \beta^\star}_{\text{best linear predictor}} + \underbrace{e_i}_{\text{projection error}},
+\]</span> where <span class="math inline">\(e_i\)</span> captures the difference between the realized outcome and the best linear predictor.</p>
 <p>To summarize, the conditional expectation function is the optimal predictor of an outcome given covariates, in the sense that it minimizes the mean squared prediction error. Since the CEF is typically a complex function, linear regression approximates it by selecting the linear combination of covariates that minimizes the mean squared error. The resulting linear predictor provides a simple model of the relationship between the outcome and the covariates.</p>
 </section>
 <section id="approximate-and-exact-conditional-averages" class="level1">
@@ -262,11 +262,18 @@ Y_i = \underbrace{X_i^T \beta^\star}_{\text{best linear predictor}} + \underbrac
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">race =</span> race</span>
 <span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>Everything in this post is written from the perspective of having population level data, so that I can focus on the conceptual aspects of linear regression without having to get into statistical inference. So technically when I say there are <span class="math inline">\(n\)</span> observations, this is assumed to be the entire, finite population in this case.</p>
 
 
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>In this post, I assume that the <span class="math inline">\(n\)</span> observed data points represents the entire (finite) population. This simplification allows me to focus on the conceptual ideas behind linear regression without having to discuss statistical inference.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
