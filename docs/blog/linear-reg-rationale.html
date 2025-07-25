@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-07-23">
-<meta name="description" content="Thinking about baselines and comparisons is the key to interpreting the results of linear regressions.">
+<meta name="dcterms.date" content="2025-07-24">
+<meta name="description" content="Linear regression can be motivated as a tool to approximate the conditional expectation function. I discuss this perspective and build intuition for interpreting regression parameters.">
 
-<title>Vignesh Somjit - Interpreting Linear Regression</title>
+<title>Vignesh Somjit - An Applied Econometrics Rationale for Linear Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -140,9 +174,8 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#linear-regression-approximates-the-conditional-expectation-function" id="toc-linear-regression-approximates-the-conditional-expectation-function" class="nav-link active" data-scroll-target="#linear-regression-approximates-the-conditional-expectation-function">Linear Regression Approximates the Conditional Expectation Function</a></li>
-  <li><a href="#interpreting-indicators-and-interactions" id="toc-interpreting-indicators-and-interactions" class="nav-link" data-scroll-target="#interpreting-indicators-and-interactions">Interpreting Indicators and Interactions</a></li>
-  <li><a href="#fixed-effects-as-baselines" id="toc-fixed-effects-as-baselines" class="nav-link" data-scroll-target="#fixed-effects-as-baselines">Fixed Effects as Baselines</a></li>
+  <li><a href="#regression-approximates-conditional-averages" id="toc-regression-approximates-conditional-averages" class="nav-link active" data-scroll-target="#regression-approximates-conditional-averages">Regression Approximates Conditional Averages</a></li>
+  <li><a href="#approximate-and-exact-conditional-averages" id="toc-approximate-and-exact-conditional-averages" class="nav-link" data-scroll-target="#approximate-and-exact-conditional-averages">Approximate and Exact Conditional Averages</a></li>
   </ul>
 </nav>
     </div>
@@ -151,7 +184,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Interpreting Linear Regression</h1>
+<h1 class="title">An Applied Econometrics Rationale for Linear Regression</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Econometrics</div>
   </div>
@@ -159,7 +192,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Thinking about baselines and comparisons is the key to interpreting the results of linear regressions.
+    Linear regression can be motivated as a tool to approximate the conditional expectation function. I discuss this perspective and build intuition for interpreting regression parameters.
   </div>
 </div>
 
@@ -170,7 +203,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">July 23, 2025</p>
+      <p class="date">July 24, 2025</p>
     </div>
   </div>
   
@@ -182,32 +215,53 @@ window.Quarto = {
 </header>
 
 
-<section id="linear-regression-approximates-the-conditional-expectation-function" class="level1">
-<h1>Linear Regression Approximates the Conditional Expectation Function</h1>
-<p>Recall the canonical problem that contextualizes the use of linear regression. We have a random variable <span class="math inline">\(Y_i\)</span>, called the <strong>outcome</strong>, and a random vector <span class="math inline">\(X_i\)</span> of <strong>covariates</strong>. We are interested in predicting the value of <span class="math inline">\(Y_i\)</span> given some value of <span class="math inline">\(X_i\)</span>.</p>
-<p>As a starting point, suppose for generality that our predictions are a function of <span class="math inline">\(X_i\)</span> and we want our predictions to minimize the mean squared error (MSE) objective function:</p>
+<section id="regression-approximates-conditional-averages" class="level1">
+<h1>Regression Approximates Conditional Averages</h1>
+<p>We are interested in predicting the value of a random variable <span class="math inline">\(Y_i\)</span>, called the <strong>outcome</strong>, given some realized value of a random vector <span class="math inline">\(X_i\)</span> of covariates. As a starting point, we let our predictions be a function of <span class="math inline">\(X_i\)</span> and want our predictions to minimize the mean squared error (MSE) objective function</p>
 <p><span class="math display">\[
 \mathbb{E} [Y_i - f(X_i)]^2.
 \]</span> With the law of iterated expectation and some calculus, we can show that for every possible realized value <span class="math inline">\(X_i = x\)</span>, the optimal function that solves the minimum mean squared error problem is the <strong>conditional expectation function (CEF)</strong></p>
 <p><span class="math display">\[
 \mu(x) = \mathbb{E}[Y_i | X_i = x].
 \]</span></p>
-<p>In most empirical cases, the CEF has no analytic form. Thus, it is more practical to <em>model</em> the relationship between the outcome and covariates using a simpler function. One option is to find a <em>linear approximation</em> of the CEF of the form</p>
-<p><span id="eq-linearreg"><span class="math display">\[
-\ell(x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k = x^T\beta.
-\tag{1}\]</span></span> <a href="#eq-linearreg" class="quarto-xref">Equation&nbsp;1</a> is our <strong>linear regression model</strong>, and the word “linear” here emphasizes the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is given by solving</p>
+<p>In most empirical cases, however, the CEF of interest has no analytic form. Thus, it is more practical to <em>model</em> the relationship between the outcome and covariates using a simpler function. One option is to find a <em>linear approximation</em> of the CEF, which takes the form</p>
 <p><span class="math display">\[
-\beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2.
+\ell(x) = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_k x_k = x^T\beta.
 \]</span></p>
-<p>The main takeaway here is that linear regression provides a linear approximation to the conditional expectation function, allowing us to model the potentially complicated relationship between an outcome <span class="math inline">\(Y_i\)</span> and covariates <span class="math inline">\(X_i\)</span> with a simpler function.</p>
+<p>Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is found by setting the coefficients as</p>
+<p><span class="math display">\[
+\beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2 = \mathbb{E}[X_i X_i^T]^{-1}\mathbb{E}[X_iY_i].
+\]</span> Thus, the <strong>linear regression model</strong> that describes the relationship between <span class="math inline">\(Y_i\)</span> and <span class="math inline">\(X_i\)</span> is given by <span class="math display">\[
+Y_i = \underbrace{X_i^T \beta^\star}_{\text{best linear predictor}} + \underbrace{\epsilon_i}_{\text{residual}},
+\]</span> where <span class="math inline">\(\epsilon_i\)</span> captures the difference between the realized outcome and the best linear predictor.</p>
+<p>To summarize, the conditional expectation function is the optimal predictor of an outcome given covariates, in the sense that it minimizes the mean squared prediction error. Since the CEF is typically a complex function, linear regression approximates it by selecting the linear combination of covariates that minimizes the mean squared error. The resulting linear predictor provides a simple model of the relationship between the outcome and the covariates.</p>
 </section>
-<section id="interpreting-indicators-and-interactions" class="level1">
-<h1>Interpreting Indicators and Interactions</h1>
-<p><em>TODO</em></p>
-</section>
-<section id="fixed-effects-as-baselines" class="level1">
-<h1>Fixed Effects as Baselines</h1>
-<p><em>TODO</em></p>
+<section id="approximate-and-exact-conditional-averages" class="level1">
+<h1>Approximate and Exact Conditional Averages</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample size </span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span> </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Covariates</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>sex <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>race <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.3</span>)                   </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Non-linear data generating process; no interactions</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>outcome1 <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">^</span>sex <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span>race </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Non-linear data generating process; interactions </span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>outcome2 <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">^</span>sex <span class="sc">+</span> <span class="dv">3</span><span class="sc">^</span>race <span class="sc">+</span> <span class="fl">1.5</span><span class="sc">^</span>(sex<span class="sc">*</span>race)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Consolidate in a dataset </span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome1 =</span> outcome1,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome2 =</span> outcome2,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">sex =</span> sex,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">race =</span> race</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
 </section>
