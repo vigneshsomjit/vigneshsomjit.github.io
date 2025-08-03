@@ -1,6 +1,6 @@
 ---
-title: "An Applied Econometrics Rationale for Linear Regression"
-description: "Linear regression can be motivated as a tool to approximate the conditional expectation function. I discuss this perspective and build intuition for interpreting regression parameters."
+title: "Linear Regression as an Approximation Method"
+description: "I build intuition on the perspective that linear regression is the process of approximating the conditional expectation function (CEF)."
 date: today
 categories: [Econometrics]
 ---
@@ -13,9 +13,10 @@ library(dplyr)
 library(fixest)
 ```
 
-## Regression Approximates Conditional Averages  
 
-For observations $i = 1, \ldots, n$, suppose there is a **data generating process (DGP)** that describes the *joint distribution* of a random **outcome** variable $Y_i$ and a random vector $X_i =(X_{1i}, X_{2i}, \ldots, X_{ki})$ of **covariates**.[^1] We are interested in predicting $Y_i$ given some realized values of the covariates, denoted by $x_i = (x_{1i}, x_{2i}, \ldots, x_{ki})$. In general, any prediction can thus be expressed as a function $f(X_i)$ of the covariates. As a starting point, we consider choosing $f$ to minimize the **mean squared error (MSE)** between our predictions and the observed outcomes: 
+## The Conditional Expectation Function (CEF) is an Optimal Predictor 
+
+For observations $i = 1, \ldots, n$, suppose there is a **data generating process (DGP)** that describes the *joint distribution* of a random **outcome** variable $Y_i$ and a random vector $X_i =(X_{1i}, X_{2i}, \ldots, X_{ki})$ of **covariates**.[^1] We are interested in predicting $Y_i$ given some realized values of the covariates, denoted by $x_i = (x_{1i}, x_{2i}, \ldots, x_{ki})$. Thus, any prediction can generally be expressed as a function $f(X_i)$ of the covariates. As a starting point, we consider choosing $f$ to minimize the **mean squared error (MSE)** between our predictions and the observed outcomes: 
 
 $$
 \mathbb{E} [Y_i - f(X_i)]^2.
@@ -23,65 +24,132 @@ $$
 With the law of iterated expectation and some calculus, we can show that for every possible realized value $X_i = x_i$, the optimal function that solves the minimum mean squared error problem is the **conditional expectation function (CEF)**
 
 $$
-m(x) = \mathbb{E}[Y_i | X_i = x_i].
-$$
+m(x_i) = \mathbb{E}[Y_i | X_i = x_i].
+$${#eq-cef}
 
-In most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to *model* the relationship between the outcome and covariates using a simpler function. One option is to find a *linear approximation* of the CEF, which takes the form
+## Linear Regression Finds the Best Linear Approximation to the CEF 
+In most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to model the relationship between the outcome and covariates using a simpler function. One option is to find a *linear approximation* of the CEF, which takes the form
 
 $$
 \ell(x_i) = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots + \beta_k x_{ki} = x_i^T\beta,
-$$ 
-where $x_i = (1, x_{1i}, x_{2i}, \ldots, x_{ki})$. Note that the word "linear" here refers to the simplifying assumption that the function is a linear combination of the covariates. Since we want our predictions to minimize the MSE function, the best linear predictor is found by setting the coefficients as
+$${#eq-linear-approx-fun} 
+where $x_i^T = (1, x_{1i}, x_{2i}, \ldots, x_{ki})$. Note that the word "linear" here refers to the simplifying assumption that the function is a linear combination of the covariates. 
+
+How do we choose the specific form of our approximating linear function? Since we want our predictions to minimize the MSE function, we set the parameters in @eq-linear-approx-fun as
 
 $$
-\beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2 = \mathbb{E}[X_i X_i^T]^{-1}\mathbb{E}[X_iY_i].
+\beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2.
 $$
 
-Thus, the **linear regression model** that describes the relationship between $Y_i$ and $X_i$ is given by 
+In words, we are choosing the linear function with the lowest MSE among all possible linear functions. The resulting linear predictor  
+
+$$x_i^T \beta^\star \approx \mathbb{E}[Y_i|X_i =x_i]$$ 
+
+is often called the "**linear regression** of $Y$ on $X$" by economists. This simply refers to the process of finding the best linear predictor of $Y_i$ given some realized values of $X_i$ by minimizing the mean squared error function.  
+
+## Linear Regression Can (Sometimes) Recover True Conditional Averages   
+
+So far, we have discussed linear regression as a tool to approximate the conditional expectation function. However, it can be shown that when the CEF is itself linear, the best linear predictor exactly equals the CEF. That is to say linear regression recovers the true conditional averages in this case.[^2] 
+
+To see this in practice, I simulate data on income using the following equation 
+
 $$
-Y_i = \underbrace{X_i^T \beta^\star}_{\text{best linear predictor}} + \underbrace{e_i}_{\text{projection error}},
+\begin{align}
+income_i &= \beta_0 + \beta_1 \times white_i + \beta_2 \times male_i \\ & \quad \quad + \beta_3 \times literacy_i^{(1+0.3 \times sex_i)} + \beta_4 (male_i \times black_i) + \varepsilon_i.
+\end{align}
 $$
-where $e_i$ captures the difference between the realized outcome and the best linear predictor.
-
-To summarize, the conditional expectation function is the optimal predictor of an outcome given covariates, in the sense that it minimizes the mean squared prediction error. Since the CEF is typically a complex function, linear regression approximates it by selecting the linear combination of covariates that minimizes the mean squared error. The resulting linear predictor provides a simple model of the relationship between the outcome and the covariates.
-
-# Approximate and Exact Conditional Averages  
-
-
-
 ```{r}
-#| echo: false
-#The conditional expectation function is a function of the covariates $X_i$. In most empirical applications, the covariates of interest result in a complicated, non-analytic CEF. We have seen how linear regression can be used to *approximate* the CEF in such cases. However, it is also possible to choose a set of covariates such that the CEF is a linear function. One possible way to do this is by constructing a dummy covariate for every unique group in the dataset. 
-# However, it can be shown that the linear regression model corresponding to a *linear* CEF fully recovers the underlying function. An example is the **saturated regression model**, which includes a complete set of parameters such that every unique group defined by the realized covariate values receives its own distinct predicted conditional average. By construction, the conditional expectation function 
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code that simulates the dataset."
 
-```
-
-
-```{r}
 set.seed(123)
 
-# Sample size 
-n <- 1000 
+# Population size 
+n <- 1000
 
-# Covariates
-sex <- rbinom(n, 1, 0.5)
-race <- rbinom(n, 1, 0.3)                   
+# Noise 
+noise <- rnorm(n, 0, 2000)
 
-# Non-linear data generating process; no interactions
-outcome1 <- 5 + 2^sex + 3^race 
+# Covariates 
+male <- rbinom(n, 1, 0.5)
+sex <- factor(male, labels = c("Female", "Male"))
+white <- rbinom(n, 1, 0.7)
+race <- factor(white, labels = c("Black", "White"))
+literacy <- runif(n, 0, 100)
 
-# Non-linear data generating process; interactions 
-outcome2 <- 5 + 2^sex + 3^race + 1.5^(sex*race)
+# Outcome 
+white_female_base <- 30000                           # white females with 0 literacy earn 30000
+literacy_effect <- 50
+male_premium <- 200                                    # + 200 male premium 
+white_premium <- 1500                                  # + 1500 white premium
+white_male_premium <- 1000                              # + 1000 white male premium 
 
-# Consolidate in a dataset 
-df <- data.frame(
-  outcome1 = outcome1,
-  outcome2 = outcome2,
-  sex = sex,
-  race = race
-)
+# Create income 
+income <- 
+  white_female_base +
+  white_premium       * white +                          
+  male_premium        * male +                            
+  literacy_effect   * (literacy^(1 + 0.3 * male)) +    # literate males are better off than literate females 
+  white_male_premium   * (male * white) +                  
+  noise
+
+# Combine into a dataset
+sim_data <- data.frame(sex = sex,
+                     race = race,
+                     literacy,
+                     income)
 ```
+
+### A Simple Univariate Example
+Recall from @eq-cef that the CEF is a function of the covariates we use to predict the outcome variable. So, as a simple example of a linear CEF, let us consider the conditional expectation of $income_i$ as a function of $male_i$. The conditional expectation can be written as the step-wise function 
+$$
+\mathbb{E}[Y_i|male_i] = \begin{cases} \mu_0 \quad  \text{if} \quad male_i = 0 \\ \mu_1 \quad  \text{if} \quad male_i = 1 \end{cases}. 
+$${#eq-ex-linear-cef}
+To illustrate that  @eq-ex-linear-cef is a linear combination of $male_i$, we can rewrite it as 
+
+$$
+\mathbb{E}[Y_i |male_i] = \mu_0 + (\mu_1-\mu_0) \times male_i.
+$${#eq-ex-linear-cef-simplified}
+
+Now, we can use R to regress $income_i$ on $sex_i$ as follows. 
+
+```{r}
+#| echo: true
+reg_model <- feols(
+  income ~ sex, 
+  data = sim_data
+)
+
+summary(reg_model)
+
+```
+
+To verify that the linear regression above does in fact recover @eq-ex-linear-cef-simplified, we need to check that (i) its intercept parameter equals the average income of females in the dataset and (ii) the coefficient on $male_i$ is the difference in the average income of males and females in the dataset. As shown below, this is indeed the case. 
+
+```{r}
+sim_data %>%
+  filter(sex == "Female") %>%
+  summarise(female_avg = mean(income, na.rm = TRUE))
+
+sim_data %>%
+  summarise(
+    sex_diff = mean(income[sex == "Male"], na.rm = TRUE) -
+                       mean(income[sex == "Female"], na.rm = TRUE)
+  )
+```
+
+### Saturated Regressions 
+
+The exercise of transforming the step-wise function in @eq-ex-linear-cef into a linear combination of the covariate in @eq-ex-linear-cef-simplified provides an important insight. It turns out that we can perform a similar transformation for any CEF where the covariates are discrete variables that take on a finite set of values. 
+
+TODO: Add example of sex x race. Talk about main effect and interaction. 
+
+In general, the idea is to include a separate parameter for each possible value of the discrete covariates. The linear regression corresponding to such a CEF is said to be **saturated**. 
+
+
+
 
 [^1]: In this post, I assume that the $n$ observed data points represents the entire (finite) population. This simplification allows me to focus on the conceptual ideas behind linear regression without having to discuss statistical inference.  
 
-Everything in this post is written from the perspective of having population level data, so that I can focus on the conceptual aspects of linear regression without having to get into statistical inference. So technically when I say there are $n$ observations, this is assumed to be the entire, finite population in this case. 
+[^2]: Again, to abstract away from statistical inference, I do not distinguish between population and sample averages. In practice, however, it is important to note that linear regression recovers **sample** conditional averages rather than the "true" **population** conditional averages when the CEF is linear.
