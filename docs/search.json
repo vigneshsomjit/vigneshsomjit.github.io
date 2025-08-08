@@ -89,5 +89,47 @@
     "title": "Linear Regression as an Approximation Method",
     "section": "Linear Regression Can (Sometimes) Recover True Conditional Averages",
     "text": "Linear Regression Can (Sometimes) Recover True Conditional Averages\nSo far, we have discussed linear regression as a tool to approximate the conditional expectation function. However, it can be shown that when the CEF is itself linear, the best linear predictor exactly equals the CEF. That is to say linear regression recovers the true conditional averages in this case.2\nTo see this in practice, I simulate data on income using the following equation\n\\[\n\\begin{align}\nincome_i &= \\beta_0 + \\beta_1 \\times white_i + \\beta_2 \\times male_i \\\\ & \\quad \\quad + \\beta_3 \\times literacy_i^{(1+0.3 \\times sex_i)} + \\beta_4 (male_i \\times black_i) + \\varepsilon_i.\n\\end{align}\n\\]\n\n\nShow the code that simulates the dataset.\nset.seed(123)\n\n# Population size \nn &lt;- 1000\n\n# Noise \nnoise &lt;- rnorm(n, 0, 2000)\n\n# Covariates \nmale &lt;- rbinom(n, 1, 0.5)\nsex &lt;- factor(male, labels = c(\"Female\", \"Male\"))\nwhite &lt;- rbinom(n, 1, 0.7)\nrace &lt;- factor(white, labels = c(\"Black\", \"White\"))\nliteracy &lt;- runif(n, 0, 100)\n\n# Outcome \nwhite_female_base &lt;- 30000                           # white females with 0 literacy earn 30000\nliteracy_effect &lt;- 50\nmale_premium &lt;- 200                                    # + 200 male premium \nwhite_premium &lt;- 1500                                  # + 1500 white premium\nwhite_male_premium &lt;- 1000                              # + 1000 white male premium \n\n# Create income \nincome &lt;- \n  white_female_base +\n  white_premium       * white +                          \n  male_premium        * male +                            \n  literacy_effect   * (literacy^(1 + 0.3 * male)) +    # literate males are better off than literate females \n  white_male_premium   * (male * white) +                  \n  noise\n\n# Combine into a dataset\nsim_data &lt;- data.frame(sex = sex,\n                     race = race,\n                     literacy,\n                     income)\n\n\n\nA Simple Univariate Example\nRecall from Equation 1 that the CEF is a function of the covariates we use to predict the outcome variable. So, as a simple example of a linear CEF, let us consider the conditional expectation of \\(income_i\\) as a function of \\(male_i\\). The conditional expectation can be written as the step-wise function \\[\n\\mathbb{E}[Y_i|male_i] = \\begin{cases} \\mu_0 \\quad  \\text{if} \\quad male_i = 0 \\\\ \\mu_1 \\quad  \\text{if} \\quad male_i = 1 \\end{cases}.\n\\tag{3}\\] To illustrate that Equation 3 is a linear combination of \\(male_i\\), we can rewrite it as\n\\[\n\\mathbb{E}[Y_i |male_i] = \\mu_0 + (\\mu_1-\\mu_0) \\times male_i.\n\\tag{4}\\]\nNow, we can use R to regress \\(income_i\\) on \\(sex_i\\) as follows.\n\nreg_model &lt;- feols(\n  income ~ sex, \n  data = sim_data\n)\n\nsummary(reg_model)\n\nOLS estimation, Dep. Var.: income\nObservations: 1,000\nStandard-errors: IID \n            Estimate Std. Error  t value  Pr(&gt;|t|)    \n(Intercept) 33423.97    207.948 160.7323 &lt; 2.2e-16 ***\nsexMale      7044.47    295.863  23.8099 &lt; 2.2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\nRMSE: 4,673.0   Adj. R2: 0.361625\n\n\nTo verify that the linear regression above does in fact recover Equation 4, we need to check that (i) its intercept parameter equals the average income of females in the dataset and (ii) the coefficient on \\(male_i\\) is the difference in the average income of males and females in the dataset. As shown below, this is indeed the case.\n\nsim_data %&gt;%\n  filter(sex == \"Female\") %&gt;%\n  summarise(female_avg = mean(income, na.rm = TRUE))\n\n  female_avg\n1   33423.97\n\nsim_data %&gt;%\n  summarise(\n    sex_diff = mean(income[sex == \"Male\"], na.rm = TRUE) -\n                       mean(income[sex == \"Female\"], na.rm = TRUE)\n  )\n\n  sex_diff\n1 7044.472\n\n\n\n\nSaturated Regressions\nThe exercise of transforming the step-wise function in Equation 3 into a linear combination of the covariate in Equation 4 provides an important insight. It turns out that we can perform a similar transformation for any CEF where the covariates are discrete variables that take on a finite set of values.\nTODO: Add example of sex x race. Talk about main effect and interaction.\nIn general, the idea is to include a separate parameter for each possible value of the discrete covariates. The linear regression corresponding to such a CEF is said to be saturated.\nTODO: Saturated models makes inference easier: give example of comparing means."
+  },
+  {
+    "objectID": "blog/statistical-modeling.html",
+    "href": "blog/statistical-modeling.html",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#an-abstract-view-of-statistical-inference-with-a-focus-on-parametric-models",
+    "href": "blog/statistical-modeling.html#an-abstract-view-of-statistical-inference-with-a-focus-on-parametric-models",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  M[\"Statistical Model\"]:::box\n  D[\"Observed Data\"]:::box\n\n  M -- \"Probability\" --&gt; D\n  D -- \"Inference\" --&gt; M\n\n  linkStyle 0 stroke-width:2px;\n  linkStyle 1 stroke-width:2px;"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#an-framework-for-statistical-inference-with-a-focus-on-parametric-models",
+    "href": "blog/statistical-modeling.html#an-framework-for-statistical-inference-with-a-focus-on-parametric-models",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  M[\"Statistical Model\"]:::box\n  D[\"Observed Data\"]:::box\n\n  M -- \"Probability\" --&gt; D\n  D -- \"Inference\" --&gt; M\n\n  linkStyle 0 stroke-width:2px;\n  linkStyle 1 stroke-width:2px;"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#statistical-models-provide-structure-to-randomness-inference-quantifies-uncertainty",
+    "href": "blog/statistical-modeling.html#statistical-models-provide-structure-to-randomness-inference-quantifies-uncertainty",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  M[\"Statistical Model\"]:::box\n  D[\"Observed Data\"]:::box\n\n  M -- \"Probability\" --&gt; D\n  D -- \"Inference\" --&gt; M\n\n  linkStyle 0 stroke-width:2px;\n  linkStyle 1 stroke-width:2px;"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#modeling-randomness-quantifying-uncertainty",
+    "href": "blog/statistical-modeling.html#modeling-randomness-quantifying-uncertainty",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  M[\"Statistical Model\"]:::box\n  D[\"Observed Data\"]:::box\n\n  M -- \"Probability\" --&gt; D\n  D -- \"Inference\" --&gt; M\n\n  linkStyle 0 stroke-width:2px;\n  linkStyle 1 stroke-width:2px;"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#modeling-randomness-and-quantifying-uncertainty",
+    "href": "blog/statistical-modeling.html#modeling-randomness-and-quantifying-uncertainty",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
   }
 ]

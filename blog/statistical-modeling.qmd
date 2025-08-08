@@ -5,3 +5,21 @@ date: August 10, 2025
 categories: [Econometrics/Statistics]
 ---
 
+## Modeling Randomness and Quantifying Uncertainty
+
+```{mermaid}
+%%| fig-align: center
+flowchart LR
+  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;
+
+  DGP["Data Generating Process"]:::box
+  Data["Observed Data"]:::box
+  Model["Statistical Model"]:::box
+
+  %% Main flows
+  DGP -- "Randomness" --> Data
+  DGP -. "Assumptions" .-> Model
+  Model -- "Probability" --> Data
+  Data -- "Inference" --> Model
+  Model -. "Approximate Reality" .-> DGP
+```

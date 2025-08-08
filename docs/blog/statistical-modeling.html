@@ -68,6 +68,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -107,7 +110,13 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#modeling-randomness-and-quantifying-uncertainty" id="toc-modeling-randomness-and-quantifying-uncertainty" class="nav-link active" data-scroll-target="#modeling-randomness-and-quantifying-uncertainty">Modeling Randomness and Quantifying Uncertainty</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -145,8 +154,35 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="modeling-randomness-and-quantifying-uncertainty" class="level2">
+<h2 class="anchored" data-anchor-id="modeling-randomness-and-quantifying-uncertainty">Modeling Randomness and Quantifying Uncertainty</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;
+
+  DGP["Data Generating Process"]:::box
+  Data["Observed Data"]:::box
+  Model["Statistical Model"]:::box
+
+  %% Main flows
+  DGP -- "Randomness" --&gt; Data
+  DGP -. "Assumptions" .-&gt; Model
+  Model -- "Probability" --&gt; Data
+  Data -- "Inference" --&gt; Model
+  Model -. "Approximate Reality" .-&gt; DGP
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
