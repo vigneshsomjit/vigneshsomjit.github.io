@@ -1,0 +1,6 @@
+---
+title: "The Gaussian-Noise Linear Regression Model"
+description: "A closer look at linear regression when viewed as a statistical model."
+date: August 15, 2025
+categories: [Econometrics/Statistics]
+---

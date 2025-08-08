@@ -1,0 +1,7 @@
+---
+title: "How to Think About Statistical Models and Inference"
+description: "Building a mental framework for how data, models, inference, and probability come together."
+date: August 10, 2025
+categories: [Econometrics/Statistics]
+---
+

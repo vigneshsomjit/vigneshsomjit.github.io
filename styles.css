@@ -1,1 +1,19 @@
 /* css styles */
+
+/* Keep site header gray, subtitle white */
+.quarto-title-block .quarto-title-banner {
+  background-color: white; /* White background for subtitle area */
+  padding-top: 1em;
+  padding-bottom: 0;
+}
+
+.quarto-title-block .quarto-title-banner h1,
+.quarto-title-block .quarto-title-banner h2 {
+  margin: 0;
+}
+
+.quarto-title-block .quarto-title-banner h2.subtitle {
+  font-size: 1.2em;
+  font-style: italic;
+}
+

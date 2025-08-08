@@ -1,8 +1,8 @@
 ---
 title: "Linear Regression as an Approximation Method"
-description: "I build intuition on the perspective that linear regression is the process of approximating the conditional expectation function (CEF)."
+description: "Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF)."
 date: today
-categories: [Econometrics]
+categories: [Econometrics/Statistics]
 ---
 
 ```{r}
@@ -147,7 +147,7 @@ TODO: Add example of sex x race. Talk about main effect and interaction.
 
 In general, the idea is to include a separate parameter for each possible value of the discrete covariates. The linear regression corresponding to such a CEF is said to be **saturated**. 
 
-
+TODO: Saturated models makes inference easier: give example of comparing means.
 
 
 [^1]: In this post, I assume that the $n$ observed data points represents the entire (finite) population. This simplification allows me to focus on the conceptual ideas behind linear regression without having to discuss statistical inference.  
