@@ -17,3 +17,25 @@
   font-style: italic;
 }
 
+.headshot {
+  width: 250px;           /* increased from 160px */
+  height: 250px;          /* match width for perfect circle */
+  object-fit: cover;      /* crop to fill the circle nicely */
+  border-radius: 50%;     
+  display: block;         
+  margin: 0 auto 1.25rem auto; /* center + a bit more space below */
+}
+@media (max-width: 500px) {
+  .headshot {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+.name-heading {
+  font-size: 2.5rem;      /* keep the nice big size */
+  font-weight: bold;
+  margin-top: 0.5rem;     /* space above name */
+  margin-bottom: 1rem;  /* space before paragraph */
+}
+

@@ -5,7 +5,9 @@ date: August 10, 2025
 categories: [Econometrics/Statistics]
 ---
 
-## Modeling Randomness and Quantifying Uncertainty
+## Modeling Randomness, Estimation, and Quantifying Uncertainty
+
+In their book "Information Criteria and Statistical Modeling", Konishi and Kitagawa state "the majority of the problems in statistical inference can be considered to be problems related to statistical modeling." 
 
 ```{mermaid}
 %%| fig-align: center

@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "Vignesh Somjit",
+    "title": "\nVignesh Somjit\n",
     "section": "",
-    "text": "I am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor Richard Hornbeck. I received my B.A. in Economics and B.A. in Mathematics from Boston University in 2025."
+    "text": "Vignesh Somjit\n\n\nI am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor Richard Hornbeck. I received my B.A. in Economics (with honors) and B.A. in Mathematics from Boston University in 2025."
   },
   {
     "objectID": "about.html",
@@ -17,15 +17,15 @@
     "objectID": "index.html#about-me",
     "href": "index.html#about-me",
     "title": "Vignesh Somjit",
-    "section": "",
-    "text": "I am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor Richard Hornbeck. I received my B.A. in Economics and B.A. in Mathematics from Boston University in 2025."
+    "section": "About Me",
+    "text": "About Me\nI am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor Richard Hornbeck. I received my B.A. in Economics and B.A. in Mathematics from Boston University in 2025."
   },
   {
     "objectID": "blog/blog-index.html",
     "href": "blog/blog-index.html",
     "title": "Vignesh Somjit",
     "section": "",
-    "text": "The Gaussian-Noise Linear Regression Model\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nA closer look at linear regression when viewed as a statistical model.\n\n\n\n\n\nAug 15, 2025\n\n\n\n\n\n\n\nHow to Think About Statistical Models and Inference\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nBuilding a mental framework for how data, models, inference, and probability come together.\n\n\n\n\n\nAug 10, 2025\n\n\n\n\n\n\n\nLinear Regression as an Approximation Method\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nIntuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).\n\n\n\n\n\nAug 7, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "The Gaussian-Noise Linear Regression Model\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nA closer look at linear regression when viewed as a statistical model.\n\n\n\n\n\nAug 15, 2025\n\n\n\n\n\n\n\nHow to Think About Statistical Models and Inference\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nBuilding a mental framework for how data, models, inference, and probability come together.\n\n\n\n\n\nAug 10, 2025\n\n\n\n\n\n\n\nLinear Regression as an Approximation Method\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nIntuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).\n\n\n\n\n\nAug 9, 2025\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/regressions.html",
@@ -95,7 +95,7 @@
     "href": "blog/statistical-modeling.html",
     "title": "How to Think About Statistical Models and Inference",
     "section": "",
-    "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
+    "text": "In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
   },
   {
     "objectID": "blog/statistical-modeling.html#an-abstract-view-of-statistical-inference-with-a-focus-on-parametric-models",
@@ -131,5 +131,12 @@
     "title": "How to Think About Statistical Models and Inference",
     "section": "",
     "text": "flowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#modeling-randomness-estimation-and-quantifying-uncertainty",
+    "href": "blog/statistical-modeling.html#modeling-randomness-estimation-and-quantifying-uncertainty",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
   }
 ]
