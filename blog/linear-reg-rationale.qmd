@@ -1,7 +1,7 @@
 ---
 title: "Linear Regression as an Approximation Method"
 description: "Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF)."
-date: today
+date: August 12, 2025
 categories: [Econometrics/Statistics]
 ---
 

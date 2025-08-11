@@ -25,7 +25,7 @@
     "href": "blog/blog-index.html",
     "title": "Vignesh Somjit",
     "section": "",
-    "text": "The Gaussian-Noise Linear Regression Model\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nA closer look at linear regression when viewed as a statistical model.\n\n\n\n\n\nAug 15, 2025\n\n\n\n\n\n\n\nHow to Think About Statistical Models and Inference\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nBuilding a mental framework for how data, models, inference, and probability come together.\n\n\n\n\n\nAug 10, 2025\n\n\n\n\n\n\n\nLinear Regression as an Approximation Method\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nIntuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).\n\n\n\n\n\nAug 9, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "The Gaussian-Noise Linear Regression Model\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nA closer look at linear regression when viewed as a statistical model.\n\n\n\n\n\nAug 15, 2025\n\n\n\n\n\n\n\nHow to Think About Statistical Models and Inference\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nBuilding a mental framework for how data, models, inference, and probability come together.\n\n\n\n\n\nAug 10, 2025\n\n\n\n\n\n\n\nLinear Regression as an Approximation Method\n\n\n\n\n\n\nEconometrics/Statistics\n\n\n\nIntuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).\n\n\n\n\n\nAug 10, 2025\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/regressions.html",
@@ -95,7 +95,7 @@
     "href": "blog/statistical-modeling.html",
     "title": "How to Think About Statistical Models and Inference",
     "section": "",
-    "text": "In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
+    "text": "We can think of our observed data to be the result of some true, unknown Data Generating Process (DGP) that is inherently random.1 That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) natural variation in the phenomenon being measured, (ii) measurement error, and (iii) sampling error.\nThe presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. Statistical inference is the process of (i) using observed data to make informed predictions about unobserved features of the DGP and (ii) using probability to quantify the uncertainty in those predictions. 2"
   },
   {
     "objectID": "blog/statistical-modeling.html#an-abstract-view-of-statistical-inference-with-a-focus-on-parametric-models",
@@ -137,6 +137,111 @@
     "href": "blog/statistical-modeling.html#modeling-randomness-estimation-and-quantifying-uncertainty",
     "title": "How to Think About Statistical Models and Inference",
     "section": "",
-    "text": "In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP"
+    "text": "In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#a-frequentist-framework",
+    "href": "blog/statistical-modeling.html#a-frequentist-framework",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "Suppose there exists some true Data Generating Process (DGP) that is responsible for producing the data we observe. We can think of this DGP to consist of a (i) deterministic component and a (ii) stochastic (or random) component.\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#a-single-stochastic-data-generating-proces",
+    "href": "blog/statistical-modeling.html#a-single-stochastic-data-generating-proces",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "We can think of our observed data to be the result of a true underlying Data Generating Process (DGP) that is random. In other words, we repeated the data collection, we’d almost certainly get different values. The sources of randomness include (i) inherent fluctuation in the process itself (e.g., )\nWhen we collect data, we’re only seeing one realization of a process that has both structure and randomness. Beneath our dataset lies a true Data Generating Process (DGP) — the systematic part of how the world works — combined with stochastic elements that introduce variability. If we repeated the data collection, we’d almost certainly get different values. This variability comes from the inherent randomness in the process itself, as well as things like measurement error (imperfections in how we record data) and sampling error (the fact that we only observe a subset of the population).\nWe can think of observed data as being generated by the combination of some true underlying Data Generating Process (DGP) and some stochastic processes that introduce randomness. Thus, if we collected the data again, we would likely see different values. The source of this randomness in the observed data is usually a combination of inherent randomness in the DGP as well as measurement error and/or sampling error.\nsome true underlying Data Generating Process (DGP) that is inherently random. In other words, if we collected the data again, we would likely see different values. The source of this randomness is usually a combination of\nSuppose there exists some true Data Generating Process (DGP) that is responsible for producing the data we observe. This DGP can be decomposed into a (i) deterministic component and a (ii) stochastic component. The source of uncertainty is usually a combination of inherent randomness in the process as well as measurement error and/or sampling.\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#a-single-stochastic-data-generating-process",
+    "href": "blog/statistical-modeling.html#a-single-stochastic-data-generating-process",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "We can think of our observed data to be the result of a true underlying Data Generating Process (DGP) that is inherently random.1 In other words, if we repeated the data collection, we’d almost certainly get different values.\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#footnotes",
+    "href": "blog/statistical-modeling.html#footnotes",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nTo be clear, this is a simplification of reality because (i) it assumes that the DGP exists and (ii) it assumes that the DGP is stable over time. In reality, some events can fundamentally alter the DGP (if it even exists). For example, consider the impacts of the widespread adoption of artificial intelligence. Nevertheless, we often do observe an approximately stable distribution of data over time. Thus, the fixed-DGP is often reasonable in practice and, more importantly, provides a useful framework for applying probabilistic models to learn from the data we have.↩︎\nNote that if we instead defined statistical inference as “the process of using sample data to learn about the population,” we would be describing only one specific case. It is entirely possible to have population-level data and still require statistical inference due to natural variation or measurement error.↩︎\nWhen we think of the word “prediction” we usually think of forecasts. But notice how point estimation and hypothesis testing can also be viewed as a form of prediction, as we are extrapolating from observed data to the statistical model’s parameters. This guided the choice of using “informed predictions” as the umbrella term describing inference.↩︎"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#the-goal",
+    "href": "blog/statistical-modeling.html#the-goal",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "We can think of our observed data to be the result of some true underlying Data Generating Process (DGP) that is inherently random.1 That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) natural variation in the phenomenon being measured, (ii) measurement error, and (iii) sampling error.\nThe presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. Statistical inference is the process of using observed data to make informed predictions about those unobserved features and quantifying the uncertainty in those predictions using probability.\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#what-is-statistical-inference",
+    "href": "blog/statistical-modeling.html#what-is-statistical-inference",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "We can think of our observed data to be the result of some true underlying Data Generating Process (DGP) that is inherently random.1 That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) natural variation in the phenomenon being measured, (ii) measurement error, and (iii) sampling error.\nThe presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. Statistical inference is the process of using observed data to make informed predictions about those unobserved features and quantifying the uncertainty in those predictions using probability."
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#how-do-we-conduct-statistical-inference",
+    "href": "blog/statistical-modeling.html#how-do-we-conduct-statistical-inference",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "How Do We Conduct Statistical Inference?",
+    "text": "How Do We Conduct Statistical Inference?\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#using-models-to-enable-inference",
+    "href": "blog/statistical-modeling.html#using-models-to-enable-inference",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Using Models to Enable Inference",
+    "text": "Using Models to Enable Inference\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#inference-are-confined-within-models",
+    "href": "blog/statistical-modeling.html#inference-are-confined-within-models",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Inference are Confined Within Models",
+    "text": "Inference are Confined Within Models\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#models-make-inference-possible",
+    "href": "blog/statistical-modeling.html#models-make-inference-possible",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Models Make Inference Possible",
+    "text": "Models Make Inference Possible\n\nA Set of Assumptions\nSince the true DGP is unknown, we need to make assumptions about its structure in order to make predictions about its unobserved characteristics. A statistical model is a mathematical characterization of how the data is generated using probability theory. Specifically, we view the observed data points as realizations of a collection of random variables with some joint probability distribution. The set of assumptions that define this probability distribution — such as its functional form and the structural relationships among the random variables — is exactly what constitutes the statistical model.\n\n\nForms of Inference\nSo far, I have referred to statistical inference as involving informed predictions about unobserved features of the DGP. This is a broad umbrella term that encompasses various forms of inference, and is therefore worth clarifying.\nPerhaps the most common form of inference is point estimation. This is the process of using the observed data to produce a single “best guess” value (the point estimate) for an unknown numerical quantity that characterizes the probability distribution in the statistical model (the parameter). Another type of inference is hypothesis testing, where we use the data to assess specific claims about the model parameters. Finally, forecasting is a form of interence where the model is used to predict future realizations of the random variables.3\n\n\nThe Big Picture\n\n\n\n\n\nflowchart LR\n  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;\n\n  DGP[\"Data Generating Process\"]:::box\n  Data[\"Observed Data\"]:::box\n  Model[\"Statistical Model\"]:::box\n\n  %% Main flows\n  DGP -- \"Randomness\" --&gt; Data\n  DGP -. \"Assumptions\" .-&gt; Model\n  Model -- \"Probability\" --&gt; Data\n  Data -- \"Inference\" --&gt; Model\n  Model -. \"Approximate Reality\" .-&gt; DGP\n\n\n\n\n\n\nIn their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”\n\nExample: Parametric Models\nTo clarify the ideas captured by the concept map above, let us ground ourselves to a specific class of statistical models: parametric models (or families).\nTODO."
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#predicting-the-unknown",
+    "href": "blog/statistical-modeling.html#predicting-the-unknown",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "We can think of our observed data to be the result of some true underlying Data Generating Process (DGP) that is inherently random.1 That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) natural variation in the phenomenon being measured, (ii) measurement error, and (iii) sampling error.\nThe presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. Statistical inference is the process of using observed data to make informed predictions about those unobserved features and quantifying the uncertainty in those predictions using probability."
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#learning-about-the-unknown",
+    "href": "blog/statistical-modeling.html#learning-about-the-unknown",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "",
+    "text": "We can think of our observed data to be the result of some true, unknown Data Generating Process (DGP) that is inherently random.1 That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) natural variation in the phenomenon being measured, (ii) measurement error, and (iii) sampling error.\nThe presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. Statistical inference is the process of (i) using observed data to make informed predictions about unobserved features of the DGP and (ii) using probability to quantify the uncertainty in those predictions. 2"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#forms-of-inference",
+    "href": "blog/statistical-modeling.html#forms-of-inference",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Forms of Inference",
+    "text": "Forms of Inference"
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#parametric-statistical-models",
+    "href": "blog/statistical-modeling.html#parametric-statistical-models",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Parametric Statistical Models",
+    "text": "Parametric Statistical Models\nTo clarify the ideas captured by the diagram above, let us ground ourselves to a specific class of statistical models: parametric models (or families)."
+  },
+  {
+    "objectID": "blog/statistical-modeling.html#example-parametric-models",
+    "href": "blog/statistical-modeling.html#example-parametric-models",
+    "title": "How to Think About Statistical Models and Inference",
+    "section": "Example: Parametric Models",
+    "text": "Example: Parametric Models\nTo clarify the ideas captured by the concept map above, let us ground ourselves to a specific class of statistical models: parametric models (or families).\nTODO."
   }
 ]

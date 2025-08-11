@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-08-10">
+<meta name="dcterms.date" content="2025-08-11">
 <meta name="description" content="Building a mental framework for how data, models, inference, and probability come together.">
 
 <title>Vignesh Somjit - How to Think About Statistical Models and Inference</title>
@@ -114,7 +114,13 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#modeling-randomness-estimation-and-quantifying-uncertainty" id="toc-modeling-randomness-estimation-and-quantifying-uncertainty" class="nav-link active" data-scroll-target="#modeling-randomness-estimation-and-quantifying-uncertainty">Modeling Randomness, Estimation, and Quantifying Uncertainty</a></li>
+  <li><a href="#learning-about-the-unknown" id="toc-learning-about-the-unknown" class="nav-link active" data-scroll-target="#learning-about-the-unknown">Learning About the Unknown</a></li>
+  <li><a href="#models-make-inference-possible" id="toc-models-make-inference-possible" class="nav-link" data-scroll-target="#models-make-inference-possible">Models Make Inference Possible</a>
+  <ul class="collapse">
+  <li><a href="#a-set-of-assumptions" id="toc-a-set-of-assumptions" class="nav-link" data-scroll-target="#a-set-of-assumptions">A Set of Assumptions</a></li>
+  <li><a href="#forms-of-inference" id="toc-forms-of-inference" class="nav-link" data-scroll-target="#forms-of-inference">Forms of Inference</a></li>
+  <li><a href="#the-big-picture" id="toc-the-big-picture" class="nav-link" data-scroll-target="#the-big-picture">The Big Picture</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -142,7 +148,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 10, 2025</p>
+      <p class="date">August 11, 2025</p>
     </div>
   </div>
   
@@ -154,9 +160,24 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="modeling-randomness-estimation-and-quantifying-uncertainty" class="level2">
-<h2 class="anchored" data-anchor-id="modeling-randomness-estimation-and-quantifying-uncertainty">Modeling Randomness, Estimation, and Quantifying Uncertainty</h2>
-<p>In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”</p>
+<section id="learning-about-the-unknown" class="level2">
+<h2 class="anchored" data-anchor-id="learning-about-the-unknown">Learning About the Unknown</h2>
+<p>We can think of our observed data to be the result of some true, unknown <strong>Data Generating Process (DGP)</strong> that is inherently random.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) <em>natural variation</em> in the phenomenon being measured, (ii) <em><a href="https://en.wikipedia.org/wiki/Observational_error">measurement error</a></em>, and (iii) <em><a href="https://en.wikipedia.org/wiki/Sampling_error">sampling error</a></em>.</p>
+<p>The presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. <strong>Statistical inference</strong> is the process of (i) using observed data to make <em>informed predictions</em> about unobserved features of the DGP and (ii) using probability to <em>quantify</em> the uncertainty in those predictions. <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</section>
+<section id="models-make-inference-possible" class="level2">
+<h2 class="anchored" data-anchor-id="models-make-inference-possible">Models Make Inference Possible</h2>
+<section id="a-set-of-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="a-set-of-assumptions">A Set of Assumptions</h3>
+<p>Since the true DGP is unknown, we need to make <em>assumptions</em> about its structure in order to make predictions about its unobserved characteristics. A <strong>statistical model</strong> is a mathematical characterization of how the data is generated using probability theory. Specifically, we view the observed data points as <em>realizations</em> of a collection of <em><a href="https://en.wikipedia.org/wiki/Random_variable">random variables</a></em> with some <em><a href="https://en.wikipedia.org/wiki/Joint_probability_distribution">joint probability distribution</a></em>. The set of assumptions that define this probability distribution — such as its functional form and the structural relationships among the random variables — is exactly what constitutes the statistical model.</p>
+</section>
+<section id="forms-of-inference" class="level3">
+<h3 class="anchored" data-anchor-id="forms-of-inference">Forms of Inference</h3>
+<p>So far, I have referred to statistical inference as involving <em>informed predictions</em> about unobserved features of the DGP. This is a broad umbrella term that encompasses various forms of inference, and is therefore worth clarifying.</p>
+<p>Perhaps the most common form of inference is <strong>point estimation</strong>. This is the process of using the observed data to produce a single “best guess” value (the <em>point estimate</em>) for an unknown numerical quantity that characterizes the probability distribution in the statistical model (the <em>parameter</em>). Another type of inference is <strong>hypothesis testing</strong>, where we use the data to assess specific claims about the model parameters. Finally, <strong>forecasting</strong> is a form of interence where the model is used to predict future realizations of the random variables.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+</section>
+<section id="the-big-picture" class="level3">
+<h3 class="anchored" data-anchor-id="the-big-picture">The Big Picture</h3>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
@@ -181,11 +202,26 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
+<p>In their book “Information Criteria and Statistical Modeling”, Konishi and Kitagawa state “the majority of the problems in statistical inference can be considered to be problems related to statistical modeling.”</p>
+<section id="example-parametric-models" class="level4">
+<h4 class="anchored" data-anchor-id="example-parametric-models">Example: Parametric Models</h4>
+<p>To clarify the ideas captured by the concept map above, let us ground ourselves to a specific class of statistical models: parametric models (or families).</p>
+<p>TODO.</p>
 
 
 </section>
+</section>
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>To be clear, this is a simplification of reality because (i) it assumes that the DGP exists and (ii) it assumes that the DGP is stable over time. In reality, some events can fundamentally alter the DGP (if it even exists). For example, consider the impacts of the widespread adoption of artificial intelligence. Nevertheless, we often do observe an approximately stable distribution of data over time. Thus, the fixed-DGP is often reasonable in practice and, more importantly, provides a useful framework for applying probabilistic models to learn from the data we have.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Note that if we instead defined statistical inference as “the process of using sample data to learn about the population,” we would be describing only one specific case. It is entirely possible to have population-level data and still require statistical inference due to natural variation or measurement error.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>When we think of the word “prediction” we usually think of forecasts. But notice how point estimation and hypothesis testing can also be viewed as a form of prediction, as we are extrapolating from observed data to the statistical model’s parameters. This guided the choice of using “informed predictions” as the umbrella term describing inference.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
