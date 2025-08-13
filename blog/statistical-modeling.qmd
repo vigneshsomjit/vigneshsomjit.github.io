@@ -1,32 +1,36 @@
 ---
-title: "How to Think About Statistical Models and Inference"
+title: "How to Think About Statistical Inference"
 description: "Building a mental framework for how data, models, inference, and probability come together."
-date: August 11, 2025
+date: today
 categories: [Econometrics/Statistics]
 ---
 
 ## Learning About the Unknown  
 
-We can think of our observed data to be the result of some true, unknown **Data Generating Process (DGP)** that is inherently random.[^1] That is to say if we repeated the data collection, we would almost certainly get different values. The sources of this randomness are varied, and includes (i) *natural variation* in the phenomenon being measured, (ii) *[measurement error](https://en.wikipedia.org/wiki/Observational_error)*, and (iii) *[sampling error](https://en.wikipedia.org/wiki/Sampling_error)*. 
+We can think of our observed data to be the result of some true, unknown **Data Generating Process (DGP)** that is inherently random.[^1] That is to say if we repeated the data collection, we would almost certainly get different values. The source of this randomness is varied, and includes (i) *natural variation* in the phenomenon being measured, (ii) *[measurement error](https://en.wikipedia.org/wiki/Observational_error)*, and (iii) *[sampling error](https://en.wikipedia.org/wiki/Sampling_error)*. 
 
-The presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. **Statistical inference** is the process of (i) using observed data to make *informed predictions* about  unobserved features of the DGP and (ii) using probability to *quantify* the uncertainty in those predictions. [^2] 
+The presence of such randomness makes it challenging to learn about the unobserved characteristics of the DGP using the observed data. **Statistical inference** is the process of (i) using random observed data to make *informed predictions* about unobserved features of the DGP and (ii) using probability to *quantify* the uncertainty in those predictions. [^2] 
 
 
 ## Models Make Inference Possible  
 
 ### A Set of Assumptions 
 
-Since the true DGP is unknown, we need to make *assumptions* about its structure in order to make predictions about its unobserved characteristics. A **statistical model** is a mathematical characterization of how the data is generated using probability theory. Specifically, we view the observed data points as *realizations* of a collection of *[random variables](https://en.wikipedia.org/wiki/Random_variable)* with some *[joint probability distribution](https://en.wikipedia.org/wiki/Joint_probability_distribution)*. The set of assumptions that define this probability distribution — such as its functional form and the structural relationships among the random variables — is exactly what constitutes the statistical model.
+Since the true DGP is unknown, we need to make *assumptions* about its general structure in order to make inference feasible. A **statistical model** is a mathematical characterization of how the data is generated using probability theory. Specifically, we view the observed data points as *realizations* of a collection of *[random variables](https://en.wikipedia.org/wiki/Random_variable)* with some *[joint probability distribution](https://en.wikipedia.org/wiki/Joint_probability_distribution)*. The set of assumptions that define this probability distribution — such as its functional form and the structural relationships among the random variables — is exactly what constitutes the statistical model.
 
 ### Forms of Inference
 
 So far, I have referred to statistical inference as involving *informed predictions* about unobserved features of the DGP. This is a broad umbrella term that encompasses various forms of inference, and is therefore worth clarifying. 
 
-Perhaps the most common form of inference is **point estimation**. This is the process of using the observed data to produce a single "best guess" value (the *point estimate*) for an unknown numerical quantity that characterizes the probability distribution in the statistical model (the *parameter*). Another type of inference is **hypothesis testing**, where we use the data to assess specific claims about the model parameters. Finally, **forecasting** is a form of interence where the model is used to predict future realizations of the random variables.[^3]
+Perhaps the most common form of inference is **point estimation**. This is the process of using the observed data to produce a single "best guess" value (the *point estimate*) for an unknown numerical quantity that characterizes the probability distribution in the statistical model (the *parameter*). Another type of inference is **hypothesis testing**, where we use the data to assess specific claims about the model parameters. Finally, **forecasting** is a form of inference where the model is used to predict future realizations of the random variables.[^3]
 
+## All Inference is Within Model  
 
+Initially, I had defined inference as the process of using observed data to make informed, probabilistic predictions about unknown features of the *data generating process*. However, notice that in our discussion of the different forms of inference, the DGP was never mentioned. In every case — point estimation, hypothesis testing, and forecasting — we use the observed data to learn more about the *statistical model*. 
 
-### The Big Picture 
+Any conclusions we make about the DGP are therefore indirect and entirely dependent on the model's specification. If the model's assumptions accurately approximate the true DGP, then inference can meaningfully describe reality. However, if the model is misspecified, our inference may be well-calculated but ultimately irrelevant: [a precise answer to the wrong question](https://statmodeling.stat.columbia.edu/2015/03/01/precise-answers-to-the-wrong-questions/). As Konishi and Kitagawa put it in *Information Criteria and Statistical Modeling*, "the majority of the problems in statistical inference can be considered to be problems related to statistical modeling." 
+
+## A Concept Map 
 
 ```{mermaid}
 %%| fig-align: center
@@ -45,9 +49,7 @@ flowchart LR
   Model -. "Approximate Reality" .-> DGP
 ```
 
-In their book "Information Criteria and Statistical Modeling", Konishi and Kitagawa state "the majority of the problems in statistical inference can be considered to be problems related to statistical modeling." 
-
-#### Example: Parametric Models
+### Example: Parametric Models
 
 To clarify the ideas captured by the concept map above, let us ground ourselves to a specific class of statistical models: parametric models (or families).
 
