@@ -30,7 +30,9 @@ Initially, I had defined inference as the process of using observed data to make
 
 Any conclusions we make about the DGP are therefore indirect and entirely dependent on the model's specification. If the model's assumptions accurately approximate the true DGP, then inference can meaningfully describe reality. However, if the model is misspecified, our inference may be well-calculated but ultimately irrelevant: [a precise answer to the wrong question](https://statmodeling.stat.columbia.edu/2015/03/01/precise-answers-to-the-wrong-questions/). As Konishi and Kitagawa put it in *Information Criteria and Statistical Modeling*, "the majority of the problems in statistical inference can be considered to be problems related to statistical modeling." 
 
-## A Concept Map 
+## A Very Simple Model  
+
+The relationship between the data generating process, observed data, and statistical model is summarized in the concept map below. 
 
 ```{mermaid}
 %%| fig-align: center
@@ -49,17 +51,22 @@ flowchart LR
   Model -. "Approximate Reality" .-> DGP
 ```
 
-### Example: Parametric Models
+To make this figure more concrete, it's useful to walk through a simple example. Suppose the true data generating process is a standard normal distribution with mean $0$ and variance $1$. However, we don't actually know this DGP and thus need to make assumptions about its general structure. After analyzing the random observed data, one possible statistical model we could assert is
 
-To clarify the ideas captured by the concept map above, let us ground ourselves to a specific class of statistical models: parametric models (or families).
+$$
+X \sim \mathcal{N}(\mu, \sigma^2).
+$$
+In words, we are treating our observed data as a random variable $X$ with a normal probability distribution with unknown mean $\mu$ and variance $\sigma^2$.[^4] 
 
-TODO.
-
-
+With this model in hand, we can now perform statistical inference to learn about the unknown model parameters. For example, we can use the observed data to find point estimates for $\mu$ and $\sigma^2$, and quantify the uncertainty associated with those estimates.[^5] Since in this toy example our normal distribution assumption is correct, the inference would yield meaningful conclusions about the true DGP. However, if the DGP was something entirely different — say, a uniform distribution — then our estimated model parameters would provide limited insight, if any, into the underlying structure of the data generating process.   
 
 [^1]: To be clear, this is a simplification of reality because (i) it assumes that the DGP exists and (ii) it assumes that the DGP is stable over time. In reality, some events can fundamentally alter the DGP (if it even exists). For example, consider the impacts of the widespread adoption of artificial intelligence. Nevertheless, we often do observe an approximately stable distribution of data over time. Thus, the fixed-DGP is often reasonable in practice and, more importantly, provides a useful framework for applying probabilistic models to learn from the data we have.  
 
 [^2]: Note that if we instead defined statistical inference as "the process of using sample data to learn about the population," we would be describing only one specific case. It is entirely possible to have population-level data and still require statistical inference due to natural variation or measurement error. 
 
 [^3]: When we think of the word "prediction" we usually think of forecasts. But notice how point estimation and hypothesis testing can also be viewed as a form of prediction, as we are extrapolating from observed data to the statistical model's parameters. This guided the choice of using "informed predictions" as the umbrella term describing inference.  
+
+[^4]: Since the number of parameters defining the distribution is finite, this is an example of a [**parametric statistical model**](https://en.wikipedia.org/wiki/Parametric_statistics).
+
+[^5]: One way to find such estimates is through [**maximum likelihood estimation**](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation). 
 
