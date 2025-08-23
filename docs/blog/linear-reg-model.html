@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-08-15">
+<meta name="dcterms.date" content="2025-08-23">
 <meta name="description" content="A closer look at linear regression when viewed as a statistical model.">
 
-<title>Vignesh Somjit - The Gaussian-Noise Linear Regression Model</title>
+<title>Vignesh Somjit - The Linear Regression Model and its Various Estimation Methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -107,14 +136,29 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#defining-the-model" id="toc-defining-the-model" class="nav-link active" data-scroll-target="#defining-the-model">Defining the Model</a>
+  <ul class="collapse">
+  <li><a href="#sampling-procedure" id="toc-sampling-procedure" class="nav-link" data-scroll-target="#sampling-procedure">Sampling Procedure</a></li>
+  </ul></li>
+  <li><a href="#estimation" id="toc-estimation" class="nav-link" data-scroll-target="#estimation">Estimation</a>
+  <ul class="collapse">
+  <li><a href="#recasting-in-matrix-notation" id="toc-recasting-in-matrix-notation" class="nav-link" data-scroll-target="#recasting-in-matrix-notation">Recasting in Matrix Notation</a></li>
+  <li><a href="#deriving-the-ols-estimator" id="toc-deriving-the-ols-estimator" class="nav-link" data-scroll-target="#deriving-the-ols-estimator">Deriving the OLS Estimator</a></li>
+  <li><a href="#deriving-the-mle-estimator" id="toc-deriving-the-mle-estimator" class="nav-link" data-scroll-target="#deriving-the-mle-estimator">Deriving the MLE Estimator</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">The Gaussian-Noise Linear Regression Model</h1>
+<h1 class="title">The Linear Regression Model and its Various Estimation Methods</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Econometrics/Statistics</div>
   </div>
@@ -133,7 +177,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 15, 2025</p>
+      <p class="date">August 23, 2025</p>
     </div>
   </div>
   
@@ -145,10 +189,84 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="defining-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="defining-the-model">Defining the Model</h2>
+<p><a href="../blog/statistical-modeling.html">Recall</a> that a statistical model is simply a set of assumptions about some data generating process (DGP) of interest. In the case of the linear regression model, we make a set of assumptions about the joint distribution <span class="math inline">\(F\)</span> of some <strong>outcome variable</strong> <span class="math inline">\(Y\)</span> and a set of <strong>predictor variables</strong> <span class="math inline">\((X_1, \ldots, X_k)\)</span>.</p>
+<div class="assumption-box">
+<p><strong>Assumption 1. The Linear Regression Model</strong></p>
+<ol type="A">
+<li><p>The random variable <span class="math inline">\(Y\)</span> is a linear combination of the predictor variables <span class="math inline">\((X_1,\ldots, X_k)\)</span>, plus some random <strong>noise variable</strong> <span class="math inline">\(e\)</span> that captures measurement error and idiosyncratic fluctuation in <span class="math inline">\(Y\)</span>: <span id="eq-linearity"><span class="math display">\[
+Y = \beta_1X_1 + \ldots + \beta_2X_k + e.
+\tag{1}\]</span></span></p></li>
+<li><p>None of the predictor variables are an exact linear combination of the other predictors.</p></li>
+<li><p>For any given value of <span class="math inline">\((X_1, \ldots, X_k)\)</span>, the noise <span class="math inline">\(e\)</span> has a mean of zero: <span class="math display">\[
+\mathbb{E}[e \mid X_1, \ldots , X_k] = 0.
+\]</span></p></li>
+</ol>
+</div>
+<p>It is good practice to carefully think through what is being assumed in any given model. <em>Assumption A</em> can be split into two parts. First, it restricts the relationship between the predictors and the outcome to be <strong>linear in the parameters</strong> <span class="math inline">\((\beta_1, \ldots, \beta_k)\)</span>. Second, it asserts that the noise <span class="math inline">\(e\)</span> is <strong>additive</strong>. <em>Assumption B</em> is a technical assumption that ensures that there is a unique solution for the parameters. <em>Assumption C</em> states that the noise <span class="math inline">\(e\)</span> is <strong>mean-independent</strong> of the predictor variables <span class="math inline">\(\boldsymbol{X}=(X_1, \ldots, X_k)\)</span>. This implies:</p>
+<ol type="1">
+<li><p>The conditional expectation of <span class="math inline">\(Y\)</span> given <span class="math inline">\(\boldsymbol{X}\)</span> is a linear function of the realized values: <span class="math display">\[
+\mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \boldsymbol{x}'\beta.
+\]</span></p></li>
+<li><p>The noise term <span class="math inline">\(e\)</span> is uncorrelated with the predictor variables <span class="math display">\[
+\text{Cov}(e, \boldsymbol{X}) = \mathbb{E}[e \boldsymbol{X}'] = \mathbb{E}\big[\mathbb{E}[e\boldsymbol{X} \mid \boldsymbol{X}]\big] = \mathbb{E}\big[\boldsymbol{X}'\mathbb{E}[e|\boldsymbol{X}]\big]=0.
+\]</span> Intuitively, this means the noise term and predictors do not contain any information about one another.</p></li>
+<li><p>The noise term <span class="math inline">\(e\)</span> has an unconditional mean of zero <span class="math display">\[
+\mathbb{E}[e] = \mathbb{E}[\mathbb{E}[e \mid \boldsymbol{X}]] = 0.
+\]</span></p></li>
+</ol>
+<p>It is also equally important to clarify what we are <em>not</em> assuming. First, we do not assume that <span class="math inline">\(Y\)</span> is a linear function of <span class="math inline">\((X_1, \ldots, X_k)\)</span> in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a>; we only require that the parameters <span class="math inline">\(\beta\)</span> enter the equation linearly. This means that we are free to include non-linear transformations of the predictor variables in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> as long linearity in <span class="math inline">\(\beta\)</span> is preserved. Second, we make no assumptions about the distribution of <span class="math inline">\(\boldsymbol{X}\)</span>. Third, we do not make assumptions about the distribution or variance of the noise term <span class="math inline">\(e\)</span>.</p>
+<section id="sampling-procedure" class="level3">
+<h3 class="anchored" data-anchor-id="sampling-procedure">Sampling Procedure</h3>
+<p>Since we do not observe the true data generating process <span class="math inline">\(F(Y, X_1, \ldots, X_k)\)</span>, our objective is to infer the parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> from the sample (observed) data. To do so, we need to make assumptions about the sampling procedure. Specifically, we will treat each observation <span class="math inline">\((y_i, x_{i1}, \ldots, x_{ik})\)</span> as realizations of the random variables <span class="math inline">\((Y_i, X_{i1}, \ldots, X_{ik})\)</span> that are drawn independently from the joint distribution <span class="math inline">\(F(Y, X_1, \ldots, X_k)\)</span>.</p>
+<div class="assumption-box">
+<p><strong>Assumption 2. Random Sampling</strong></p>
+<p>The observations <span class="math inline">\(\{(y_i, x_{i1}, \ldots, x_{ik})\}^n_{i=1}\)</span> are realizations of the random variables <span class="math inline">\(\{(Y_i, X_{i1}, \ldots , X_{ik})\}_{i=1}^n\)</span> which are <strong>independent and identically distributed (i.i.d)</strong> draws from common distribution <span class="math inline">\(F\)</span>.</p>
+</div>
+<p>It’s easy to get confused about the notation and terminology here, so let’s clarify. The random variables <span class="math inline">\((Y, X_1, \ldots, X_k)\)</span> are theoretical objects that are used when talking about the data generating process <em>in general</em>. The random variables <span class="math inline">\((Y_i, X_{1i}, \ldots, X_{ik})\)</span> are the theoretical objects that correspond to each observation in the sample. Intuitively, we can think of these as the data <em>before</em> it was collected. The realizations <span class="math inline">\((y_i, x_{i1}, \ldots, x_{ik})\)</span> are the actual data (numbers) we observe <em>after</em> data collection. Viewing the observations as realizations from i.i.d random variables will allow us to use probability theory to derive the estimators of the parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> and quantify the uncertainty around them.</p>
+</section>
+</section>
+<section id="estimation" class="level2">
+<h2 class="anchored" data-anchor-id="estimation">Estimation</h2>
+<section id="recasting-in-matrix-notation" class="level3">
+<h3 class="anchored" data-anchor-id="recasting-in-matrix-notation">Recasting in Matrix Notation</h3>
+<p>Since the linear regression model is a statistical model, it is a set of assumptions about the data generating process <span class="math inline">\(F(Y, X_1, \ldots, X_k)\)</span>. Therefore, when describing it, we only made statements about the generic random variables <span class="math inline">\((Y, X_1, \ldots, X_k)\)</span>. However, since we also assume random sampling, we can rewrite the model as a system of <span class="math inline">\(n\)</span> equations</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y_1 &amp;= \beta_1 X_{11} + \ldots + \beta_k X_{1k} + e_1 = \boldsymbol{X_1'}\boldsymbol{\beta} + e_1\\\
+Y_2 &amp;= \beta_1 X_{21}+ \ldots + \beta_k X_{2k} + e_2 = \boldsymbol{X_2'}\boldsymbol{\beta} + e_2 \\
+&amp;\;\;\vdots \\
+Y_n &amp;= \beta_1X_{n1} + \ldots + \beta_k X_{nk} + e_n= \boldsymbol{X_n'}\boldsymbol{\beta} + e_n,
+\end{aligned}
+\]</span> where <span class="math display">\[
+\boldsymbol{X_i} = \begin{pmatrix} X_{i1} \\ \vdots \\ X_{ik} \end{pmatrix} \in \mathbb{R}^{k \times 1} \quad  \text{and} \quad \boldsymbol{\beta}= \begin{pmatrix} \beta_1 \\ \vdots \\ \beta_k \end{pmatrix} \in \mathbb{R}^{k \times 1}.
+\]</span></p>
+<p>Even more compactly, we can write the linear regression model as <span class="math display">\[
+\boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{e},
+\]</span> where <span class="math display">\[
+\boldsymbol{Y} = \begin{pmatrix} Y_1 \\ \vdots \\ Y_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad \boldsymbol{e} = \begin{pmatrix} e_1 \\ \vdots \\ e_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad  \mathbf{X} = \begin{pmatrix} \boldsymbol{X_1'} \\ \vdots \\ \boldsymbol{X_n'} \end{pmatrix} = \begin{pmatrix} X_{11} &amp; \ldots &amp; X_{1k} \\ \vdots &amp; \ddots &amp; \vdots \\ X_{n1} &amp; \ldots &amp; X_{nk} \end{pmatrix} \in \mathbb{R}^{n \times k}.
+\]</span></p>
+<p>The quantity <span class="math inline">\(\mathbf{X}\)</span><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> is called the <strong>design matrix</strong>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> This system-of-equations representation of the linear regression model is useful because it allows us to use matrix algebra to derive the OLS estimator.</p>
+</section>
+<section id="deriving-the-ols-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-the-ols-estimator">Deriving the OLS Estimator</h3>
+</section>
+<section id="deriving-the-mle-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-the-mle-estimator">Deriving the MLE Estimator</h3>
 
 
+</section>
+</section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, <span class="math inline">\(\boldsymbol{X}\)</span> refers to the vector of random predictor variables <span class="math inline">\((X_1, \ldots, X_p)\)</span>, while <span class="math inline">\(\mathbf{X}\)</span> refers to the design matrix.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>If we want to introduce a <strong>constant intercept term</strong> in the model, we set the first regressor to equal one for all observations. In this case, the first column of the design matrix <span class="math inline">\(\mathbf{X}\)</span> is a vector of ones and the first element of <span class="math inline">\(\boldsymbol{\beta}\)</span> is the intercept term.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
