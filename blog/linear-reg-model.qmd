@@ -1,6 +1,6 @@
 ---
 title: "The Linear Regression Model and its Various Estimation Methods"
-description: "A closer look at linear regression when viewed as a statistical model."
+description: "A detailed discussion of the linear regression model and the standard estimation methods associated with it."
 date: today
 categories: [Econometrics/Statistics]
 draft: false
@@ -10,38 +10,41 @@ draft: false
 
 [Recall](statistical-modeling.qmd) that a statistical model is simply a set of assumptions about some data generating process (DGP) of interest. In the case of the linear regression model, we make a set of assumptions about the joint distribution $F$ of some **outcome variable** $Y$ and a set of **predictor variables** $(X_1, \ldots, X_k)$.
 
-::: {.assumption-box}
+:::{.assumption-box #assump-linreg}
 
 **Assumption 1. The Linear Regression Model**
 
-(A) The random variable $Y$ is a linear combination of the predictor variables $(X_1,\ldots, X_k)$, plus some random **noise variable** $e$ that captures measurement error and idiosyncratic fluctuation in $Y$:
+**(A)** ***(Linearity)*** The random variable $Y$ is a linear combination of the predictor variables $(X_1,\ldots, X_k)$, plus some random **noise variable** $e$ that captures measurement error and idiosyncratic fluctuation in $Y$:
 $$
-Y = \beta_1X_1 + \ldots + \beta_2X_k + e.
+Y = \beta_1X_1 + \ldots + \beta_kX_k + e.
 $${#eq-linearity}
-(B) None of the predictor variables are an exact linear combination of the other predictors.
 
-(C) For any given value of $(X_1, \ldots, X_k)$, the noise $e$ has a mean of zero: 
+**(B)** ***(No Multicollinearity)*** None of the predictor variables are an exact linear combination of the other predictors.
+
+**(C)** ***(Zero Conditional Mean)*** For any given value of $(X_1, \ldots, X_k)$, the noise $e$ has a mean of zero: 
 $$
 \mathbb{E}[e \mid X_1, \ldots , X_k] = 0.
 $$
 :::
 
-It is good practice to carefully think through what is being assumed in any given model. *Assumption A* can be split into two parts. First, it restricts the relationship between the predictors and the outcome to be **linear in the parameters** $(\beta_1, \ldots, \beta_k)$. Second, it asserts that the noise $e$ is **additive**.  *Assumption B* is a technical assumption that ensures that there is a unique solution for the parameters. *Assumption C* states that the noise $e$ is **mean-independent** of the predictor variables $\boldsymbol{X}=(X_1, \ldots, X_k)$. This implies:
+It is good practice to carefully think through what is being assumed in any given model. The linearity assumption states that (i) the functional form of the relationship between the outcome and predictors is linear in the parameters $\beta_1, \ldots, \beta_k$, and (ii) the noise $e$ is **additive**. The assumption of no multicollinearity is a technical assumption that ensures that there is a unique solution for the parameters. Lastly, the zero conditional mean assumption states that the conditional expectation of the noise given the predictors is zero. This is a crucial assumption of the model, and has several implications: 
 
-1. The conditional expectation of $Y$ given $\boldsymbol{X}$ is a linear function of the realized values:
+1. The conditional expectation of $Y$ given $\boldsymbol{X}=(X_1, \ldots, X_k)$ is a linear function of the realized values:
 $$
 \mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \boldsymbol{x}'\beta. 
 $$
-2. The noise term $e$ is uncorrelated with the predictor variables
-$$
-\text{Cov}(e, \boldsymbol{X}) = \mathbb{E}[e \boldsymbol{X}'] = \mathbb{E}\big[\mathbb{E}[e\boldsymbol{X} \mid \boldsymbol{X}]\big] = \mathbb{E}\big[\boldsymbol{X}'\mathbb{E}[e|\boldsymbol{X}]\big]=0.
-$$
-Intuitively, this means the noise term and predictors do not contain any information about one another.
-
-3. The noise term $e$ has an unconditional mean of zero
+2. The noise term $e$ has an unconditional mean of zero
 $$
 \mathbb{E}[e] = \mathbb{E}[\mathbb{E}[e \mid \boldsymbol{X}]] = 0.
 $$
+
+3. The noise term $e$ is uncorrelated with the predictor variables
+$$
+\text{Cov}(e, \boldsymbol{X}) = \mathbb{E}[e \boldsymbol{X}] = \mathbb{E}\big[\mathbb{E}[e\boldsymbol{X} \mid \boldsymbol{X}]\big] = \mathbb{E}\big[\boldsymbol{X}\mathbb{E}[e|\boldsymbol{X}]\big]=0.
+$$
+Intuitively, this means the noise term and predictors do not contain any information about one another.
+
+
 
 It is also equally important to clarify what we are *not* assuming. First, we do not assume that $Y$ is a linear function of $(X_1, \ldots, X_k)$ in @eq-linearity; we only require that the parameters $\beta$ enter the equation linearly. This means that we are free to include non-linear transformations of the predictor variables in @eq-linearity as long linearity in $\beta$ is preserved. Second, we make no assumptions about the distribution of $\boldsymbol{X}$. Third, we do not make assumptions about the distribution or variance of the noise term $e$.
 
@@ -59,11 +62,9 @@ The observations $\{(y_i, x_{i1}, \ldots, x_{ik})\}^n_{i=1}$ are realizations of
 
 It's easy to get confused about the notation and terminology here, so let's clarify. The random variables $(Y, X_1, \ldots, X_k)$ are theoretical objects that are used when talking about the data generating process *in general*. The random variables $(Y_i, X_{1i}, \ldots, X_{ik})$ are the theoretical objects that correspond to each observation in the sample. Intuitively, we can think of these as the data *before* it was collected. The realizations $(y_i, x_{i1}, \ldots, x_{ik})$ are the actual data (numbers) we observe *after* data collection. Viewing the observations as realizations from i.i.d random variables will allow us to use probability theory to derive the estimators of the parameters $\boldsymbol{\beta}$ and quantify the uncertainty around them.
 
-## Estimation 
-
 ### Recasting in Matrix Notation 
 
-Since the linear regression model is a statistical model, it is a set of assumptions about the data generating process $F(Y, X_1, \ldots, X_k)$. Therefore, when describing it, we only made statements about the generic random variables $(Y, X_1, \ldots, X_k)$. However, since we also assume random sampling, we can rewrite the model as a system of $n$ equations 
+Since the linear regression model is a set of assumptions about the DGP $F(Y, X_1, \ldots, X_k)$, we only made statements about the generic random variables $(Y, X_1, \ldots, X_k)$ when first describing it. The assumption of random sampling is useful because it allows us to connect the linear regression model directly to our dataset. Specifically, we can rewrite the model as a system of $n$ equations 
 
 $$
 \begin{aligned}
@@ -72,13 +73,15 @@ Y_2 &= \beta_1 X_{21}+ \ldots + \beta_k X_{2k} + e_2 = \boldsymbol{X_2'}\boldsym
 &\;\;\vdots \\
 Y_n &= \beta_1X_{n1} + \ldots + \beta_k X_{nk} + e_n= \boldsymbol{X_n'}\boldsymbol{\beta} + e_n,
 \end{aligned}
-$$
+$${#eq-linreg-system}
 where
 $$
 \boldsymbol{X_i} = \begin{pmatrix} X_{i1} \\ \vdots \\ X_{ik} \end{pmatrix} \in \mathbb{R}^{k \times 1} \quad  \text{and} \quad \boldsymbol{\beta}= \begin{pmatrix} \beta_1 \\ \vdots \\ \beta_k \end{pmatrix} \in \mathbb{R}^{k \times 1}.
 $$
 
-Even more compactly, we can write the linear regression model as 
+Note that since each observation $(Y_i, \boldsymbol{X_i})$ is drawn i.i.d from $F(Y, \boldsymbol{X})$, the [three assumptions](#assump-linreg) of the linear regression model apply separately to each equation in the system above.
+
+Even more compactly, we can write the system of equations as 
 $$
 \boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{e},
 $$
@@ -87,11 +90,24 @@ $$
 \boldsymbol{Y} = \begin{pmatrix} Y_1 \\ \vdots \\ Y_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad \boldsymbol{e} = \begin{pmatrix} e_1 \\ \vdots \\ e_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad  \mathbf{X} = \begin{pmatrix} \boldsymbol{X_1'} \\ \vdots \\ \boldsymbol{X_n'} \end{pmatrix} = \begin{pmatrix} X_{11} & \ldots & X_{1k} \\ \vdots & \ddots & \vdots \\ X_{n1} & \ldots & X_{nk} \end{pmatrix} \in \mathbb{R}^{n \times k}.
 $$
 
-The quantity $\mathbf{X}$[^1] is called the **design matrix**.[^2] This system-of-equations representation of the linear regression model is useful because it allows us to use matrix algebra to derive the OLS estimator.
+The quantity $\mathbf{X}$[^1] is called the **design matrix**.[^2] 
+
+### Revisiting the Assumptions 
+The matrix representation of the linear regression model is useful because it helps us interpret the model in terms of our data and better understand the practical implications of the assumptions being made.
+
+Let's revisit the zero conditional mean assumption. TODO.
+
+It's also useful to revisit the no multicollinearity assumption. Recall from linear algebra that a rectangular matrix has a left inverse if and only if all of its columns are linearly independent (i.e. the matrix has **full column rank**). Since we assume no multicollinearity, this means that the design matrix $\mathbf{X}$ has full column rank[^3], and therefore has a left inverse. This, as we will see, is useful in deriving the ordinary least squares (OLS) estimator for the parameters. 
+
+## Estimating the Model Parameters 
+
 
 ### Deriving the OLS Estimator
+TODO.
 
 ### Deriving the MLE Estimator
+TODO.
 
 [^1]: There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, $\boldsymbol{X}$ refers to the vector of random predictor variables $(X_1, \ldots, X_p)$, while $\mathbf{X}$ refers to the design matrix. 
 [^2]: If we want to introduce a **constant intercept term** in the model, we set the first regressor to equal one for all observations. In this case, the first column of the design matrix $\mathbf{X}$ is a vector of ones and the first element of $\boldsymbol{\beta}$ is the intercept term.
+[^3]: Because in any given row of the design matrix, the column entries are linearly independent of one another. 
