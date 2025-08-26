@@ -1,70 +1,48 @@
 ---
-title: "The Linear Regression Model and its Various Estimation Methods"
-description: "A detailed discussion of the linear regression model and the standard estimation methods associated with it."
+title: "The Linear Regression Model and its OLS Estimation"
+description: "A detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters."
 date: today
 categories: [Econometrics/Statistics]
 draft: false
 ---
 
-## Defining the Model 
+## Random Sampling Framework 
 
-[Recall](statistical-modeling.qmd) that a statistical model is simply a set of assumptions about some data generating process (DGP) of interest. In the case of the linear regression model, we make a set of assumptions about the joint distribution $F$ of some **outcome variable** $Y$ and a set of **predictor variables** $(X_1, \ldots, X_k)$.
+We are interested in datasets of the form $\{y_{i}, x_{i1}, \ldots, x_{ik}\}_{i=1}^n$ where $y_{i}$ is the **outcome** and $x_{i1}, \ldots, x_{ik}$ are the **predictors**. To mathematically formalize how this data was generated, we view the observations as realizations of random variables that are drawn from some joint distribution $F$, also called the **data generating process (DGP)**. The random sampling assumption is one possible characterization of these draws. 
+
+::: {.assumption-box}
+
+**Assumption 1. Random Sampling**
+
+The observations $\{y_i, x_{i1}, \ldots, x_{ik}\}^n_{i=1}$ are realizations of the random variables $\{Y_i, X_{i1}, \ldots , X_{ik}\}_{i=1}^n$, which are **independent and identically distributed (i.i.d)** draws from the joint distribution $F(Y,X_1, \ldots, X_k)$. 
+::: 
+
+It's easy to get confused about the notation and terminology here, so let's clarify. The random variables $Y, X_1, \ldots, X_k$ are theoretical objects that are used when talking about the data generating process *in general*. The random variables $Y_i, X_{1i}, \ldots, X_{ik}$ are the theoretical objects that correspond to each observation in the sample. Intuitively, we can think of these as the data *before* it was collected. The realizations $y_i, x_{i1}, \ldots, x_{ik}$ are the actual data (numbers) we observe *after* data collection. This abstraction allows us to use the tools of probability theory and mathematical statistics to infer from our dataset.[^1] 
+
+## Defining the Linear Regression Model 
+
+Recall that a statistical model is simply a set of assumptions about some DGP. In the case of the linear regression model, we are interested in the joint distribution $F(Y, X_1, \ldots, X_k)$. Under the random sampling assumption, however, each observation $Y_i, X_{i1}, \ldots X_{ik}$ is an i.i.d draw from $F$. This means that we can just as well frame our assumptions in terms of the random variables $\{Y_i, X_{i1}, \ldots, X_{ik}\}_{i=1}^n$. As we will see, this formulation is especially useful when estimating the model parameters. 
+
 
 :::{.assumption-box #assump-linreg}
 
 **Assumption 1. The Linear Regression Model**
 
-**(A)** ***(Linearity)*** The random variable $Y$ is a linear combination of the predictor variables $(X_1,\ldots, X_k)$, plus some random **noise variable** $e$ that captures measurement error and idiosyncratic fluctuation in $Y$:
+**(A)** ***(Linearity)*** The outcome $Y_i$ is a linear combination of the predictors $X_{i1}, \ldots, X_{ik}$, plus some random **error** $e_i$ that captures measurement error and idiosyncratic fluctuation in $Y_i$:
 $$
-Y = \beta_1X_1 + \ldots + \beta_kX_k + e.
+Y_i = \beta_1X_{i1} + \ldots + \beta_kX_{ik} + e_i \quad \forall \, i = 1, \ldots, n.
 $${#eq-linearity}
 
-**(B)** ***(No Multicollinearity)*** None of the predictor variables are an exact linear combination of the other predictors.
+**(B)** ***(No Multicollinearity)*** None of the predictor variables are an exact linear combination of each other.
 
-**(C)** ***(Zero Conditional Mean)*** For any given value of $(X_1, \ldots, X_k)$, the noise $e$ has a mean of zero: 
+**(C)** ***(Strict Exogeneity)*** The error $e_i$ has a conditional mean of zero given the predictors of all observations 
 $$
-\mathbb{E}[e \mid X_1, \ldots , X_k] = 0.
-$$
+\mathbb{E}[e \mid \boldsymbol{X}_1 \ldots , \boldsymbol{X}_n] = 0,
+$${#eq-strict-exogeneity}
+where $\boldsymbol{X}_i = (X_{i1}, \ldots, X_{ik})'$.
 :::
 
-It is good practice to carefully think through what is being assumed in any given model. The linearity assumption states that (i) the functional form of the relationship between the outcome and predictors is linear in the parameters $\beta_1, \ldots, \beta_k$, and (ii) the noise $e$ is **additive**. The assumption of no multicollinearity is a technical assumption that ensures that there is a unique solution for the parameters. Lastly, the zero conditional mean assumption states that the conditional expectation of the noise given the predictors is zero. This is a crucial assumption of the model, and has several implications: 
-
-1. The conditional expectation of $Y$ given $\boldsymbol{X}=(X_1, \ldots, X_k)$ is a linear function of the realized values:
-$$
-\mathbb{E}[Y \mid \boldsymbol{X} = \boldsymbol{x}] = \boldsymbol{x}'\beta. 
-$$
-2. The noise term $e$ has an unconditional mean of zero
-$$
-\mathbb{E}[e] = \mathbb{E}[\mathbb{E}[e \mid \boldsymbol{X}]] = 0.
-$$
-
-3. The noise term $e$ is uncorrelated with the predictor variables
-$$
-\text{Cov}(e, \boldsymbol{X}) = \mathbb{E}[e \boldsymbol{X}] = \mathbb{E}\big[\mathbb{E}[e\boldsymbol{X} \mid \boldsymbol{X}]\big] = \mathbb{E}\big[\boldsymbol{X}\mathbb{E}[e|\boldsymbol{X}]\big]=0.
-$$
-Intuitively, this means the noise term and predictors do not contain any information about one another.
-
-
-
-It is also equally important to clarify what we are *not* assuming. First, we do not assume that $Y$ is a linear function of $(X_1, \ldots, X_k)$ in @eq-linearity; we only require that the parameters $\beta$ enter the equation linearly. This means that we are free to include non-linear transformations of the predictor variables in @eq-linearity as long linearity in $\beta$ is preserved. Second, we make no assumptions about the distribution of $\boldsymbol{X}$. Third, we do not make assumptions about the distribution or variance of the noise term $e$.
-
-
-### Sampling Procedure 
-
-Since we do not observe the true data generating process $F(Y, X_1, \ldots, X_k)$, our objective is to infer the parameters $\boldsymbol{\beta}$ in @eq-linearity from the sample (observed) data. To do so, we need to make assumptions about the sampling procedure. Specifically, we will treat each observation $(y_i, x_{i1}, \ldots, x_{ik})$ as realizations of the random variables $(Y_i, X_{i1}, \ldots, X_{ik})$ that are drawn independently from the joint distribution $F(Y, X_1, \ldots, X_k)$.
-
-::: {.assumption-box}
-
-**Assumption 2. Random Sampling**
-
-The observations $\{(y_i, x_{i1}, \ldots, x_{ik})\}^n_{i=1}$ are realizations of the random variables $\{(Y_i, X_{i1}, \ldots , X_{ik})\}_{i=1}^n$ which are **independent and identically distributed (i.i.d)** draws from common distribution $F$. 
-::: 
-
-It's easy to get confused about the notation and terminology here, so let's clarify. The random variables $(Y, X_1, \ldots, X_k)$ are theoretical objects that are used when talking about the data generating process *in general*. The random variables $(Y_i, X_{1i}, \ldots, X_{ik})$ are the theoretical objects that correspond to each observation in the sample. Intuitively, we can think of these as the data *before* it was collected. The realizations $(y_i, x_{i1}, \ldots, x_{ik})$ are the actual data (numbers) we observe *after* data collection. Viewing the observations as realizations from i.i.d random variables will allow us to use probability theory to derive the estimators of the parameters $\boldsymbol{\beta}$ and quantify the uncertainty around them.
-
-### Recasting in Matrix Notation 
-
-Since the linear regression model is a set of assumptions about the DGP $F(Y, X_1, \ldots, X_k)$, we only made statements about the generic random variables $(Y, X_1, \ldots, X_k)$ when first describing it. The assumption of random sampling is useful because it allows us to connect the linear regression model directly to our dataset. Specifically, we can rewrite the model as a system of $n$ equations 
+For notational compactness, it is useful to recast the model in matrix notation. First note that we can stack @eq-linearity as a system of $n$ equations 
 
 $$
 \begin{aligned}
@@ -73,41 +51,89 @@ Y_2 &= \beta_1 X_{21}+ \ldots + \beta_k X_{2k} + e_2 = \boldsymbol{X_2'}\boldsym
 &\;\;\vdots \\
 Y_n &= \beta_1X_{n1} + \ldots + \beta_k X_{nk} + e_n= \boldsymbol{X_n'}\boldsymbol{\beta} + e_n,
 \end{aligned}
-$${#eq-linreg-system}
+$$
 where
 $$
 \boldsymbol{X_i} = \begin{pmatrix} X_{i1} \\ \vdots \\ X_{ik} \end{pmatrix} \in \mathbb{R}^{k \times 1} \quad  \text{and} \quad \boldsymbol{\beta}= \begin{pmatrix} \beta_1 \\ \vdots \\ \beta_k \end{pmatrix} \in \mathbb{R}^{k \times 1}.
 $$
 
-Note that since each observation $(Y_i, \boldsymbol{X_i})$ is drawn i.i.d from $F(Y, \boldsymbol{X})$, the [three assumptions](#assump-linreg) of the linear regression model apply separately to each equation in the system above.
-
-Even more compactly, we can write the system of equations as 
+Now, we can collapse this system of equations into a single matrix equation:
 $$
 \boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{e},
-$$
+$${#eq-linreg-matrix}
 where 
 $$
 \boldsymbol{Y} = \begin{pmatrix} Y_1 \\ \vdots \\ Y_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad \boldsymbol{e} = \begin{pmatrix} e_1 \\ \vdots \\ e_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad  \mathbf{X} = \begin{pmatrix} \boldsymbol{X_1'} \\ \vdots \\ \boldsymbol{X_n'} \end{pmatrix} = \begin{pmatrix} X_{11} & \ldots & X_{1k} \\ \vdots & \ddots & \vdots \\ X_{n1} & \ldots & X_{nk} \end{pmatrix} \in \mathbb{R}^{n \times k}.
 $$
 
-The quantity $\mathbf{X}$[^1] is called the **design matrix**.[^2] 
-
-### Revisiting the Assumptions 
-The matrix representation of the linear regression model is useful because it helps us interpret the model in terms of our data and better understand the practical implications of the assumptions being made.
-
-Let's revisit the zero conditional mean assumption. TODO.
-
-It's also useful to revisit the no multicollinearity assumption. Recall from linear algebra that a rectangular matrix has a left inverse if and only if all of its columns are linearly independent (i.e. the matrix has **full column rank**). Since we assume no multicollinearity, this means that the design matrix $\mathbf{X}$ has full column rank[^3], and therefore has a left inverse. This, as we will see, is useful in deriving the ordinary least squares (OLS) estimator for the parameters. 
-
-## Estimating the Model Parameters 
+The quantity $\mathbf{X}$[^2] is called the **design matrix**.[^3]  
 
 
-### Deriving the OLS Estimator
-TODO.
+### Interpreting the Assumptions
 
-### Deriving the MLE Estimator
-TODO.
+It is good practice to carefully think through what is being assumed in any given model. The linearity assumption in @eq-linearity and @eq-linreg-matrix states that (i) the functional form of the relationship between the outcome and predictors is linear in the parameters $\boldsymbol{\beta}=(\beta_1, \ldots, \beta_k)$, and (ii) the error $e$ is **additive**. 
 
-[^1]: There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, $\boldsymbol{X}$ refers to the vector of random predictor variables $(X_1, \ldots, X_p)$, while $\mathbf{X}$ refers to the design matrix. 
-[^2]: If we want to introduce a **constant intercept term** in the model, we set the first regressor to equal one for all observations. In this case, the first column of the design matrix $\mathbf{X}$ is a vector of ones and the first element of $\boldsymbol{\beta}$ is the intercept term.
-[^3]: Because in any given row of the design matrix, the column entries are linearly independent of one another. 
+The assumption of no multicollinearity ensures that the design matrix $\mathbf{X}$ has **full column rank**.[^4] This in turn means the square matrix $\mathbf{X}'\mathbf{X}$ is invertible, which is a crucial property when deriving the ordinary least squares (OLS) estimator for the parameters.
+
+The strict exogeneity assumption states that the conditional expectation of the error given the predictors of *all observations* is zero. This is a crucial assumption of the model, and has several implications:
+
+1. The unconditional mean of the error term is zero:
+$$
+\mathbb{E}[e_i] = \mathbb{E}[\mathbb{E}[e_i \mid \mathbf{X}]] = 0 \quad \forall \, i,
+$${#eq-uncond-mean-error}
+where the first equality follows from the [law of iterated expectations](https://en.wikipedia.org/wiki/Law_of_total_expectation).
+2. The predictors are **orthogonal** to the error term for *all observations*: 
+$$
+\begin{align}
+\mathbb{E}[X_{jk}e_i] 
+\overset{(a)}{=} \mathbb{E}[\mathbb{E}(X_{jk}e_i \mid X_{jk})] 
+\overset{(b)}{=} \mathbb{E}[X_{jk} \mathbb{E}[e_i \mid X_{jk}]]  
+\overset{(c)}{=} 0 \quad \forall \, i,j,k,
+\end{align}
+$${#eq-orthogonality}
+where $(a)$ uses the law of iterated expectations, $(b)$ uses the linearity of expectations, and $(c)$ follows from the fact that
+$$
+\mathbb{E}[e_i \mid X_{jk} ]= \mathbb{E}\big[\mathbb{E}[e_i \mid \mathbf{X} ] \mid X_{jk}\big] =0
+$$
+by the [generalized law of iterated expectations](https://stats.stackexchange.com/questions/95947/a-generalization-of-the-law-of-iterated-expectations). 
+3. The error term $e_i$ is uncorrelated with the predictor variables of *all observations*:
+$$
+\text{Cov}(e_i, X_{jk}) 
+\overset{(a)}{=} \mathbb{E}[e_iX_{jk}] - \mathbb{E}[e_i]\mathbb{E}[x_{jk}]
+\overset{(b)}{=} \mathbb{E}[e_iX_{jk}] 
+\overset{(c)}{=} 0 
+\quad \forall \, i,j,k,
+$$
+where $(a)$ is the definition, $(b)$ uses @eq-uncond-mean-error, and $(c)$ uses @eq-orthogonality. Intuitively, this means the error term and predictors do not contain any information about one another.
+
+4. The conditional expectation of $\boldsymbol{Y}$ given $\mathbf{X}$, called the **regression** of $\boldsymbol{Y}$ on $\mathbf{X}$, is a linear function of the realized values:
+$$
+\mathbb{E}[\boldsymbol{Y} \mid \mathbf{X}] = \mathbb{E}[\mathbf{X}\beta + \boldsymbol{e} \mid \mathbf{X}]=\mathbb{E}[{\mathbf{X}\beta \mid  \mathbf{X}}]=\mathbf{X}\beta. 
+$$
+
+
+It is important to note that the random sampling assumption relaxes implications $(2)$ and $(3)$ above. Specifically, we have that 
+$$
+(Y_i, \boldsymbol{X}_i) \perp (Y_j, \boldsymbol{X}_j) \quad \forall \quad i \neq j.
+$$
+
+Now, since the error term is a function of the outcome and predictors
+$$
+e_i = Y_i - \boldsymbol{X_i'}\boldsymbol{\beta} = f(Y_i, \boldsymbol{X_i}) \quad \forall \quad i = 1, \ldots, n,
+$$
+and independence is preserved under transformations, we have 
+$$
+(e_i, \boldsymbol{X_i}) \perp (e_j, \boldsymbol{X_j}) \quad \forall \quad i \neq j.
+$$
+
+
+It is also equally as important to clarify what we are *not* assuming. First, we do not assume that $Y$ is a linear function of $(X_1, \ldots, X_k)$ in @eq-linearity; we only require that the parameters $\boldsymbol{\beta}$ enter the equation linearly. This means that we are free to include non-linear transformations of the predictor variables in @eq-linearity as long linearity in $\boldsymbol{\beta}$ is preserved. Second, we make no assumptions about the distribution of $\boldsymbol{X}$. Third, we do not make assumptions about the distribution or variance of the error term $e$.
+
+## Deriving the OLS Estimator
+
+
+[^1]: This [post](statistical-modeling.qmd) discuses the big picture intuition for statistical modeling and inference in more detail.
+[^2]: Technically, the right hand side of the equation should use $\boldsymbol{x}'$. However, I have chosen to abuse notation here for brevity.
+[^2]: There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, $\boldsymbol{X}_i$ refers to the vector of random predictor variables $(X_{i1}, \ldots, X_{ik})$, while $\mathbf{X}$ refers to the design matrix. 
+[^3]: If we want to introduce a **constant intercept term** in the model, we set the first regressor to equal one for all observations. In this case, the first column of the design matrix $\mathbf{X}$ is a vector of ones and the first element of $\boldsymbol{\beta}$ is the intercept term.
+[^4]: Because in any given row of the design matrix, the column entries are linearly independent of one another. 
