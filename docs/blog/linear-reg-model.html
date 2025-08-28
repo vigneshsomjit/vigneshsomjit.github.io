@@ -147,7 +147,12 @@ window.Quarto = {
   <li><a href="#implications-of-random-sampling" id="toc-implications-of-random-sampling" class="nav-link" data-scroll-target="#implications-of-random-sampling">Implications of Random Sampling</a></li>
   <li><a href="#what-is-not-assumed" id="toc-what-is-not-assumed" class="nav-link" data-scroll-target="#what-is-not-assumed">What is NOT Assumed</a></li>
   </ul></li>
+  <li><a href="#ordinary-least-squares-ols-estimation" id="toc-ordinary-least-squares-ols-estimation" class="nav-link" data-scroll-target="#ordinary-least-squares-ols-estimation">Ordinary Least Squares (OLS) Estimation</a>
+  <ul class="collapse">
+  <li><a href="#principle-of-ols" id="toc-principle-of-ols" class="nav-link" data-scroll-target="#principle-of-ols">Principle of OLS</a></li>
   <li><a href="#deriving-the-ols-estimator" id="toc-deriving-the-ols-estimator" class="nav-link" data-scroll-target="#deriving-the-ols-estimator">Deriving the OLS Estimator</a></li>
+  <li><a href="#ols-in-action" id="toc-ols-in-action" class="nav-link" data-scroll-target="#ols-in-action">OLS in Action</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -189,7 +194,7 @@ window.Quarto = {
 
 <section id="random-sampling-framework" class="level2">
 <h2 class="anchored" data-anchor-id="random-sampling-framework">Random Sampling Framework</h2>
-<p>We are interested in datasets of the form <span class="math inline">\(\{y_{i}, x_{i1}, \ldots, x_{iK}\}_{i=1}^n\)</span> where <span class="math inline">\(y_{i}\)</span> is the <strong>outcome</strong> and <span class="math inline">\(x_{i1}, \ldots, x_{iK}\)</span> are the <strong>predictors</strong>. To mathematically formalize how this data was generated, we view the observations as realizations of random variables that are drawn from some joint distribution <span class="math inline">\(F\)</span>, also called the <strong>data generating process (DGP)</strong>. The random sampling assumption is one possible characterization of these draws.</p>
+<p>We are interested in datasets of the form <span class="math inline">\(\{y_{i}, x_{i1}, \ldots, x_{iK}\}_{i=1}^n\)</span> where <span class="math inline">\(y_{i}\)</span> is the <strong>outcome</strong> and <span class="math inline">\(x_{i1}, \ldots, x_{iK}\)</span> are the <strong>regressors</strong>. To mathematically formalize how this data was generated, we view the observations as realizations of random variables that are drawn from some joint distribution <span class="math inline">\(F\)</span>, also called the <strong>data generating process (DGP)</strong>. The random sampling assumption is one possible characterization of these draws.</p>
 <div class="assumption-box">
 <p><strong>Assumption 1. Random Sampling</strong></p>
 <p>The observations <span class="math inline">\(\{y_i, x_{i1}, \ldots, x_{iK}\}^n_{i=1}\)</span> are realizations of the random variables <span class="math inline">\(\{Y_i, X_{i1}, \ldots , X_{iK}\}_{i=1}^n\)</span>, which are <strong>independent and identically distributed (i.i.d)</strong> draws from the joint distribution <span class="math inline">\(F(Y,X_1, \ldots, X_K)\)</span>.</p>
@@ -201,12 +206,12 @@ window.Quarto = {
 <p>Recall that a statistical model is simply a set of assumptions about some DGP. In the case of the linear regression model, we are interested in the joint distribution <span class="math inline">\(F(Y, X_1, \ldots, X_K)\)</span>. Under the random sampling assumption, however, each observation <span class="math inline">\(Y_i, X_{i1}, \ldots X_{iK}\)</span> is an i.i.d draw from <span class="math inline">\(F\)</span>. This means that we can just as well frame our assumptions in terms of the random variables <span class="math inline">\(\{Y_i, X_{i1}, \ldots, X_{iK}\}_{i=1}^n\)</span>. As we will see, this formulation is especially useful when estimating the model parameters.</p>
 <div id="assump-linreg" class="assumption-box">
 <p><strong>Assumption 2. The Linear Regression Model</strong></p>
-<p><strong>(A)</strong> <strong><em>(Linearity)</em></strong> The outcome <span class="math inline">\(Y_i\)</span> is a linear combination of the predictors <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>, plus some random <strong>error</strong> <span class="math inline">\(e_i\)</span> that captures measurement error and idiosyncratic fluctuation in <span class="math inline">\(Y_i\)</span>: <span id="eq-linearity"><span class="math display">\[
+<p><strong>(A)</strong> <strong><em>(Linearity)</em></strong> The outcome <span class="math inline">\(Y_i\)</span> is a linear combination of the regressors <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>, plus some random <strong>error</strong> <span class="math inline">\(e_i\)</span> that captures measurement error and idiosyncratic fluctuation in <span class="math inline">\(Y_i\)</span>: <span id="eq-linearity"><span class="math display">\[
 Y_i = \beta_1X_{i1} + \ldots + \beta_kX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
 \tag{1}\]</span></span></p>
-<p><strong>(B)</strong> <strong><em>(No Multicollinearity)</em></strong> None of the predictor variables are an exact linear combination of each other.</p>
-<p><strong>(C)</strong> <strong><em>(Strict Exogeneity)</em></strong> The error <span class="math inline">\(e_i\)</span> has a conditional mean of zero given the predictors of all observations <span id="eq-strict-exogeneity"><span class="math display">\[
-\mathbb{E}[e_i \mid \boldsymbol{X}_1 \ldots , \boldsymbol{X}_n] = 0,
+<p><strong>(B)</strong> <strong><em>(No Multicollinearity)</em></strong> None of the regressors are an exact linear combination of each other.</p>
+<p><strong>(C)</strong> <strong><em>(Strict Exogeneity)</em></strong> The error <span class="math inline">\(e_i\)</span> has a conditional mean of zero given the regressors of all observations <span id="eq-strict-exogeneity"><span class="math display">\[
+\mathbb{E}[e_i \mid \boldsymbol{X}_1 \ldots , \boldsymbol{X}_n] = 0 \quad \forall \, i = 1, \ldots, n
 \tag{2}\]</span></span> where <span class="math inline">\(\boldsymbol{X}_i = (X_{i1}, \ldots, X_{iK})'\)</span>.</p>
 </div>
 <p>For notational compactness, it is useful to recast the model in matrix notation. First note that we can stack <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> as a system of <span class="math inline">\(n\)</span> equations</p>
@@ -228,14 +233,14 @@ Y_n &amp;= \beta_1X_{n1} + \ldots + \beta_k X_{nK} + e_n= \boldsymbol{X_n'}\bold
 <p>The quantity <span class="math inline">\(\mathbf{X}\)</span><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> is called the <strong>design matrix</strong>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
 <section id="interpreting-the-assumptions" class="level3">
 <h3 class="anchored" data-anchor-id="interpreting-the-assumptions">Interpreting the Assumptions</h3>
-<p>It is good practice to carefully think through what is being assumed in any given model. The linearity assumption in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> and <a href="#eq-linreg-matrix" class="quarto-xref">Equation&nbsp;3</a> states that (i) the functional form of the relationship between the outcome and predictors is linear in the parameters, and (ii) the error <span class="math inline">\(e\)</span> is <strong>additive</strong>.</p>
+<p>It is good practice to carefully think through what is being assumed in any given model. The linearity assumption in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> and <a href="#eq-linreg-matrix" class="quarto-xref">Equation&nbsp;3</a> states that (i) the functional form of the relationship between the outcome and regressors is linear in the parameters, and (ii) the error <span class="math inline">\(e\)</span> is <strong>additive</strong>.</p>
 <p>The assumption of no multicollinearity ensures that the design matrix <span class="math inline">\(\mathbf{X}\)</span> has <strong>full column rank</strong>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> This in turn means the square matrix <span class="math inline">\(\mathbf{X}'\mathbf{X}\)</span> is invertible, which is a crucial property when deriving the ordinary least squares (OLS) estimator for the parameters.</p>
-<p>The strict exogeneity assumption states that the conditional expectation of the error given the predictors of <em>all observations</em> is zero. This is a crucial assumption of the model, and has several implications:</p>
+<p>The strict exogeneity assumption states that the conditional expectation of the error given the regressors of <em>all observations</em> is zero. This is a crucial assumption of the model, and has several implications:</p>
 <ol type="1">
-<li><p>The unconditional mean of the error <span class="math inline">\(e_i\)</span> is zero: <span id="eq-uncond-mean-error"><span class="math display">\[
+<li><p>The unconditional mean of the error is zero: <span id="eq-uncond-mean-error"><span class="math display">\[
 \mathbb{E}[e_i] = \mathbb{E}[\mathbb{E}[e_i \mid \mathbf{X}]] = 0 \quad \forall \, i = 1, \ldots, n,
-\tag{4}\]</span></span> where the first equality follows from the <a href="https://en.wikipedia.org/wiki/Law_of_total_expectation">law of iterated expectations</a>.</p></li>
-<li><p>The predictors of <em>all observations</em> are <strong>orthogonal</strong> to the error <span class="math inline">\(e_i\)</span>: <span id="eq-orthogonality"><span class="math display">\[
+\tag{4}\]</span></span> where the first equality follows from the <a href="https://en.wikipedia.org/wiki/Law_of_total_expectation">law of iterated expectations</a>. Note that this also means that <span class="math inline">\(e_i\)</span> is <strong><a href="https://en.wikipedia.org/wiki/Mean_dependence">mean independent</a></strong> of the regressors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n.\)</span></p></li>
+<li><p>The regressors of <em>all observations</em> are <strong>orthogonal</strong> to the error: <span id="eq-orthogonality"><span class="math display">\[
 \begin{align}
 \mathbb{E}[X_{jk}e_i]
 &amp;\overset{(a)}{=} \mathbb{E}\big[\mathbb{E}[X_{jk}e_i \mid X_{jk}]\big] \\
@@ -245,13 +250,13 @@ Y_n &amp;= \beta_1X_{n1} + \ldots + \beta_k X_{nK} + e_n= \boldsymbol{X_n'}\bold
 \tag{5}\]</span></span> where <span class="math inline">\((a)\)</span> uses the law of iterated expectations, <span class="math inline">\((b)\)</span> uses the linearity of expectations, and <span class="math inline">\((c)\)</span> follows from the fact that <span class="math display">\[
 \mathbb{E}[e_i \mid X_{jk} ]= \mathbb{E}\big[\mathbb{E}[e_i \mid \mathbf{X} ] \mid X_{jk}\big] =0
 \]</span> by the <a href="https://stats.stackexchange.com/questions/95947/a-generalization-of-the-law-of-iterated-expectations">generalized law of iterated expectations</a>.</p></li>
-<li><p>The error term <span class="math inline">\(e_i\)</span> is uncorrelated with the predictors of <em>all observations</em>: <span id="eq-uncorrelatedness"><span class="math display">\[
+<li><p>The error is uncorrelated with the regressors of <em>all observations</em>: <span id="eq-uncorrelatedness"><span class="math display">\[
 \text{Cov}(e_i, X_{jk})
 \overset{(a)}{=} \mathbb{E}[X_{jk}e_i] - \mathbb{E}[X_{jk}]\mathbb{E}[e_i]
 \overset{(b)}{=} \mathbb{E}[e_iX_{jk}]
 \overset{(c)}{=} 0
 \quad \forall \, i,j,k,
-\tag{6}\]</span></span> where <span class="math inline">\((a)\)</span> is the definition, <span class="math inline">\((b)\)</span> uses <a href="#eq-uncond-mean-error" class="quarto-xref">Equation&nbsp;4</a>, and <span class="math inline">\((c)\)</span> uses <a href="#eq-orthogonality" class="quarto-xref">Equation&nbsp;5</a>. Intuitively, this means the error term and predictors do not contain any information about one another.</p></li>
+\tag{6}\]</span></span> where <span class="math inline">\((a)\)</span> is the definition, <span class="math inline">\((b)\)</span> uses <a href="#eq-uncond-mean-error" class="quarto-xref">Equation&nbsp;4</a>, and <span class="math inline">\((c)\)</span> uses <a href="#eq-orthogonality" class="quarto-xref">Equation&nbsp;5</a>. Intuitively, this means the error term and regressors do not contain any information about one another.</p></li>
 <li><p>The conditional expectation of <span class="math inline">\(\boldsymbol{Y}\)</span> given <span class="math inline">\(\mathbf{X}\)</span>, called the <strong>regression</strong> of <span class="math inline">\(\boldsymbol{Y}\)</span> on <span class="math inline">\(\mathbf{X}\)</span>, is a linear function of the realized values: <span class="math display">\[
 \mathbb{E}[\boldsymbol{Y} \mid \mathbf{X}] = \mathbb{E}[\mathbf{X}\beta + \boldsymbol{e} \mid \mathbf{X}]=\mathbb{E}[{\mathbf{X}\beta \mid  \mathbf{X}}]=\mathbf{X}\beta.
 \]</span></p></li>
@@ -262,11 +267,11 @@ Y_n &amp;= \beta_1X_{n1} + \ldots + \beta_k X_{nK} + e_n= \boldsymbol{X_n'}\bold
 <p>Random sampling has two key implications for the linear regression model. First, it implies that the errors are independent across observations. To see this, first note that under random sampling</p>
 <p><span class="math display">\[
 (Y_i, \boldsymbol{X}_i) \perp (Y_j, \boldsymbol{X}_j) \quad \forall \, i \neq j.
-\]</span> Since independence is preserved under functional transformations, and the error is a function of the outcome and covariates, <span class="math display">\[
+\]</span> Since independence is preserved under functional transformations, and the error is a function of the outcome and regressors, <span class="math display">\[
 e_i = f(Y_i, \boldsymbol{X}_i) = Y_i - \boldsymbol{X}_i\boldsymbol{\beta} \quad \forall \, i = 1, \ldots, n,
 \]</span></p>
 <p>it follows that the errors <span class="math inline">\(e_i\)</span> are independent across observations.</p>
-<p>A second implication is that random sampling allows us to simplify the strict exogeneity assumption. Specifically, since random sampling implies</p>
+<p>A second implication is that random sampling allows us to simplify the strict exogeneity assumption. Specifically, since random sampling implies<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <p><span class="math display">\[
 (e_i, \boldsymbol{X}_i) \perp (\boldsymbol{X}_j) \quad \forall \, i \neq j,
 \]</span> it follows that</p>
@@ -277,17 +282,66 @@ e_i = f(Y_i, \boldsymbol{X}_i) = Y_i - \boldsymbol{X}_i\boldsymbol{\beta} \quad 
 <p><span class="math display">\[
 \mathbb{E}[e_i \mid \boldsymbol{X}_i] = 0 \quad \forall \, i = 1, \ldots, n.
 \]</span></p>
-<p>Intuitively, random sampling eliminates any cross-sectional dependence between the error term and the predictors of other observations. As a result, the linear regression model only needs to assert that each error is <strong>mean independent</strong> of its <em>own</em> predictors <span class="math inline">\(\boldsymbol{X_i}\)</span>.</p>
+<p>Intuitively, random sampling eliminates any cross-sectional dependence between the error term and the regressors of other observations. As a result, the linear regression model only needs to assert that each error <span class="math inline">\(e_i\)</span> is mean independent of its <em>own</em> regressors <span class="math inline">\(\boldsymbol{X}_i\)</span>.</p>
 </section>
 <section id="what-is-not-assumed" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-not-assumed">What is NOT Assumed</h3>
-<p>Before proceeding, it is worth clarifying what we do not assume in the linear regression model. First, we do not assume that <span class="math inline">\(Y\)</span> is a linear function of <span class="math inline">\((X_1, \ldots, X_k)\)</span> in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a>; we only require that the parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> enter the equation linearly. This means that we are free to include non-linear transformations of the predictor variables in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> as long linearity in <span class="math inline">\(\boldsymbol{\beta}\)</span> is preserved. Second, we make no assumptions about the distribution of <span class="math inline">\(\boldsymbol{X}\)</span>. Third, we do not make assumptions about the distribution or variance of the error term <span class="math inline">\(e\)</span>.</p>
+<p>Before proceeding, it is worth clarifying what we do not assume in the linear regression model. First, we do not assume that <span class="math inline">\(Y\)</span> is a linear function of <span class="math inline">\((X_1, \ldots, X_k)\)</span> in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a>; we only require that the parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> enter the equation linearly. This means that we are free to include non-linear transformations of the regressor variables in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> as long as linearity in <span class="math inline">\(\boldsymbol{\beta}\)</span> is preserved. Second, we make no assumptions about the distribution of the covariates. Third, we do not make assumptions about the distribution or variance of the error term <span class="math inline">\(e\)</span>.</p>
 </section>
 </section>
-<section id="deriving-the-ols-estimator" class="level2">
-<h2 class="anchored" data-anchor-id="deriving-the-ols-estimator">Deriving the OLS Estimator</h2>
+<section id="ordinary-least-squares-ols-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="ordinary-least-squares-ols-estimation">Ordinary Least Squares (OLS) Estimation</h2>
+<section id="principle-of-ols" class="level3">
+<h3 class="anchored" data-anchor-id="principle-of-ols">Principle of OLS</h3>
+<p><a href="../blog/statistical-modeling.html">Recall</a> that an <strong>estimation method</strong> is the guiding principle we follow to construct an <strong>estimator</strong> — a function that maps the data to the parameters of a statistical model. One common estimation method for the linear regression model is the principle of <strong>ordinary least squares (OLS)</strong>. This method finds the parameter values that minimize the sum of squared differences between the observed outcomes and the part of the outcome explained by the regressors. Formally, the <strong>ordinary least squares estimator</strong> <span class="math inline">\(\hat{\boldsymbol{\beta}}_{OLS}\)</span> is defined as the solution of the quadratic minimization problem</p>
+<p><span id="eq-ols-def"><span class="math display">\[
+\begin{aligned}
+\hat{\boldsymbol{\beta}} &amp;:= \underset{\boldsymbol\beta \in \mathbb{R^{k\times1}}}{\arg\min} \, S(\boldsymbol\beta) \\
+\text{where} \quad S(\boldsymbol{\beta}) := \sum_{i=1}^n (Y_i &amp;- \boldsymbol{X}_i'\boldsymbol{\beta})^2 =  (\boldsymbol{Y} - \mathbf{X}\boldsymbol{\beta})'(\boldsymbol{Y} - \mathbf{X}\boldsymbol{\beta}).
+\end{aligned}
+\tag{7}\]</span></span></p>
+<p>The quantity <span class="math inline">\(S(\boldsymbol\beta)\)</span> is called the <strong>sum of squared errors (SSE)</strong>. Intuitively, the motivation behind OLS is to choose the parameters such that the <strong>fitted outcomes</strong> of the form <span class="math inline">\(\hat{Y}_i = \boldsymbol X_i' \hat{\boldsymbol\beta}\)</span> lie as close as possible to the observed outcomes <span class="math inline">\(Y_i\)</span> in terms of their total squared vertical distance. This is visualized in <a href="#fig-ols" class="quarto-xref">Figure&nbsp;1</a> below.</p>
+</section>
+<section id="deriving-the-ols-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-the-ols-estimator">Deriving the OLS Estimator</h3>
+<p>We choose the OLS estimator to be the solution to the minimization problem in <a href="#eq-ols-def" class="quarto-xref">Equation&nbsp;7</a>. In other words, it is the estimator that satisfies the first-order condition (FOC).<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> Using matrix algebra and calculus, the FOC is given by <span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \boldsymbol\beta}S(\boldsymbol\beta)
+&amp;= \frac{\partial}{\partial \boldsymbol\beta}\big( \boldsymbol Y'\boldsymbol Y-\boldsymbol Y'\boldsymbol X\boldsymbol \beta -  (\boldsymbol X \boldsymbol \beta)'\boldsymbol Y + (\boldsymbol X \boldsymbol \beta)'(\boldsymbol X \boldsymbol \beta) \big) \\
+&amp;= \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - \boldsymbol Y' \boldsymbol X \boldsymbol \beta - \boldsymbol\beta ' \boldsymbol X' \boldsymbol Y + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&amp;= \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - \boldsymbol Y' \boldsymbol X \boldsymbol \beta - (\boldsymbol Y' \boldsymbol X \boldsymbol \beta)' + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&amp;= \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - 2(\boldsymbol Y' \boldsymbol X \boldsymbol \beta) + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&amp;= -2 \boldsymbol X' \boldsymbol Y + 2 \boldsymbol X' \boldsymbol X \boldsymbol \beta. \\
+&amp;= 0.
+\end{aligned}
+\]</span> Thus, the OLS estimator satisfies the <strong>least squares normal equations</strong> <span class="math display">\[
+\boldsymbol X' \boldsymbol X \hat{\boldsymbol \beta}_{OLS}  = \boldsymbol X' \boldsymbol Y.
+\]</span> Since the matrix <span class="math inline">\(\boldsymbol X' \boldsymbol X\)</span> is invertible, we have the the following closed form representation of the OLS estimator</p>
+<p><span class="math display">\[
+\hat{\boldsymbol\beta}_{OLS} = (\boldsymbol X' \boldsymbol X)^{-1} \boldsymbol X' \boldsymbol Y.
+\]</span></p>
+</section>
+<section id="ols-in-action" class="level3">
+<h3 class="anchored" data-anchor-id="ols-in-action">OLS in Action</h3>
+<p>A common misconception is that the least squares estimation method fits a straight line to the data. However, the functional form of the relationship between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> is entirely determined by the <em>researcher’s choice</em> of regressors to include in the model. This is specified <em>before</em> estimation. Least squares simply chooses the linear combination of those regressors that best fits the data by minimizing the total squared vertical distance between the observed and fitted outcomes.</p>
+<p>TODO: OLS IS ONLY AS GOOD AS YOUR MODEL IN TERMS OF FITTING THE DATA.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-ols" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ols-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="linear-reg-model_files/figure-html/fig-ols-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ols-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: OLS Estimation for Linear Regression Model with Quadratic Regressor
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 </section>
 
 
@@ -295,9 +349,11 @@ e_i = f(Y_i, \boldsymbol{X}_i) = Y_i - \boldsymbol{X}_i\boldsymbol{\beta} \quad 
 
 <ol>
 <li id="fn1"><p>This <a href="../blog/statistical-modeling.html">post</a> discuses the big picture intuition for statistical modeling and inference in more detail.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, <span class="math inline">\(\boldsymbol{X}_i\)</span> refers to the vector of random predictor variables <span class="math inline">\((X_{i1}, \ldots, X_{ik})\)</span>, while <span class="math inline">\(\mathbf{X}\)</span> refers to the design matrix.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, <span class="math inline">\(\boldsymbol{X}_i\)</span> refers to the vector of random regressor variables <span class="math inline">\((X_{i1}, \ldots, X_{ik})\)</span>, while <span class="math inline">\(\mathbf{X}\)</span> refers to the design matrix.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>If we want to introduce a <strong>constant intercept term</strong> in the model, we set the first regressor to equal one for all observations. In this case, the first column of the design matrix <span class="math inline">\(\mathbf{X}\)</span> is a vector of ones and the first element of <span class="math inline">\(\boldsymbol{\beta}\)</span> is the intercept term.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Because in any given row of the design matrix, the column entries are linearly independent of one another.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>This is again because <span class="math inline">\((e_i, \boldsymbol X_i)\)</span> and <span class="math inline">\(\boldsymbol X_j\)</span> are simply functional transformations of the outcome and regressors.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Technically we have to also check the second order condition as well. But this follows from the fact that <span class="math inline">\(\boldsymbol{X}\)</span> has a full column rank, and so <span class="math inline">\(\boldsymbol X' \boldsymbol X\)</span> is positive definite.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

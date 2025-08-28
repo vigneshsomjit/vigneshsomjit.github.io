@@ -8,7 +8,7 @@ draft: false
 
 ## Random Sampling Framework 
 
-We are interested in datasets of the form $\{y_{i}, x_{i1}, \ldots, x_{iK}\}_{i=1}^n$ where $y_{i}$ is the **outcome** and $x_{i1}, \ldots, x_{iK}$ are the **predictors**. To mathematically formalize how this data was generated, we view the observations as realizations of random variables that are drawn from some joint distribution $F$, also called the **data generating process (DGP)**. The random sampling assumption is one possible characterization of these draws. 
+We are interested in datasets of the form $\{y_{i}, x_{i1}, \ldots, x_{iK}\}_{i=1}^n$ where $y_{i}$ is the **outcome** and $x_{i1}, \ldots, x_{iK}$ are the **regressors**. To mathematically formalize how this data was generated, we view the observations as realizations of random variables that are drawn from some joint distribution $F$, also called the **data generating process (DGP)**. The random sampling assumption is one possible characterization of these draws. 
 
 ::: {.assumption-box}
 
@@ -28,16 +28,16 @@ Recall that a statistical model is simply a set of assumptions about some DGP. I
 
 **Assumption 2. The Linear Regression Model**
 
-**(A)** ***(Linearity)*** The outcome $Y_i$ is a linear combination of the predictors $X_{i1}, \ldots, X_{iK}$, plus some random **error** $e_i$ that captures measurement error and idiosyncratic fluctuation in $Y_i$:
+**(A)** ***(Linearity)*** The outcome $Y_i$ is a linear combination of the regressors $X_{i1}, \ldots, X_{iK}$, plus some random **error** $e_i$ that captures measurement error and idiosyncratic fluctuation in $Y_i$:
 $$
 Y_i = \beta_1X_{i1} + \ldots + \beta_kX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
 $${#eq-linearity}
 
-**(B)** ***(No Multicollinearity)*** None of the predictor variables are an exact linear combination of each other.
+**(B)** ***(No Multicollinearity)*** None of the regressors are an exact linear combination of each other.
 
-**(C)** ***(Strict Exogeneity)*** The error $e_i$ has a conditional mean of zero given the predictors of all observations 
+**(C)** ***(Strict Exogeneity)*** The error $e_i$ has a conditional mean of zero given the regressors of all observations 
 $$
-\mathbb{E}[e_i \mid \boldsymbol{X}_1 \ldots , \boldsymbol{X}_n] = 0,
+\mathbb{E}[e_i \mid \boldsymbol{X}_1 \ldots , \boldsymbol{X}_n] = 0 \quad \forall \, i = 1, \ldots, n
 $${#eq-strict-exogeneity}
 where $\boldsymbol{X}_i = (X_{i1}, \ldots, X_{iK})'$.
 :::
@@ -71,19 +71,19 @@ The quantity $\mathbf{X}$[^2] is called the **design matrix**.[^3]
 
 ### Interpreting the Assumptions
 
-It is good practice to carefully think through what is being assumed in any given model. The linearity assumption in @eq-linearity and @eq-linreg-matrix states that (i) the functional form of the relationship between the outcome and predictors is linear in the parameters, and (ii) the error $e$ is **additive**. 
+It is good practice to carefully think through what is being assumed in any given model. The linearity assumption in @eq-linearity and @eq-linreg-matrix states that (i) the functional form of the relationship between the outcome and regressors is linear in the parameters, and (ii) the error $e$ is **additive**. 
 
 The assumption of no multicollinearity ensures that the design matrix $\mathbf{X}$ has **full column rank**.[^4] This in turn means the square matrix $\mathbf{X}'\mathbf{X}$ is invertible, which is a crucial property when deriving the ordinary least squares (OLS) estimator for the parameters.
 
-The strict exogeneity assumption states that the conditional expectation of the error given the predictors of *all observations* is zero. This is a crucial assumption of the model, and has several implications:
+The strict exogeneity assumption states that the conditional expectation of the error given the regressors of *all observations* is zero. This is a crucial assumption of the model, and has several implications:
 
-1. The unconditional mean of the error $e_i$ is zero:
+1. The unconditional mean of the error is zero:
 $$
 \mathbb{E}[e_i] = \mathbb{E}[\mathbb{E}[e_i \mid \mathbf{X}]] = 0 \quad \forall \, i = 1, \ldots, n,
 $${#eq-uncond-mean-error}
-where the first equality follows from the [law of iterated expectations](https://en.wikipedia.org/wiki/Law_of_total_expectation).
+where the first equality follows from the [law of iterated expectations](https://en.wikipedia.org/wiki/Law_of_total_expectation). Note that this also means that $e_i$ is **[mean independent](https://en.wikipedia.org/wiki/Mean_dependence)** of the regressors $\boldsymbol X_1, \ldots, \boldsymbol X_n.$
 
-2. The predictors of *all observations* are **orthogonal** to the error $e_i$: 
+2. The regressors of *all observations* are **orthogonal** to the error: 
 $$
 \begin{align}
 \mathbb{E}[X_{jk}e_i] 
@@ -98,7 +98,7 @@ $$
 $$
 by the [generalized law of iterated expectations](https://stats.stackexchange.com/questions/95947/a-generalization-of-the-law-of-iterated-expectations). 
 
-3. The error term $e_i$ is uncorrelated with the predictors of *all observations*:
+3. The error is uncorrelated with the regressors of *all observations*:
 $$
 \text{Cov}(e_i, X_{jk}) 
 \overset{(a)}{=} \mathbb{E}[X_{jk}e_i] - \mathbb{E}[X_{jk}]\mathbb{E}[e_i]
@@ -106,7 +106,7 @@ $$
 \overset{(c)}{=} 0 
 \quad \forall \, i,j,k,
 $${#eq-uncorrelatedness}
-where $(a)$ is the definition, $(b)$ uses @eq-uncond-mean-error, and $(c)$ uses @eq-orthogonality. Intuitively, this means the error term and predictors do not contain any information about one another.
+where $(a)$ is the definition, $(b)$ uses @eq-uncond-mean-error, and $(c)$ uses @eq-orthogonality. Intuitively, this means the error term and regressors do not contain any information about one another.
 
 4. The conditional expectation of $\boldsymbol{Y}$ given $\mathbf{X}$, called the **regression** of $\boldsymbol{Y}$ on $\mathbf{X}$, is a linear function of the realized values:
 $$
@@ -120,14 +120,14 @@ Random sampling has two key implications for the linear regression model. First,
 $$
 (Y_i, \boldsymbol{X}_i) \perp (Y_j, \boldsymbol{X}_j) \quad \forall \, i \neq j.
 $$
-Since independence is preserved under functional transformations, and the error is a function of the outcome and covariates,
+Since independence is preserved under functional transformations, and the error is a function of the outcome and regressors,
 $$
 e_i = f(Y_i, \boldsymbol{X}_i) = Y_i - \boldsymbol{X}_i\boldsymbol{\beta} \quad \forall \, i = 1, \ldots, n,
 $$
 
 it follows that the errors $e_i$ are independent across observations.
 
-A second implication is that random sampling allows us to simplify the strict exogeneity assumption. Specifically, since random sampling implies
+A second implication is that random sampling allows us to simplify the strict exogeneity assumption. Specifically, since random sampling implies[^5]
 
 $$
 (e_i, \boldsymbol{X}_i) \perp (\boldsymbol{X}_j) \quad \forall \, i \neq j,
@@ -144,17 +144,104 @@ $$
 \mathbb{E}[e_i \mid \boldsymbol{X}_i] = 0 \quad \forall \, i = 1, \ldots, n.
 $$
 
-Intuitively, random sampling eliminates any cross-sectional dependence between the error term and the predictors of other observations. As a result, the linear regression model only needs to assert that each error is **mean independent** of its *own* predictors $\boldsymbol{X_i}$.  
+Intuitively, random sampling eliminates any cross-sectional dependence between the error term and the regressors of other observations. As a result, the linear regression model only needs to assert that each error $e_i$ is mean independent of its *own* regressors $\boldsymbol{X}_i$.  
 
 ### What is NOT Assumed
 
-Before proceeding, it is worth clarifying what we do not assume in the linear regression model. First, we do not assume that $Y$ is a linear function of $(X_1, \ldots, X_k)$ in @eq-linearity; we only require that the parameters $\boldsymbol{\beta}$ enter the equation linearly. This means that we are free to include non-linear transformations of the predictor variables in @eq-linearity as long linearity in $\boldsymbol{\beta}$ is preserved. Second, we make no assumptions about the distribution of $\boldsymbol{X}$. Third, we do not make assumptions about the distribution or variance of the error term $e$.
+Before proceeding, it is worth clarifying what we do not assume in the linear regression model. First, we do not assume that $Y$ is a linear function of $(X_1, \ldots, X_k)$ in @eq-linearity; we only require that the parameters $\boldsymbol{\beta}$ enter the equation linearly. This means that we are free to include non-linear transformations of the regressor variables in @eq-linearity as long as linearity in $\boldsymbol{\beta}$ is preserved. Second, we make no assumptions about the distribution of the covariates. Third, we do not make assumptions about the distribution or variance of the error term $e$.
 
-## Deriving the OLS Estimator
+## Ordinary Least Squares (OLS) Estimation
 
+### Principle of OLS
+
+[Recall](statistical-modeling.qmd) that an **estimation method** is the guiding principle we follow to construct an **estimator** — a function that maps the data to the parameters of a statistical model. One common estimation method for the linear regression model is the principle of **ordinary least squares (OLS)**. This method finds the parameter values that minimize the sum of squared differences between the observed outcomes and the part of the outcome explained by the regressors. Formally, the **ordinary least squares estimator** $\hat{\boldsymbol{\beta}}_{OLS}$ is defined as the solution of the quadratic minimization problem 
+
+$$
+\begin{aligned}
+\hat{\boldsymbol{\beta}} &:= \underset{\boldsymbol\beta \in \mathbb{R^{k\times1}}}{\arg\min} \, S(\boldsymbol\beta) \\
+\text{where} \quad S(\boldsymbol{\beta}) := \sum_{i=1}^n (Y_i &- \boldsymbol{X}_i'\boldsymbol{\beta})^2 =  (\boldsymbol{Y} - \mathbf{X}\boldsymbol{\beta})'(\boldsymbol{Y} - \mathbf{X}\boldsymbol{\beta}).
+\end{aligned}
+$${#eq-ols-def}
+
+The quantity $S(\boldsymbol\beta)$ is called the **sum of squared errors (SSE)**. Intuitively, the motivation behind OLS is to choose the parameters such that the **fitted outcomes** of the form $\hat{Y}_i = \boldsymbol X_i' \hat{\boldsymbol\beta}$ lie as close as possible to the observed outcomes $Y_i$ in terms of their total squared vertical distance. This is visualized in @fig-ols below.
+
+### Deriving the OLS Estimator
+
+We choose the OLS estimator to be the solution to the minimization problem in @eq-ols-def. In other words, it is the estimator that satisfies the first-order condition (FOC).[^6] Using matrix algebra and calculus, the FOC is given by 
+$$
+\begin{aligned}
+\frac{\partial}{\partial \boldsymbol\beta}S(\boldsymbol\beta) 
+&= \frac{\partial}{\partial \boldsymbol\beta}\big( \boldsymbol Y'\boldsymbol Y-\boldsymbol Y'\boldsymbol X\boldsymbol \beta -  (\boldsymbol X \boldsymbol \beta)'\boldsymbol Y + (\boldsymbol X \boldsymbol \beta)'(\boldsymbol X \boldsymbol \beta) \big) \\ 
+&= \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - \boldsymbol Y' \boldsymbol X \boldsymbol \beta - \boldsymbol\beta ' \boldsymbol X' \boldsymbol Y + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\ 
+&= \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - \boldsymbol Y' \boldsymbol X \boldsymbol \beta - (\boldsymbol Y' \boldsymbol X \boldsymbol \beta)' + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&= \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - 2(\boldsymbol Y' \boldsymbol X \boldsymbol \beta) + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&= -2 \boldsymbol X' \boldsymbol Y + 2 \boldsymbol X' \boldsymbol X \boldsymbol \beta. \\
+&= 0.
+\end{aligned}
+$$
+Thus, the OLS estimator satisfies the **least squares normal equations** 
+$$
+\boldsymbol X' \boldsymbol X \hat{\boldsymbol \beta}_{OLS}  = \boldsymbol X' \boldsymbol Y.
+$$
+Since the matrix $\boldsymbol X' \boldsymbol X$ is invertible, we have the the following closed form representation of the OLS estimator
+
+$$
+\hat{\boldsymbol\beta}_{OLS} = (\boldsymbol X' \boldsymbol X)^{-1} \boldsymbol X' \boldsymbol Y.
+$$
+
+### OLS in Action
+A common misconception is that the least squares estimation method fits a straight line to the data. However, the functional form of the relationship between $Y$ and $X$ is entirely determined by the *researcher's choice* of regressors to include in the model. This is specified *before* estimation. Least squares simply chooses the linear combination of those regressors that best fits the data by minimizing the total squared vertical distance between the observed and fitted outcomes.
+
+TODO: OLS IS ONLY AS GOOD AS YOUR MODEL IN TERMS OF FITTING THE DATA.
+
+```{r}
+#| echo: false
+#| fig-cap: "OLS Estimation for Linear Regression Model with Quadratic Regressor"
+#| label: fig-ols
+
+set.seed(42)
+
+# Simulated data
+n  <- 30
+X  <- seq(-3, 3, length.out = n)
+Y  <- 2 + 0.5 * X^2 + rnorm(n, 0, 1)
+
+df <- data.frame(X = X, Y = Y, X2 = X^2)
+fit <- lm(Y ~ X2, data = df)
+
+# Fitted values
+df$Yhat <- fitted(fit)
+
+# Smooth curve for plotting
+xg   <- seq(min(X), max(X), length.out = 400)
+grid <- data.frame(X = xg, X2 = xg^2)
+grid$Yhat <- predict(fit, newdata = grid)
+
+# Plot with legend in bottom-left
+library(ggplot2)
+ggplot(df, aes(X, Y)) +
+  geom_point(aes(color = "Observed Data"), shape = 4, size = 2) +
+  geom_segment(aes(x = X, xend = X,
+                   y = pmin(Y, Yhat), yend = pmax(Y, Yhat)),
+               linetype = "dotted", color = "blue") +
+  geom_line(data = grid, aes(y = Yhat, color = "OLS Best Fit Curve"), linewidth = 1) +
+  scale_color_manual(values = c("Observed Data" = "black", "OLS Best Fit Curve" = "red")) +
+  labs(
+    x = "X", y = "Y", color = ""
+  ) +
+theme_minimal() +
+theme(
+    legend.position = c(0.15, 0.18),
+    legend.background = element_blank(),   # no box
+    legend.key = element_blank()           # no key background
+  )
+
+```
 
 [^1]: This [post](statistical-modeling.qmd) discuses the big picture intuition for statistical modeling and inference in more detail.
 [^2]: Technically, the right hand side of the equation should use $\boldsymbol{x}'$. However, I have chosen to abuse notation here for brevity.
-[^2]: There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, $\boldsymbol{X}_i$ refers to the vector of random predictor variables $(X_{i1}, \ldots, X_{ik})$, while $\mathbf{X}$ refers to the design matrix. 
+[^2]: There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, $\boldsymbol{X}_i$ refers to the vector of random regressor variables $(X_{i1}, \ldots, X_{ik})$, while $\mathbf{X}$ refers to the design matrix. 
 [^3]: If we want to introduce a **constant intercept term** in the model, we set the first regressor to equal one for all observations. In this case, the first column of the design matrix $\mathbf{X}$ is a vector of ones and the first element of $\boldsymbol{\beta}$ is the intercept term.
 [^4]: Because in any given row of the design matrix, the column entries are linearly independent of one another. 
+[^5]: This is again because $(e_i, \boldsymbol X_i)$ and $\boldsymbol X_j$ are simply functional transformations of the outcome and regressors. 
+[^6]: Technically we have to also check the second order condition as well. But this follows from the fact that $\boldsymbol{X}$ has a full column rank, and so $\boldsymbol X' \boldsymbol X$ is positive definite.
