@@ -46,4 +46,9 @@
   margin: 1em 0;
 }
 
+figcaption.quarto-float-caption {
+  margin: auto;
+  text-align: center;
+}
+
 
