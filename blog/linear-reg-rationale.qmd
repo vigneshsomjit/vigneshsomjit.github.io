@@ -1,33 +1,252 @@
 ---
 title: "Linear Regression as an Approximation Method"
 description: "Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF)."
-date: August 12, 2025
-categories: [Econometrics/Statistics]
+date: today
+categories: [Linear Regression]
+draft: true
 ---
 
 ```{r}
 #| label: setup
 #| include: false
 
+library(readxl)
 library(dplyr)
+library(ggplot2)
 library(fixest)
+library(here)
+library(ggdist)
 ```
 
 
-## The Conditional Expectation Function (CEF) is an Optimal Predictor 
+## Motivating the Conditional Expectation Function 
 
-For observations $i = 1, \ldots, n$, suppose there is a **data generating process (DGP)** that describes the *joint distribution* of a random **outcome** variable $Y_i$ and a random vector $X_i =(X_{1i}, X_{2i}, \ldots, X_{ki})$ of **covariates**.[^1] We are interested in predicting $Y_i$ given some realized values of the covariates, denoted by $x_i = (x_{1i}, x_{2i}, \ldots, x_{ki})$. Thus, any prediction can generally be expressed as a function $f(X_i)$ of the covariates. As a starting point, we consider choosing $f$ to minimize the **mean squared error (MSE)** between our predictions and the observed outcomes: 
+### Finding Trends in Noise 
+
+Economic datasets record quantities that vary across observational units. For example, @fig-cps-data highlights the substantial variation in earnings across individuals in the March 2009 Current Population Survey (CPS). In order to mathematically characterize this variation, it is useful to view economic data as a collection of random variables generated from some underlying probability distribution. The empirical distribution of earnings in the CPS, shown in @fig-earnings-density, provides visual intuition for this abstraction. 
+
+::: {layout-ncol=2}
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+#| label: fig-cps-data
+#| fig-cap: "Earnings Data from the March 2009 Current Population Survey (CPS)."
+
+
+# Read the CPS dataset
+cps <- read_excel(
+  here("hasen-econometrics-datasets", "cps09mar", "cps09mar.xlsx"), 
+  col_names = TRUE
+)
+
+# Plot earnings
+ggplot(cps, aes(x = seq_along(earnings), y = earnings)) +
+  geom_point(alpha = 0.3) +  
+  labs(
+    x = "Observational Unit",
+    y = "Earnings"
+  ) +
+  theme_classic()
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+#| label: fig-earnings-density
+#| fig-cap: "Empirical Density of Earnings in the March 2009 Current Population Survey (CPS)."
+
+# Plot the density of earnings
+ggplot(cps, aes(x = earnings)) +
+  geom_histogram(aes(y = after_stat(density)),
+                 bins = 30,
+                 fill = "lightblue",
+                 color = "white") +
+  geom_density(color = "black", linewidth = 0.5) +
+  labs(x = "Earnings", y = "Density") +
+  theme_classic()
+
+```
+::: 
+
+The variation in the data arises from a mix of observed (e.g. age) and unobserved factors (e.g. ability). We seek to satisfactorily explain the heterogeneity that arises in economic datasets. A simple first step is to stratify the data by some aggregate characteristics of the observational unit. In our example, we could plot the earnings density separately for men and women, as shown in @fig-earnings-density.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+#| label: fig-density-sex
+#| fig-cap: "Empirical Density by Sex (CPS Data)"
+
+# Convert sex variable to factor
+cps$female <- factor(cps$female, levels = c(0, 1), labels = c("Male", "Female"))
+
+# Plot density by sex
+ggplot(cps, aes(x = earnings, color = female)) +
+  geom_density(linewidth = 0.8) +
+  labs(x = "Earnings", y = "Density", color = "Sex") +
+  theme_classic()
+```
+
+Density functions, while informative about the overall distributional shape, are often complex and can obscure key features of variation in the data. For example, @fig-density-sex shows that the earnings density for men is shifted to the right relative to women. Yet the plot alone does not reveal the magnitude of this difference. An alternative way to summarize the relationship between earnings and sex is to calculate the conditional expectations:
+
+```{r}
+#| echo: false
+#| results: "hide"
+
+cps %>%
+  group_by(female) %>%
+  summarise(mean_earnings = mean(earnings, na.rm = TRUE))
+```
 
 $$
-\mathbb{E} [Y_i - f(X_i)]^2.
-$$ 
-With the law of iterated expectation and some calculus, we can show that for every possible realized value $X_i = x_i$, the optimal function that solves the minimum mean squared error problem is the **conditional expectation function (CEF)**
-
+\mathbb{E}[earnings \mid sex = male] = 63,147 \quad \text{and} \quad  \mathbb{E}[earnings \mid sex = female] = 44,224.
 $$
-m(x_i) = \mathbb{E}[Y_i | X_i = x_i].
+
+
+The functional form of the conditional expectations is useful in summarizing the overall relationship between two variables. To see this, consider the blue line in @fig-earnings-educ. By plotting the conditional expectation of log earnings by education level, this curve reduces the substantial variation of earnings at each education level — illustrated by the gray density plots — into a single point. In doing so, it reveals the systematic upward trend in log earnings as education increases.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+#| label: fig-earnings-educ
+#| fig-cap: "Conditional Expectation of Log Earnings Given Education Level (CPS Data)"
+
+# Map numeric education codes to readable ordered labels (once)
+edu_code_levels <- c(9, 10, 11, 12, 13, 14, 16, 18, 20)
+edu_code_labels <- c(
+  "9th grade",
+  "10th grade",
+  "11th grade / 12th no diploma",
+  "High school graduate",
+  "Some college, no degree",
+  "Associate degree",
+  "Bachelor's degree",
+  "Master's degree",
+  "Professional/Doctorate"
+)
+
+cps <- cps %>%
+  mutate(
+    education_cat = factor(
+      education,
+      levels = edu_code_levels,
+      labels = edu_code_labels,
+      ordered = TRUE
+    )
+  )
+
+# Lock the desired display order explicitly (prevents reordering later)
+edu_levels <- edu_code_labels
+
+# Keep positive earnings and build log earnings
+cps_pos <- cps %>%
+  filter(earnings > 0, !is.na(education_cat)) %>%
+  mutate(log_earnings = log(earnings),
+         education_cat = factor(education_cat, levels = edu_levels, ordered = TRUE))
+
+# CEF: mean log earnings by education category (all categories)
+cef_data <- cps_pos %>%
+  group_by(education_cat) %>%
+  summarise(mean_log_earnings = mean(log_earnings), .groups = "drop") %>%
+  mutate(education_cat = factor(education_cat, levels = edu_levels, ordered = TRUE))
+
+# Choose categories where you want the half-violins
+selected_levels <- c("10th grade", "High school graduate", "Bachelor's degree")
+
+violin_data <- cps_pos %>%
+  filter(education_cat %in% selected_levels) %>%
+  mutate(education_cat = factor(education_cat, levels = edu_levels, ordered = TRUE))
+
+# ---- Plot: keep your original look, overlay left half-violins on selected levels ----
+ggplot() +
+  ggdist::stat_halfeye(
+    data = violin_data,
+    aes(x = education_cat, y = log_earnings),
+    side = "right",
+    normalize = "groups",
+    width = 0.9,
+    slab_alpha = 0.35,
+    slab_fill  = "grey70",
+    slab_color = NA,
+    interval_size = 0,
+    point_size = 0
+  ) +
+  geom_line(
+    data = cef_data,
+    aes(x = education_cat, y = mean_log_earnings, group = 1),
+    color = "blue", linewidth = 0.8
+  ) +
+  geom_point(
+    data = cef_data,
+    aes(x = education_cat, y = mean_log_earnings),
+    color = "blue", size = 2
+  ) +
+  scale_x_discrete(limits = edu_levels, drop = FALSE) +
+  scale_y_continuous() +
+  coord_cartesian(ylim = c(8, 12)) +   
+  labs(x = "Education Level", y = "Log Earnings") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1))
+
+```
+
+
+More generally, we can summarize the relationship between an **outcome** $Y$ and a set of **regressors** $X = (X_1, \ldots, X_K)$ with the **conditional expectation function (CEF)** 
+$$
+m(X) = \mathbb{E}[Y \mid X].
 $${#eq-cef}
 
-## Linear Regression Finds the Best Linear Approximation to the CEF 
+### Optimal Predictor 
+
+The heterogeneity in economic outcomes naturally motivates a prediction problem: given a random vector $X$ of regressors, what function $g(X)$ provides the best prediction of the outcome $Y$? One way to define "best" is to choose the function that minimizes the **mean squared error (MSE)**:
+
+$$
+g^\star(X) := \underset{g \in \mathbb{R}^k\rightarrow \mathbb{R}}{\arg\min} \, \mathbb{E} [Y - g(X)]^2.
+$${#eq-mmse}
+
+As it turns out, the CEF is the solution to this problem! In other words, the CEF is the best predictor of $Y$ given $X$ in the sense that it minimizes the mean squared error between the predictions and the actual outcomes.
+
+To see this, we need to first define the **error term** as the difference between the outcome and the CEF
+
+$$
+e := Y - m(X).
+$$
+
+This allows us to decompose the outcome variable as
+
+$$
+Y = m(X) + e,
+$${#eq-outcome-decomp}
+
+where $m(X)$ is the systematic component of $Y$ — the part that can be explained by $X$ on average — and $e$ is the remaining idiosyncratic variation in $Y$. 
+
+Since the error is defined as a function of the outcome and regressors, it is also a random variable. Moreover, we can show that its distribution has two key properties. First, by construction, the error has zero conditional mean:
+
+$$
+\mathbb{E}[e \mid X] = \mathbb{E}[Y - m(X) \mid X] = \mathbb{E}[Y \mid X] - m(X) = 0.
+$${#eq-zero-cond-mean}
+
+Second, the error is uncorrelated with any function of the regressors:
+
+$$
+\mathbb{E}\big[h(X) e \big] \overset{(a)}{=} \mathbb{E}\big[\mathbb{E}[h(X) e | X]\big] \overset{(b)}{=} \mathbb{E}\big[h(X) \mathbb{E}[e | X]\big] \overset{(c)}{=} 0,
+$${#eq-uncorr}
+where $(a)$ uses the law of iterated expectations, $(b)$ uses the linearity of expectations $(c)$ applies @eq-zero-cond-mean.
+
+Now notice that for any function $g(X)$, we have 
+
+$$
+\begin{aligned}
+\mathbb{E}\big[\big(Y - g(X)\big)^2\big] &= \mathbb{E}\big[\big(e + m(X) - g(X)\big)^2\big] \\ 
+&= \mathbb{E}\big[e^2\big] + 2\mathbb{E}\big[e\big(m(X) - g(X)\big)\big] + \mathbb{E}\big[\big(m(X) - g(X)\big)^2\big]   \\
+&= \mathbb{E}\big[e^2\big] + \mathbb{E}\big[\big(m(X) - g(X)\big)^2\big] \\
+&\geq \mathbb{E}\big[e^2\big] \\
+&= \mathbb{E}\big[\big(Y - m(X)\big)^2\big],
+\end{aligned}
+$$
+where the third equality follows from @eq-uncorr. In words, the mean squared error of any predictor $g(X)$ is always at least as large as the mean squared error of the CEF $m(X)$. Thus, we have shown that the CEF is indeed the solution to @eq-mmse.
+
+## Best Linear Predictor and Regression  
 In most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to model the relationship between the outcome and covariates using a simpler function. One option is to find a *linear approximation* of the CEF, which takes the form
 
 $$

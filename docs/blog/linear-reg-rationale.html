@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-08-12">
+<meta name="dcterms.date" content="2025-09-03">
 <meta name="description" content="Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).">
 
 <title>Vignesh Somjit - Linear Regression as an Approximation Method</title>
@@ -174,8 +174,12 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#the-conditional-expectation-function-cef-is-an-optimal-predictor" id="toc-the-conditional-expectation-function-cef-is-an-optimal-predictor" class="nav-link active" data-scroll-target="#the-conditional-expectation-function-cef-is-an-optimal-predictor">The Conditional Expectation Function (CEF) is an Optimal Predictor</a></li>
-  <li><a href="#linear-regression-finds-the-best-linear-approximation-to-the-cef" id="toc-linear-regression-finds-the-best-linear-approximation-to-the-cef" class="nav-link" data-scroll-target="#linear-regression-finds-the-best-linear-approximation-to-the-cef">Linear Regression Finds the Best Linear Approximation to the CEF</a></li>
+  <li><a href="#motivating-the-conditional-expectation-function" id="toc-motivating-the-conditional-expectation-function" class="nav-link active" data-scroll-target="#motivating-the-conditional-expectation-function">Motivating the Conditional Expectation Function</a>
+  <ul class="collapse">
+  <li><a href="#finding-trends-in-noise" id="toc-finding-trends-in-noise" class="nav-link" data-scroll-target="#finding-trends-in-noise">Finding Trends in Noise</a></li>
+  <li><a href="#optimal-predictor" id="toc-optimal-predictor" class="nav-link" data-scroll-target="#optimal-predictor">Optimal Predictor</a></li>
+  </ul></li>
+  <li><a href="#best-linear-predictor-and-regression" id="toc-best-linear-predictor-and-regression" class="nav-link" data-scroll-target="#best-linear-predictor-and-regression">Best Linear Predictor and Regression</a></li>
   <li><a href="#linear-regression-can-sometimes-recover-true-conditional-averages" id="toc-linear-regression-can-sometimes-recover-true-conditional-averages" class="nav-link" data-scroll-target="#linear-regression-can-sometimes-recover-true-conditional-averages">Linear Regression Can (Sometimes) Recover True Conditional Averages</a>
   <ul class="collapse">
   <li><a href="#a-simple-univariate-example" id="toc-a-simple-univariate-example" class="nav-link" data-scroll-target="#a-simple-univariate-example">A Simple Univariate Example</a></li>
@@ -191,7 +195,7 @@ window.Quarto = {
 <div class="quarto-title">
 <h1 class="title">Linear Regression as an Approximation Method</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Econometrics/Statistics</div>
+    <div class="quarto-category">Linear Regression</div>
   </div>
   </div>
 
@@ -208,7 +212,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">August 12, 2025</p>
+      <p class="date">September 3, 2025</p>
     </div>
   </div>
   
@@ -220,23 +224,240 @@ window.Quarto = {
 </header>
 
 
-<section id="the-conditional-expectation-function-cef-is-an-optimal-predictor" class="level2">
-<h2 class="anchored" data-anchor-id="the-conditional-expectation-function-cef-is-an-optimal-predictor">The Conditional Expectation Function (CEF) is an Optimal Predictor</h2>
-<p>For observations <span class="math inline">\(i = 1, \ldots, n\)</span>, suppose there is a <strong>data generating process (DGP)</strong> that describes the <em>joint distribution</em> of a random <strong>outcome</strong> variable <span class="math inline">\(Y_i\)</span> and a random vector <span class="math inline">\(X_i =(X_{1i}, X_{2i}, \ldots, X_{ki})\)</span> of <strong>covariates</strong>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> We are interested in predicting <span class="math inline">\(Y_i\)</span> given some realized values of the covariates, denoted by <span class="math inline">\(x_i = (x_{1i}, x_{2i}, \ldots, x_{ki})\)</span>. Thus, any prediction can generally be expressed as a function <span class="math inline">\(f(X_i)\)</span> of the covariates. As a starting point, we consider choosing <span class="math inline">\(f\)</span> to minimize the <strong>mean squared error (MSE)</strong> between our predictions and the observed outcomes:</p>
+<section id="motivating-the-conditional-expectation-function" class="level2">
+<h2 class="anchored" data-anchor-id="motivating-the-conditional-expectation-function">Motivating the Conditional Expectation Function</h2>
+<section id="finding-trends-in-noise" class="level3">
+<h3 class="anchored" data-anchor-id="finding-trends-in-noise">Finding Trends in Noise</h3>
+<p>Economic datasets record quantities that vary across observational units. For example, <a href="#fig-cps-data" class="quarto-xref">Figure&nbsp;1</a> highlights the substantial variation in earnings across individuals in the March 2009 Current Population Survey (CPS). In order to mathematically characterize this variation, it is useful to view economic data as a collection of random variables generated from some underlying probability distribution. The empirical distribution of earnings in the CPS, shown in <a href="#fig-earnings-density" class="quarto-xref">Figure&nbsp;2</a>, provides visual intuition for this abstraction.</p>
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the CPS dataset</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cps <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"hasen-econometrics-datasets"</span>, <span class="st">"cps09mar"</span>, <span class="st">"cps09mar.xlsx"</span>), </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot earnings</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cps, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">seq_along</span>(earnings), <span class="at">y =</span> earnings)) <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span>  </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Observational Unit"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Earnings"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the density of earnings</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cps, <span class="fu">aes</span>(<span class="at">x =</span> earnings)) <span class="sc">+</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                 <span class="at">bins =</span> <span class="dv">30</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"lightblue"</span>,</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                 <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Earnings"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div id="fig-cps-data" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cps-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="linear-reg-rationale_files/figure-html/fig-cps-data-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cps-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Earnings Data from the March 2009 Current Population Survey (CPS).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div id="fig-earnings-density" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-earnings-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="linear-reg-rationale_files/figure-html/fig-earnings-density-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-earnings-density-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Empirical Density of Earnings in the March 2009 Current Population Survey (CPS).
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The variation in the data arises from a mix of observed (e.g.&nbsp;age) and unobserved factors (e.g.&nbsp;ability). We seek to satisfactorily explain the heterogeneity that arises in economic datasets. A simple first step is to stratify the data by some aggregate characteristics of the observational unit. In our example, we could plot the earnings density separately for men and women, as shown in <a href="#fig-earnings-density" class="quarto-xref">Figure&nbsp;2</a>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert sex variable to factor</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cps<span class="sc">$</span>female <span class="ot">&lt;-</span> <span class="fu">factor</span>(cps<span class="sc">$</span>female, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Male"</span>, <span class="st">"Female"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot density by sex</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cps, <span class="fu">aes</span>(<span class="at">x =</span> earnings, <span class="at">color =</span> female)) <span class="sc">+</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Earnings"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">color =</span> <span class="st">"Sex"</span>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-density-sex" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-density-sex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="linear-reg-rationale_files/figure-html/fig-density-sex-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-density-sex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Empirical Density by Sex (CPS Data)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Density functions, while informative about the overall distributional shape, are often complex and can obscure key features of variation in the data. For example, <a href="#fig-density-sex" class="quarto-xref">Figure&nbsp;3</a> shows that the earnings density for men is shifted to the right relative to women. Yet the plot alone does not reveal the magnitude of this difference. An alternative way to summarize the relationship between earnings and sex is to calculate the conditional expectations:</p>
 <p><span class="math display">\[
-\mathbb{E} [Y_i - f(X_i)]^2.
-\]</span> With the law of iterated expectation and some calculus, we can show that for every possible realized value <span class="math inline">\(X_i = x_i\)</span>, the optimal function that solves the minimum mean squared error problem is the <strong>conditional expectation function (CEF)</strong></p>
-<p><span id="eq-cef"><span class="math display">\[
-m(x_i) = \mathbb{E}[Y_i | X_i = x_i].
+\mathbb{E}[earnings \mid sex = male] = 63,147 \quad \text{and} \quad  \mathbb{E}[earnings \mid sex = female] = 44,224.
+\]</span></p>
+<p>The functional form of the conditional expectations is useful in summarizing the overall relationship between two variables. To see this, consider the blue line in <a href="#fig-earnings-educ" class="quarto-xref">Figure&nbsp;4</a>. By plotting the conditional expectation of log earnings by education level, this curve reduces the substantial variation of earnings at each education level — illustrated by the gray density plots — into a single point. In doing so, it reveals the systematic upward trend in log earnings as education increases.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Map numeric education codes to readable ordered labels (once)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>edu_code_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">16</span>, <span class="dv">18</span>, <span class="dv">20</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>edu_code_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"9th grade"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"10th grade"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"11th grade / 12th no diploma"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"High school graduate"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Some college, no degree"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Associate degree"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Bachelor's degree"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Master's degree"</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Professional/Doctorate"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>cps <span class="ot">&lt;-</span> cps <span class="sc">%&gt;%</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">education_cat =</span> <span class="fu">factor</span>(</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      education,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">levels =</span> edu_code_levels,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> edu_code_labels,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">ordered =</span> <span class="cn">TRUE</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Lock the desired display order explicitly (prevents reordering later)</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>edu_levels <span class="ot">&lt;-</span> edu_code_labels</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep positive earnings and build log earnings</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>cps_pos <span class="ot">&lt;-</span> cps <span class="sc">%&gt;%</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(earnings <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="sc">!</span><span class="fu">is.na</span>(education_cat)) <span class="sc">%&gt;%</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">log_earnings =</span> <span class="fu">log</span>(earnings),</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>         <span class="at">education_cat =</span> <span class="fu">factor</span>(education_cat, <span class="at">levels =</span> edu_levels, <span class="at">ordered =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co"># CEF: mean log earnings by education category (all categories)</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>cef_data <span class="ot">&lt;-</span> cps_pos <span class="sc">%&gt;%</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(education_cat) <span class="sc">%&gt;%</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_log_earnings =</span> <span class="fu">mean</span>(log_earnings), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">education_cat =</span> <span class="fu">factor</span>(education_cat, <span class="at">levels =</span> edu_levels, <span class="at">ordered =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Choose categories where you want the half-violins</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>selected_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"10th grade"</span>, <span class="st">"High school graduate"</span>, <span class="st">"Bachelor's degree"</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>violin_data <span class="ot">&lt;-</span> cps_pos <span class="sc">%&gt;%</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(education_cat <span class="sc">%in%</span> selected_levels) <span class="sc">%&gt;%</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">education_cat =</span> <span class="fu">factor</span>(education_cat, <span class="at">levels =</span> edu_levels, <span class="at">ordered =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Plot: keep your original look, overlay left half-violins on selected levels ----</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>  ggdist<span class="sc">::</span><span class="fu">stat_halfeye</span>(</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> violin_data,</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> education_cat, <span class="at">y =</span> log_earnings),</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">side =</span> <span class="st">"right"</span>,</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">normalize =</span> <span class="st">"groups"</span>,</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.9</span>,</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">slab_alpha =</span> <span class="fl">0.35</span>,</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">slab_fill  =</span> <span class="st">"grey70"</span>,</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">slab_color =</span> <span class="cn">NA</span>,</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">interval_size =</span> <span class="dv">0</span>,</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">point_size =</span> <span class="dv">0</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cef_data,</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> education_cat, <span class="at">y =</span> mean_log_earnings, <span class="at">group =</span> <span class="dv">1</span>),</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> cef_data,</span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> education_cat, <span class="at">y =</span> mean_log_earnings),</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">2</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_discrete</span>(<span class="at">limits =</span> edu_levels, <span class="at">drop =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>() <span class="sc">+</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">8</span>, <span class="dv">12</span>)) <span class="sc">+</span>   </span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Education Level"</span>, <span class="at">y =</span> <span class="st">"Log Earnings"</span>) <span class="sc">+</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">30</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-earnings-educ" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-earnings-educ-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="linear-reg-rationale_files/figure-html/fig-earnings-educ-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-earnings-educ-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Conditional Expectation of Log Earnings Given Education Level (CPS Data)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>More generally, we can summarize the relationship between an <strong>outcome</strong> <span class="math inline">\(Y\)</span> and a set of <strong>regressors</strong> <span class="math inline">\(X = (X_1, \ldots, X_K)\)</span> with the <strong>conditional expectation function (CEF)</strong> <span id="eq-cef"><span class="math display">\[
+m(X) = \mathbb{E}[Y \mid X].
 \tag{1}\]</span></span></p>
 </section>
-<section id="linear-regression-finds-the-best-linear-approximation-to-the-cef" class="level2">
-<h2 class="anchored" data-anchor-id="linear-regression-finds-the-best-linear-approximation-to-the-cef">Linear Regression Finds the Best Linear Approximation to the CEF</h2>
+<section id="optimal-predictor" class="level3">
+<h3 class="anchored" data-anchor-id="optimal-predictor">Optimal Predictor</h3>
+<p>The heterogeneity in economic outcomes naturally motivates a prediction problem: given a random vector <span class="math inline">\(X\)</span> of regressors, what function <span class="math inline">\(g(X)\)</span> provides the best prediction of the outcome <span class="math inline">\(Y\)</span>? One way to define “best” is to choose the function that minimizes the <strong>mean squared error (MSE)</strong>:</p>
+<p><span id="eq-mmse"><span class="math display">\[
+g^\star(X) := \underset{g \in \mathbb{R}^k\rightarrow \mathbb{R}}{\arg\min} \, \mathbb{E} [Y - g(X)]^2.
+\tag{2}\]</span></span></p>
+<p>As it turns out, the CEF is the solution to this problem! In other words, the CEF is the best predictor of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> in the sense that it minimizes the mean squared error between the predictions and the actual outcomes.</p>
+<p>To see this, we need to first define the <strong>error term</strong> as the difference between the outcome and the CEF</p>
+<p><span class="math display">\[
+e := Y - m(X).
+\]</span></p>
+<p>This allows us to decompose the outcome variable as</p>
+<p><span id="eq-outcome-decomp"><span class="math display">\[
+Y = m(X) + e,
+\tag{3}\]</span></span></p>
+<p>where <span class="math inline">\(m(X)\)</span> is the systematic component of <span class="math inline">\(Y\)</span> — the part that can be explained by <span class="math inline">\(X\)</span> on average — and <span class="math inline">\(e\)</span> is the remaining idiosyncratic variation in <span class="math inline">\(Y\)</span>.</p>
+<p>Since the error is defined as a function of the outcome and regressors, it is also a random variable. Moreover, we can show that its distribution has two key properties. First, by construction, the error has zero conditional mean:</p>
+<p><span id="eq-zero-cond-mean"><span class="math display">\[
+\mathbb{E}[e \mid X] = \mathbb{E}[Y - m(X) \mid X] = \mathbb{E}[Y \mid X] - m(X) = 0.
+\tag{4}\]</span></span></p>
+<p>Second, the error is uncorrelated with any function of the regressors:</p>
+<p><span id="eq-uncorr"><span class="math display">\[
+\mathbb{E}\big[h(X) e \big] \overset{(a)}{=} \mathbb{E}\big[\mathbb{E}[h(X) e | X]\big] \overset{(b)}{=} \mathbb{E}\big[h(X) \mathbb{E}[e | X]\big] \overset{(c)}{=} 0,
+\tag{5}\]</span></span> where <span class="math inline">\((a)\)</span> uses the law of iterated expectations, <span class="math inline">\((b)\)</span> uses the linearity of expectations <span class="math inline">\((c)\)</span> applies <a href="#eq-zero-cond-mean" class="quarto-xref">Equation&nbsp;4</a>.</p>
+<p>Now notice that for any function <span class="math inline">\(g(X)\)</span>, we have</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbb{E}\big[\big(Y - g(X)\big)^2\big] &amp;= \mathbb{E}\big[\big(e + m(X) - g(X)\big)^2\big] \\
+&amp;= \mathbb{E}\big[e^2\big] + 2\mathbb{E}\big[e\big(m(X) - g(X)\big)\big] + \mathbb{E}\big[\big(m(X) - g(X)\big)^2\big]   \\
+&amp;= \mathbb{E}\big[e^2\big] + \mathbb{E}\big[\big(m(X) - g(X)\big)^2\big] \\
+&amp;\geq \mathbb{E}\big[e^2\big] \\
+&amp;= \mathbb{E}\big[\big(Y - m(X)\big)^2\big],
+\end{aligned}
+\]</span> where the third equality follows from <a href="#eq-uncorr" class="quarto-xref">Equation&nbsp;5</a>. In words, the mean squared error of any predictor <span class="math inline">\(g(X)\)</span> is always at least as large as the mean squared error of the CEF <span class="math inline">\(m(X)\)</span>. Thus, we have shown that the CEF is indeed the solution to <a href="#eq-mmse" class="quarto-xref">Equation&nbsp;2</a>.</p>
+</section>
+</section>
+<section id="best-linear-predictor-and-regression" class="level2">
+<h2 class="anchored" data-anchor-id="best-linear-predictor-and-regression">Best Linear Predictor and Regression</h2>
 <p>In most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to model the relationship between the outcome and covariates using a simpler function. One option is to find a <em>linear approximation</em> of the CEF, which takes the form</p>
 <p><span id="eq-linear-approx-fun"><span class="math display">\[
 \ell(x_i) = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \ldots + \beta_k x_{ki} = x_i^T\beta,
-\tag{2}\]</span></span> where <span class="math inline">\(x_i^T = (1, x_{1i}, x_{2i}, \ldots, x_{ki})\)</span>. Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates.</p>
-<p>How do we choose the specific form of our approximating linear function? Since we want our predictions to minimize the MSE function, we set the parameters in <a href="#eq-linear-approx-fun" class="quarto-xref">Equation&nbsp;2</a> as</p>
+\tag{6}\]</span></span> where <span class="math inline">\(x_i^T = (1, x_{1i}, x_{2i}, \ldots, x_{ki})\)</span>. Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates.</p>
+<p>How do we choose the specific form of our approximating linear function? Since we want our predictions to minimize the MSE function, we set the parameters in <a href="#eq-linear-approx-fun" class="quarto-xref">Equation&nbsp;6</a> as</p>
 <p><span class="math display">\[
 \beta^\star = \underset{\beta}{\arg\min} \, \mathbb{E} [Y_i - (X_i^T \beta)]^2.
 \]</span></p>
@@ -246,7 +467,7 @@ m(x_i) = \mathbb{E}[Y_i | X_i = x_i].
 </section>
 <section id="linear-regression-can-sometimes-recover-true-conditional-averages" class="level2">
 <h2 class="anchored" data-anchor-id="linear-regression-can-sometimes-recover-true-conditional-averages">Linear Regression Can (Sometimes) Recover True Conditional Averages</h2>
-<p>So far, we have discussed linear regression as a tool to approximate the conditional expectation function. However, it can be shown that when the CEF is itself linear, the best linear predictor exactly equals the CEF. That is to say linear regression recovers the true conditional averages in this case.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>So far, we have discussed linear regression as a tool to approximate the conditional expectation function. However, it can be shown that when the CEF is itself linear, the best linear predictor exactly equals the CEF. That is to say linear regression recovers the true conditional averages in this case.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 <p>To see this in practice, I simulate data on income using the following equation</p>
 <p><span class="math display">\[
 \begin{align}
@@ -256,60 +477,60 @@ income_i &amp;= \beta_0 + \beta_1 \times white_i + \beta_2 \times male_i \\ &amp
 <div class="cell">
 <details class="code-fold">
 <summary>Show the code that simulates the dataset.</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Population size </span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Noise </span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>noise <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2000</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Covariates </span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>male <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(male, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>white <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.7</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>race <span class="ot">&lt;-</span> <span class="fu">factor</span>(white, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Black"</span>, <span class="st">"White"</span>))</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>literacy <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome </span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>white_female_base <span class="ot">&lt;-</span> <span class="dv">30000</span>                           <span class="co"># white females with 0 literacy earn 30000</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>literacy_effect <span class="ot">&lt;-</span> <span class="dv">50</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>male_premium <span class="ot">&lt;-</span> <span class="dv">200</span>                                    <span class="co"># + 200 male premium </span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>white_premium <span class="ot">&lt;-</span> <span class="dv">1500</span>                                  <span class="co"># + 1500 white premium</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>white_male_premium <span class="ot">&lt;-</span> <span class="dv">1000</span>                              <span class="co"># + 1000 white male premium </span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Create income </span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> </span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  white_female_base <span class="sc">+</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  white_premium       <span class="sc">*</span> white <span class="sc">+</span>                          </span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  male_premium        <span class="sc">*</span> male <span class="sc">+</span>                            </span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  literacy_effect   <span class="sc">*</span> (literacy<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> male)) <span class="sc">+</span>    <span class="co"># literate males are better off than literate females </span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  white_male_premium   <span class="sc">*</span> (male <span class="sc">*</span> white) <span class="sc">+</span>                  </span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  noise</span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a dataset</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sex =</span> sex,</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>                     <span class="at">race =</span> race,</span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>                     literacy,</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>                     income)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Population size </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Noise </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>noise <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">2000</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Covariates </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>male <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(male, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Female"</span>, <span class="st">"Male"</span>))</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>white <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.7</span>)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>race <span class="ot">&lt;-</span> <span class="fu">factor</span>(white, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Black"</span>, <span class="st">"White"</span>))</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>literacy <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Outcome </span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>white_female_base <span class="ot">&lt;-</span> <span class="dv">30000</span>                           <span class="co"># white females with 0 literacy earn 30000</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>literacy_effect <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>male_premium <span class="ot">&lt;-</span> <span class="dv">200</span>                                    <span class="co"># + 200 male premium </span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>white_premium <span class="ot">&lt;-</span> <span class="dv">1500</span>                                  <span class="co"># + 1500 white premium</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>white_male_premium <span class="ot">&lt;-</span> <span class="dv">1000</span>                              <span class="co"># + 1000 white male premium </span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Create income </span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> </span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  white_female_base <span class="sc">+</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  white_premium       <span class="sc">*</span> white <span class="sc">+</span>                          </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  male_premium        <span class="sc">*</span> male <span class="sc">+</span>                            </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  literacy_effect   <span class="sc">*</span> (literacy<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> male)) <span class="sc">+</span>    <span class="co"># literate males are better off than literate females </span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  white_male_premium   <span class="sc">*</span> (male <span class="sc">*</span> white) <span class="sc">+</span>                  </span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>  noise</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into a dataset</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>sim_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">sex =</span> sex,</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>                     <span class="at">race =</span> race,</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>                     literacy,</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>                     income)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="a-simple-univariate-example" class="level3">
 <h3 class="anchored" data-anchor-id="a-simple-univariate-example">A Simple Univariate Example</h3>
 <p>Recall from <a href="#eq-cef" class="quarto-xref">Equation&nbsp;1</a> that the CEF is a function of the covariates we use to predict the outcome variable. So, as a simple example of a linear CEF, let us consider the conditional expectation of <span class="math inline">\(income_i\)</span> as a function of <span class="math inline">\(male_i\)</span>. The conditional expectation can be written as the step-wise function <span id="eq-ex-linear-cef"><span class="math display">\[
 \mathbb{E}[Y_i|male_i] = \begin{cases} \mu_0 \quad  \text{if} \quad male_i = 0 \\ \mu_1 \quad  \text{if} \quad male_i = 1 \end{cases}.
-\tag{3}\]</span></span> To illustrate that <a href="#eq-ex-linear-cef" class="quarto-xref">Equation&nbsp;3</a> is a linear combination of <span class="math inline">\(male_i\)</span>, we can rewrite it as</p>
+\tag{7}\]</span></span> To illustrate that <a href="#eq-ex-linear-cef" class="quarto-xref">Equation&nbsp;7</a> is a linear combination of <span class="math inline">\(male_i\)</span>, we can rewrite it as</p>
 <p><span id="eq-ex-linear-cef-simplified"><span class="math display">\[
 \mathbb{E}[Y_i |male_i] = \mu_0 + (\mu_1-\mu_0) \times male_i.
-\tag{4}\]</span></span></p>
+\tag{8}\]</span></span></p>
 <p>Now, we can use R to regress <span class="math inline">\(income_i\)</span> on <span class="math inline">\(sex_i\)</span> as follows.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>reg_model <span class="ot">&lt;-</span> <span class="fu">feols</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  income <span class="sc">~</span> sex, </span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sim_data</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(reg_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>reg_model <span class="ot">&lt;-</span> <span class="fu">feols</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  income <span class="sc">~</span> sex, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> sim_data</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(reg_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>OLS estimation, Dep. Var.: income
 Observations: 1,000
@@ -322,20 +543,20 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 RMSE: 4,673.0   Adj. R2: 0.361625</code></pre>
 </div>
 </div>
-<p>To verify that the linear regression above does in fact recover <a href="#eq-ex-linear-cef-simplified" class="quarto-xref">Equation&nbsp;4</a>, we need to check that (i) its intercept parameter equals the average income of females in the dataset and (ii) the coefficient on <span class="math inline">\(male_i\)</span> is the difference in the average income of males and females in the dataset. As shown below, this is indeed the case.</p>
+<p>To verify that the linear regression above does in fact recover <a href="#eq-ex-linear-cef-simplified" class="quarto-xref">Equation&nbsp;8</a>, we need to check that (i) its intercept parameter equals the average income of females in the dataset and (ii) the coefficient on <span class="math inline">\(male_i\)</span> is the difference in the average income of males and females in the dataset. As shown below, this is indeed the case.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">%&gt;%</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"Female"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">female_avg =</span> <span class="fu">mean</span>(income, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sex <span class="sc">==</span> <span class="st">"Female"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">female_avg =</span> <span class="fu">mean</span>(income, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  female_avg
 1   33423.97</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">%&gt;%</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex_diff =</span> <span class="fu">mean</span>(income[sex <span class="sc">==</span> <span class="st">"Male"</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">mean</span>(income[sex <span class="sc">==</span> <span class="st">"Female"</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sim_data <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">sex_diff =</span> <span class="fu">mean</span>(income[sex <span class="sc">==</span> <span class="st">"Male"</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">-</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">mean</span>(income[sex <span class="sc">==</span> <span class="st">"Female"</span>], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  sex_diff
 1 7044.472</code></pre>
@@ -344,7 +565,7 @@ RMSE: 4,673.0   Adj. R2: 0.361625</code></pre>
 </section>
 <section id="saturated-regressions" class="level3">
 <h3 class="anchored" data-anchor-id="saturated-regressions">Saturated Regressions</h3>
-<p>The exercise of transforming the step-wise function in <a href="#eq-ex-linear-cef" class="quarto-xref">Equation&nbsp;3</a> into a linear combination of the covariate in <a href="#eq-ex-linear-cef-simplified" class="quarto-xref">Equation&nbsp;4</a> provides an important insight. It turns out that we can perform a similar transformation for any CEF where the covariates are discrete variables that take on a finite set of values.</p>
+<p>The exercise of transforming the step-wise function in <a href="#eq-ex-linear-cef" class="quarto-xref">Equation&nbsp;7</a> into a linear combination of the covariate in <a href="#eq-ex-linear-cef-simplified" class="quarto-xref">Equation&nbsp;8</a> provides an important insight. It turns out that we can perform a similar transformation for any CEF where the covariates are discrete variables that take on a finite set of values.</p>
 <p>TODO: Add example of sex x race. Talk about main effect and interaction.</p>
 <p>In general, the idea is to include a separate parameter for each possible value of the discrete covariates. The linear regression corresponding to such a CEF is said to be <strong>saturated</strong>.</p>
 <p>TODO: Saturated models makes inference easier: give example of comparing means.</p>
@@ -357,8 +578,7 @@ RMSE: 4,673.0   Adj. R2: 0.361625</code></pre>
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>In this post, I assume that the <span class="math inline">\(n\)</span> observed data points represents the entire (finite) population. This simplification allows me to focus on the conceptual ideas behind linear regression without having to discuss statistical inference.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Again, to abstract away from statistical inference, I do not distinguish between population and sample averages. In practice, however, it is important to note that linear regression recovers <strong>sample</strong> conditional averages rather than the “true” <strong>population</strong> conditional averages when the CEF is linear.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Again, to abstract away from statistical inference, I do not distinguish between population and sample averages. In practice, however, it is important to note that linear regression recovers <strong>sample</strong> conditional averages rather than the “true” <strong>population</strong> conditional averages when the CEF is linear.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
