@@ -2,6 +2,7 @@
   {
     "listing": "/blog/blog-index.html",
     "items": [
+      "/blog/linear-reg-rationale.html",
       "/blog/linear-reg-model.html",
       "/blog/statistical-modeling.html"
     ]
