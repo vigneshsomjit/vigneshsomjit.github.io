@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "\nVignesh Somjit\n",
     "section": "",
-    "text": "Vignesh Somjit\n\n\nI am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor Richard Hornbeck. Before joining Booth, I received my B.A. in Economics (with honors) and B.A. in Mathematics from Boston University in 2025.\nI maintain a research blog, where I write about topics in applied econometrics and causal inference that I find myself thinking about or using."
+    "text": "Vignesh Somjit\n\n\nI am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor Richard Hornbeck. Before joining Booth, I received my B.A. in Economics (with honors) and B.A. in Mathematics from Boston University in 2025. I maintain a research blog, where I write about econometrics, causal inference, and machine learning."
   },
   {
     "objectID": "about.html",
@@ -25,7 +25,7 @@
     "href": "blog/blog-index.html",
     "title": "Vignesh Somjit",
     "section": "",
-    "text": "Linear Regression as an Approximation Method\n\n\n\n\n\n\nLinear Regression\n\n\n\nIntuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).\n\n\n\n\n\nSep 4, 2025\n\n\n\n\n\n\n\nThe Linear Regression Model and its OLS Estimation\n\n\n\n\n\n\nLinear Regression\n\n\n\nA detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters.\n\n\n\n\n\nAug 31, 2025\n\n\n\n\n\n\n\nHow to Think About Statistical Inference\n\n\n\n\n\n\nInference\n\n\n\nBuilding a mental framework for how data, models, inference, and probability come together.\n\n\n\n\n\nAug 13, 2025\n\n\n\n\n\n\nNo matching items"
+    "text": "An Introduction to Structural Equation Modeling\n\n\n\n\n\n\nStructural Equation Modeling\n\n\n\nI walk through three key features of structural equation modeling: the distinction between observed and latent variables, an emphasis on covariances, and the use of path analysis.\n\n\n\n\n\nSep 4, 2025\n\n\n\n\n\n\n\nLinear Regression as an Approximation Method\n\n\n\n\n\n\nLinear Regression\n\n\n\nIntuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).\n\n\n\n\n\nSep 4, 2025\n\n\n\n\n\n\n\nThe Linear Regression Model and its OLS Estimation\n\n\n\n\n\n\nLinear Regression\n\n\n\nA detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters.\n\n\n\n\n\nAug 31, 2025\n\n\n\n\n\n\n\nHow to Think About Statistical Inference\n\n\n\n\n\n\nInference\n\n\n\nBuilding a mental framework for how data, models, inference, and probability come together.\n\n\n\n\n\nAug 13, 2025\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/regressions.html",
@@ -368,7 +368,7 @@
     "href": "blog/linear-reg-rationale.html#best-linear-predictor-and-regression",
     "title": "Linear Regression as an Approximation Method",
     "section": "Best Linear Predictor and Regression",
-    "text": "Best Linear Predictor and Regression\nIn most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to model the relationship between the outcome and covariates using a simpler function. One option is to find a linear approximation of the CEF, which takes the form\n\\[\n\\ell(x_i) = \\beta_0 + \\beta_1 x_{1i} + \\beta_2 x_{2i} + \\ldots + \\beta_k x_{ki} = x_i^T\\beta,\n\\tag{6}\\] where \\(x_i^T = (1, x_{1i}, x_{2i}, \\ldots, x_{ki})\\). Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates.\nHow do we choose the specific form of our approximating linear function? Since we want our predictions to minimize the MSE function, we set the parameters in Equation 6 as\n\\[\n\\beta^\\star = \\underset{\\beta}{\\arg\\min} \\, \\mathbb{E} [Y_i - (X_i^T \\beta)]^2.\n\\]\nIn words, we are choosing the linear function with the lowest MSE among all possible linear functions. The resulting linear predictor\n\\[x_i^T \\beta^\\star \\approx \\mathbb{E}[Y_i|X_i =x_i]\\]\nis often called the “linear regression of \\(Y\\) on \\(X\\)” by economists. This simply refers to the process of finding the best linear predictor of \\(Y_i\\) given some realized values of \\(X_i\\) by minimizing the mean squared error function."
+    "text": "Best Linear Predictor and Regression\nTODO: NEED TO RE-WRITE EVERYTHING BELOW.\nIn most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to model the relationship between the outcome and covariates using a simpler function. One option is to find a linear approximation of the CEF, which takes the form\n\\[\n\\ell(x_i) = \\beta_0 + \\beta_1 x_{1i} + \\beta_2 x_{2i} + \\ldots + \\beta_k x_{ki} = x_i^T\\beta,\n\\tag{6}\\] where \\(x_i^T = (1, x_{1i}, x_{2i}, \\ldots, x_{ki})\\). Note that the word “linear” here refers to the simplifying assumption that the function is a linear combination of the covariates.\nHow do we choose the specific form of our approximating linear function? Since we want our predictions to minimize the MSE function, we set the parameters in Equation 6 as\n\\[\n\\beta^\\star = \\underset{\\beta}{\\arg\\min} \\, \\mathbb{E} [Y_i - (X_i^T \\beta)]^2.\n\\]\nIn words, we are choosing the linear function with the lowest MSE among all possible linear functions. The resulting linear predictor\n\\[x_i^T \\beta^\\star \\approx \\mathbb{E}[Y_i|X_i =x_i]\\]\nis often called the “linear regression of \\(Y\\) on \\(X\\)” by economists. This simply refers to the process of finding the best linear predictor of \\(Y_i\\) given some realized values of \\(X_i\\) by minimizing the mean squared error function."
   },
   {
     "objectID": "blog/linear-reg-rationale.html#linear-regression-can-sometimes-recover-true-conditional-averages",
@@ -383,5 +383,26 @@
     "title": "Linear Regression as an Approximation Method",
     "section": "Footnotes",
     "text": "Footnotes\n\n\nAgain, to abstract away from statistical inference, I do not distinguish between population and sample averages. In practice, however, it is important to note that linear regression recovers sample conditional averages rather than the “true” population conditional averages when the CEF is linear.↩︎"
+  },
+  {
+    "objectID": "blog/sem-intro.html",
+    "href": "blog/sem-intro.html",
+    "title": "An Introduction to Structural Equation Modeling",
+    "section": "",
+    "text": "Structural equation modeling (SEM) is a general statistical framework used to contextualize a range of techniques used to analyze the relationships among random variables within a single overarching methodology. The key philosophy behind SEM is to explicitly distinguish between the observed variables (the dataset) and the latent variables (the unobserved quantities of theoretical interest). This distinction allows researchers to specify and estimate more realistic models that capture the complex interdependencies between variables in the real world."
+  },
+  {
+    "objectID": "blog/sem-intro.html#structural-equation-modeling-a-way-of-thinking",
+    "href": "blog/sem-intro.html#structural-equation-modeling-a-way-of-thinking",
+    "title": "An Introduction to Structural Equation Modeling",
+    "section": "",
+    "text": "Structural equation modeling (SEM) is a general statistical framework used to contextualize a range of techniques used to analyze the relationships among random variables within a single overarching methodology. The key philosophy behind SEM is to explicitly distinguish between the observed variables (the dataset) and the latent variables (the unobserved quantities of theoretical interest). This distinction allows researchers to specify and estimate more realistic models that capture the complex interdependencies between variables in the real world."
+  },
+  {
+    "objectID": "blog/sem-intro.html#the-dual-architecture-of-structural-equation-models",
+    "href": "blog/sem-intro.html#the-dual-architecture-of-structural-equation-models",
+    "title": "An Introduction to Structural Equation Modeling",
+    "section": "The Dual Architecture of Structural Equation Models",
+    "text": "The Dual Architecture of Structural Equation Models\nAt its core, a structural equation model is simply a set of equations that consist of (i) random variables and (ii) parameters that describe the relationships between those variables. The distinction between observed and latent variables motivates the decomposition of a structural equation model into two main subsystems: the (i) latent variable model and the (ii) measurement model. I discuss each of these subsystems in turn.\n\nLatent Variable Model\n\n\nMeasurement Model"
   }
 ]

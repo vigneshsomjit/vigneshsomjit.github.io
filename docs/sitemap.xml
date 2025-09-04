@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vigneshsomjit.github.io/index.html</loc>
-    <lastmod>2025-08-15T22:39:19.357Z</lastmod>
+    <lastmod>2025-09-04T23:09:07.479Z</lastmod>
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/about.html</loc>
@@ -34,6 +34,10 @@
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/blog/linear-reg-rationale.html</loc>
-    <lastmod>2025-09-04T05:02:51.422Z</lastmod>
+    <lastmod>2025-09-04T23:06:20.577Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vigneshsomjit.github.io/blog/sem-intro.html</loc>
+    <lastmod>2025-09-04T23:03:38.558Z</lastmod>
   </url>
 </urlset>

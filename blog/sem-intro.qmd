@@ -1,0 +1,17 @@
+---
+title: "An Introduction to Structural Equation Modeling"
+description: "I walk through three key features of structural equation modeling: the distinction between observed and latent variables, an emphasis on covariances, and the use of path analysis."
+date: today
+categories: [Structural Equation Modeling]
+draft: false
+---
+
+## Structural Equation Modeling: A Way of Thinking 
+**Structural equation modeling (SEM)** is a general statistical framework used to contextualize a range of techniques used to analyze the relationships among random variables within a single overarching methodology. The key philosophy behind SEM is to explicitly distinguish between the **observed variables** (the dataset) and the **latent variables** (the unobserved quantities of theoretical interest). This distinction allows researchers to specify and estimate more realistic models that capture the complex interdependencies between variables in the real world.  
+
+## The Dual Architecture of Structural Equation Models 
+At its core, a structural equation model is simply a set of equations that consist of (i) random variables and (ii) parameters that describe the relationships between those variables. The distinction between observed and latent variables motivates the decomposition of a structural equation model into two main subsystems: the (i) **latent variable model** and the (ii) **measurement model**. I discuss each of these subsystems in turn.
+
+### Latent Variable Model
+
+### Measurement Model

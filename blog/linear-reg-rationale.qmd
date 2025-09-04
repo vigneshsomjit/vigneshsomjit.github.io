@@ -246,7 +246,9 @@ $$
 $$
 where the third equality follows from @eq-uncorr. In words, the mean squared error of any predictor $g(X)$ is always at least as large as the mean squared error of the CEF $m(X)$. Thus, we have shown that the CEF is indeed the solution to @eq-mmse.
 
-## Best Linear Predictor and Regression  
+## Best Linear Predictor and Regression 
+TODO: NEED TO RE-WRITE EVERYTHING BELOW. 
+
 In most empirical cases, however, the functional form of the CEF is unknown. Thus, it is more practical to model the relationship between the outcome and covariates using a simpler function. One option is to find a *linear approximation* of the CEF, which takes the form
 
 $$

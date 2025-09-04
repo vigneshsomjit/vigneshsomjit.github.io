@@ -8,6 +8,4 @@ toc: false
   <h1 class="name-heading">Vignesh Somjit</h1>
 </div>
 
-I am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor [Richard Hornbeck](https://www.chicagobooth.edu/faculty/directory/h/richard-hornbeck). Before joining Booth, I received my B.A. in Economics (with honors) and B.A. in Mathematics from Boston University in 2025. 
-
-I maintain a [research blog](blog/blog-index.html), where I write about topics in applied econometrics and causal inference that I find myself thinking about or using.    
+I am a Research Professional at the University of Chicago Booth School of Business, where I work with Professor [Richard Hornbeck](https://www.chicagobooth.edu/faculty/directory/h/richard-hornbeck). Before joining Booth, I received my B.A. in Economics (with honors) and B.A. in Mathematics from Boston University in 2025. I maintain a [research blog](blog/blog-index.html), where I write about econometrics, causal inference, and machine learning.
