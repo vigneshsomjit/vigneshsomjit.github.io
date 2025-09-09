@@ -1,17 +1,70 @@
 ---
 title: "An Introduction to Structural Equation Modeling"
-description: "I walk through three key features of structural equation modeling: the distinction between observed and latent variables, an emphasis on covariances, and the use of path analysis."
+description: "I walk through the basics of structural equation modeling, focusing on model specification and estimation."
 date: today
 categories: [Structural Equation Modeling]
-draft: false
+bibliography: [sem.bib]
+nocite: |
+  @*
 ---
 
 ## Structural Equation Modeling: A Way of Thinking 
-**Structural equation modeling (SEM)** is a general statistical framework used to contextualize a range of techniques used to analyze the relationships among random variables within a single overarching methodology. The key philosophy behind SEM is to explicitly distinguish between the **observed variables** (the dataset) and the **latent variables** (the unobserved quantities of theoretical interest). This distinction allows researchers to specify and estimate more realistic models that capture the complex interdependencies between variables in the real world.  
+**Structural equation modeling (SEM)** is a general statistical framework that unifies a range of techniques used to analyze the relationships among random variables within a single overarching methodology. The key philosophy behind SEM is to explicitly distinguish between the **observed variables** (the dataset) and the **latent variables** (the unobserved quantities of theoretical interest). This distinction allows researchers to specify and estimate more realistic models that capture the complex interdependencies between variables.
 
-## The Dual Architecture of Structural Equation Models 
-At its core, a structural equation model is simply a set of equations that consist of (i) random variables and (ii) parameters that describe the relationships between those variables. The distinction between observed and latent variables motivates the decomposition of a structural equation model into two main subsystems: the (i) **latent variable model** and the (ii) **measurement model**. I discuss each of these subsystems in turn.
+To ground this in a concrete example, consider the classic study presented in @bollen1989 on the relationship between industrialization and political democracy. Both concepts are inherently abstract and cannot be directly measured, and so they are the latent variables in our analysis. To be able to evaluate this relationship empirically, we need to specify a set of observed indicators that serve as imperfect but informative signals of the latent variables. In this example, we use (i) gross national product (GNP) per capita, (ii) energy consumption per capita, and (iii) the percentage of labor force in industry as indicators of industrialization. For political democracy, we use expert ratings of the (i) freedom of the press, (ii) freedom of political opposition, (iii) fairness of elections, and (iv) effectiveness of the elected legislature. We will see how SEM allows us to infer the relationship between industrialization and political democracy through these observed indicators.
+
+
+## A Dual System of Equations 
+At its core, a structural equation model is simply a set of equations that consist of (i) random variables and (ii) parameters that describe the relationships between those variables. The distinction between observed and latent variables motivates the decomposition of a structural equation model into two main subsystems: the **latent variable model** and the **measurement model**. I discuss each of these subsystems in turn.
 
 ### Latent Variable Model
 
-### Measurement Model
+The latent variable model is the set of structural equations that describe the relationships between the latent variables in the model. Specifically, the model is given by 
+
+$$
+\boldsymbol{\eta}= \mathrm{B} \boldsymbol{\eta} + \Gamma \boldsymbol{\xi} + \boldsymbol{\zeta}
+$$
+
+where $\boldsymbol{\eta} \in \mathbb{R}^{m \times 1}$ is a vector of **endogenous** latent variables (i.e. determined by variables in the model), $\boldsymbol{\xi} \in \mathbb{R}^{n \times 1}$ is a vector of **exogenous** latent variables (i.e. determined outside the model), $\mathrm{B} \in \mathbb{R}^{m \times m}$ is a matrix of coefficients that describe the relationships among the endogenous latent variables, $\Gamma \in \mathbb{R}^{n \times n}$ is a matrix of coefficients that describe the relationships between the exogenous and endogenous latent variables, and $\boldsymbol{\zeta} \in \mathbb{R}^{m \times 1}$ is a vector of error terms that capture the remaining unexplained variation in the endogenous latent variables.
+
+### Measurement Model 
+The measurement model is the set of equations that describe the relationships between the observed and latent variables in the model. The model is given by 
+
+$$
+\mathbf{y} = \Lambda_y \boldsymbol{\eta} + \boldsymbol{\epsilon} \quad \text{and} \quad \mathbf{x} = \Lambda_x \boldsymbol{\xi} + \boldsymbol{\delta}
+$$
+
+## Implied Joint Covariance Matrix 
+
+A key feature of SEM is its emphasis on the covariance structure of the observed variables in the model. Specifically, we are interested in the **implied joint covariance matrix**
+$$
+\Sigma(\boldsymbol{\theta}) = \begin{pmatrix} \Sigma_{\mathbf{yy}}(\boldsymbol{\theta}) & \Sigma_{\mathbf{yx}}(\boldsymbol{\theta}) \\ \Sigma_{\mathbf{xy}}(\boldsymbol{\theta}) & \Sigma_{\mathbf{xx}}(\boldsymbol{\theta}) \end{pmatrix} \in \mathbb{R}^{(p+q) \times (p+q)},
+$${#eq-implied-covariance-matrix}
+
+where $\boldsymbol{\theta}$ is a vector of all the model parameters,
+$\Sigma_{\mathbf{yy}}(\boldsymbol\theta)$ is the covariance matrix of the observed endogenous variables written in terms of the model parameters, $\Sigma_{\mathbf{yx}}(\boldsymbol\theta)$ is the cross covariance of the observed endogenous and exogenous variables, $\Sigma_{\mathbf{xy}}(\boldsymbol\theta)$ is the transpose of the cross covariance matrix, and $\Sigma_{\mathbf{xx}}(\boldsymbol\theta)$ is the covariance of the observed exogenous variables. Intuitively, the quantity $\Sigma(\boldsymbol\theta)$ captures the relationships between the observed variables under the assumptions (i.e. restrictions) imposed by the structural equation model. 
+
+The derivation of $\Sigma(\boldsymbol\theta)$ is somewhat tedious, but can be found in @bollen1989. The essence is that for each element in @eq-implied-covariance-matrix, (i) we substitute the measurement model equations into the definition of the covariance matrix, and (ii) we use the reduced-form version of the endogenous variables to simplify the expressions. This results in the following expression for the implied covariance matrix:
+
+$$
+\Sigma(\boldsymbol{\theta}) = \begin{pmatrix} \Lambda_{\mathbf{y}} (\mathrm{I} - \mathrm{B})^{-1} (\Gamma \Phi \Gamma' + \Psi) (\mathrm{I} - \mathrm{B})^{-1'} \Lambda_{\mathbf{y}}' + \Theta_{\boldsymbol\epsilon} & \Lambda_{\mathbf{y}} (\mathrm{I} - B)^{-1} \Gamma \Phi \Lambda_{\mathbf{x}}' \\ \Lambda_{\mathbf{x}} \Phi \Gamma' (\mathrm{I} - \mathrm{B})^{-1'} \Lambda_{\mathbf{y}}' & \Lambda_{\mathbf{x}} \Phi \Lambda_{\mathbf{x}}' + \Theta_{\boldsymbol{\delta}} \end{pmatrix}.
+$${#eq-implied-covariance-matrix-full}
+
+The main takeaway here is that we can *always* write the covariance structure of the observed variables as a function of the model parameters. For example, the implied joint covariance matrix for the industrialization and political democracy study is a $11 \times 11$ matrix that can be found by substituting the specific parameter matrices into @eq-implied-covariance-matrix-full.
+
+
+
+## Estimating the Model Parameters
+
+### Estimation Principle
+
+Recall that in the linear regression model, 
+
+
+### Maximum Likelihood Estimation 
+
+TODO.
+
+## Regression as a Structural Equation Model 
+
+TODO. 

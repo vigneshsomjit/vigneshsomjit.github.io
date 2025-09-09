@@ -1,0 +1,39 @@
+---
+title: "Covariance Matrix"
+description: "The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties."
+date: today
+categories: [Probability]
+---
+
+## Variance and Covariance of Random Variables 
+
+## Covariance Matrix
+For a random vector $X \in \mathbb{R}^m$, the **covariance matrix** $\Sigma \in \mathbb{R}^{m \times m}$ is defined as  
+
+$$
+\Sigma = \text{var}(X) = \mathbb{E}\big[\big(X - \mathbb{E}[X]\big)\big(X - \mathbb{E}[X]\big)'\big].
+$${#eq-cov-matrix}
+
+Observe that @eq-cov-matrix is the expectation of the **outer product** of the vector $X - \mathbb{E}[X]$ with itself. Thus, the covariance matrix is given by
+
+$$
+\Sigma = \begin{pmatrix} \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] & \ldots & \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]\\
+\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] & \ldots & 
+\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big] \\
+\vdots & \ddots & \vdots \\
+\mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] & \ldots & \mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]
+\end{pmatrix}.
+$$
+Observing that the diagonal elements of $\Sigma$ are the variances of the individual random variables and the off-diagonal elements are the covariances between pairs of random variables, we get
+
+$$
+\Sigma = \begin{pmatrix} \text{var}(X_1) & \text{cov}(X_1, X_2) & \ldots & \text{cov}(X_1, X_m)\\
+\text{cov}(X_2, X_1) & \text{var}(X_2) & \ldots & \text{cov}(X_2, X_m) \\
+\vdots & \vdots & \ddots & \vdots \\
+\text{cov}(X_m, X_1) & \text{cov}(X_m, X_2) & \ldots & \text{var}(X_m)
+\end{pmatrix}.
+$$
+
+## Cross-Covariance Matrix 
+
+## Block Matrix

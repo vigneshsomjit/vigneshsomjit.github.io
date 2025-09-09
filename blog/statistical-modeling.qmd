@@ -2,7 +2,7 @@
 title: "How to Think About Statistical Inference"
 description: "Building a mental framework for how data, models, inference, and probability come together."
 date: 13 August 2025
-categories: [Inference]
+categories: [Mathematical Statistics]
 ---
 
 ## Learning About the Unknown  

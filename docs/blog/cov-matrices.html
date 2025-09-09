@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2025-09-09">
+<meta name="description" content="The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.">
 
-<title>Vignesh Somjit -</title>
+<title>Vignesh Somjit - Covariance Matrix</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +32,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,35 +68,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -134,7 +105,7 @@ window.Quarto = {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -149,7 +120,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../blog/blog-index.html" aria-current="page"> 
+    <a class="nav-link" href="../blog/blog-index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -161,172 +132,93 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      
-            <p class="subtitle lead">“The first principle is that you must not fool yourself — and you are the easiest person to fool.” — Richard Feynman</p>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Linear Regression">Linear Regression <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Mathematical Statistics">Mathematical Statistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Probability">Probability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Structural Equation Modeling">Structural Equation Modeling <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#variance-and-covariance-of-random-variables" id="toc-variance-and-covariance-of-random-variables" class="nav-link active" data-scroll-target="#variance-and-covariance-of-random-variables">Variance and Covariance of Random Variables</a></li>
+  <li><a href="#covariance-matrix" id="toc-covariance-matrix" class="nav-link" data-scroll-target="#covariance-matrix">Covariance Matrix</a></li>
+  <li><a href="#cross-covariance-matrix" id="toc-cross-covariance-matrix" class="nav-link" data-scroll-target="#cross-covariance-matrix">Cross-Covariance Matrix</a></li>
+  <li><a href="#block-matrix" id="toc-block-matrix" class="nav-link" data-scroll-target="#block-matrix">Block Matrix</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Covariance Matrix</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Probability</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 9, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="variance-and-covariance-of-random-variables" class="level2">
+<h2 class="anchored" data-anchor-id="variance-and-covariance-of-random-variables">Variance and Covariance of Random Variables</h2>
+</section>
+<section id="covariance-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="covariance-matrix">Covariance Matrix</h2>
+<p>For a random vector <span class="math inline">\(X \in \mathbb{R}^m\)</span>, the <strong>covariance matrix</strong> <span class="math inline">\(\Sigma \in \mathbb{R}^{m \times m}\)</span> is defined as</p>
+<p><span id="eq-cov-matrix"><span class="math display">\[
+\Sigma = \text{var}(X) = \mathbb{E}\big[\big(X - \mathbb{E}[X]\big)\big(X - \mathbb{E}[X]\big)'\big].
+\tag{1}\]</span></span></p>
+<p>Observe that <a href="#eq-cov-matrix" class="quarto-xref">Equation&nbsp;1</a> is the expectation of the <strong>outer product</strong> of the vector <span class="math inline">\(X - \mathbb{E}[X]\)</span> with itself. Thus, the covariance matrix is given by</p>
+<p><span class="math display">\[
+\Sigma = \begin{pmatrix} \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]\\
+\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp;
+\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big] \\
+\vdots &amp; \ddots &amp; \vdots \\
+\mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]
+\end{pmatrix}.
+\]</span> Observing that the diagonal elements of <span class="math inline">\(\Sigma\)</span> are the variances of the individual random variables and the off-diagonal elements are the covariances between pairs of random variables, we get</p>
+<p><span class="math display">\[
+\Sigma = \begin{pmatrix} \text{var}(X_1) &amp; \text{cov}(X_1, X_2) &amp; \ldots &amp; \text{cov}(X_1, X_m)\\
+\text{cov}(X_2, X_1) &amp; \text{var}(X_2) &amp; \ldots &amp; \text{cov}(X_2, X_m) \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\text{cov}(X_m, X_1) &amp; \text{cov}(X_m, X_2) &amp; \ldots &amp; \text{var}(X_m)
+\end{pmatrix}.
+\]</span></p>
+</section>
+<section id="cross-covariance-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="cross-covariance-matrix">Cross-Covariance Matrix</h2>
+</section>
+<section id="block-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="block-matrix">Block Matrix</h2>
 
 
+</section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Structural Equation Modeling" data-listing-date-sort="1757394000000" data-listing-file-modified-sort="1757445094187" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="775">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/sem-intro.html" class="no-external">An Introduction to Structural Equation Modeling</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/sem-intro.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Structural Equation Modeling'); return false;">
-Structural Equation Modeling
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/sem-intro.html" class="no-external">I walk through the basics of structural equation modeling, focusing on model specification and estimation.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/sem-intro.html" class="no-external">
-<div class="listing-date">
-Sep 9, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Linear Regression" data-listing-date-sort="1757394000000" data-listing-file-modified-sort="1757027180577" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2504">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/linear-reg-rationale.html" class="no-external">Linear Regression as an Approximation Method</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/linear-reg-rationale.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Linear Regression'); return false;">
-Linear Regression
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/linear-reg-rationale.html" class="no-external">Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/linear-reg-rationale.html" class="no-external">
-<div class="listing-date">
-Sep 9, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Probability" data-listing-date-sort="1757394000000" data-listing-file-modified-sort="1757437541428" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="167">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/cov-matrices.html" class="no-external">Covariance Matrix</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/cov-matrices.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Probability'); return false;">
-Probability
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/cov-matrices.html" class="no-external">The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/cov-matrices.html" class="no-external">
-<div class="listing-date">
-Sep 9, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="Linear Regression" data-listing-date-sort="1756616400000" data-listing-file-modified-sort="1756960571805" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2835">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/linear-reg-model.html" class="no-external">The Linear Regression Model and its OLS Estimation</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/linear-reg-model.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Linear Regression'); return false;">
-Linear Regression
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/linear-reg-model.html" class="no-external">A detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/linear-reg-model.html" class="no-external">
-<div class="listing-date">
-Aug 31, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="Mathematical Statistics" data-listing-date-sort="1755061200000" data-listing-file-modified-sort="1757445215745" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="990">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/statistical-modeling.html" class="no-external">How to Think About Statistical Inference</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/statistical-modeling.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Mathematical Statistics'); return false;">
-Mathematical Statistics
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/statistical-modeling.html" class="no-external">Building a mental framework for how data, models, inference, and probability come together.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/statistical-modeling.html" class="no-external">
-<div class="listing-date">
-Aug 13, 2025
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
