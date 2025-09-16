@@ -1,0 +1,25 @@
+---
+title: "Maximum Likelihood Estimation"
+description: "MLE is one of the most important estimation principles in statistics and is widely used in econometrics. I introduce the concept and its properties in this post."
+date: 13 August 2025
+categories: [Mathematical Statistics]
+draft: true
+---
+
+## Likelihood Function 
+
+[Recall](statistical-modeling.qmd) that in a statistical model, we view our dataset $\mathbf{X}=\{X_{i1}, \ldots, X_{iK}\}_{i=1}^n$ as a collection of random variables with some unknown joint distribution $F(X_1, \ldots, X_K)$. A **parametric** statistical model assumes that the joint distribution generating the data belongs to a family of distributions that are fully described by a finite number of parameters. For example, the family of normal distributions
+$$
+\mathcal{F}= \{ \mathcal{N}(\mu, \sigma^2) : \mu \in \mathbb{R}, \sigma^2 > 0 \}
+$$
+
+is a parametric family fully described by two parameters: the mean $\mu$ and the variance $\sigma^2$.
+
+
+Suppose we are using a parametric model to describe how our dataset is generated. In this context, the **likelihood** is the joint probability mass (if discrete) or density (if continuous) of the observed data under different parameter values of the parametric model being used. More formally, the **likelihood function** is the joint probability distribution of the dataset viewed as a function of the parameters of the model: 
+
+$$
+L(\theta | \mathbf{X}) = f(\mathbf{X} | \theta)
+$$
+
+

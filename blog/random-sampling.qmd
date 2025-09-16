@@ -1,0 +1,145 @@
+---
+title: "Random Sampling and Model-Based Inference"
+description: "Intuitive but detailed treatment of what statistical inference entails in the context of a random sampling framework."
+date: today
+categories: [Mathematical Statistics]
+---
+
+## What is Statistical Inference? 
+
+Observational data is inherently random: if we were to measure the same variables repeatedly, we would almost certainly get different values each time. A classical explanation for the source of this randomness is the **model-based** (or **sampling-based**) perspective. In this abstraction, we assume there exists an underlying **superpopulation** or **data generating process** (**DGP**): a fixed but unknown probability distribution $F$ that can, in principle, generate infinitely many observations. Randomness then arises because we only observe finitely many realizations from $F$ — never the entire distribution. Within this framework, we define **statistical inference** as the process of using the observed random data to estimate features of $F$ and quantify the uncertainty in those estimates.  
+
+Notice that the exposition above implicitly assumes that there is a single underlying distribution $F$ from which all observed data are drawn. To make this mathematically precise, we need to introduce the **random sampling** assumption. This provides the framework to connect the observed data to the DGP, and thereby lays the foundation for statistical inference. 
+
+## Random Sampling Framework 
+
+The discussion going forward will primarily focus on **cross-sectional** datasets. These consist of several observations of a collection of variables for a given point in time and can be denoted as
+
+$$
+\{x_{i1}, x_{i2} \ldots, x_{iK}\}_{i=1}^n,
+$$
+
+where $x_{ik}$ is the value of the $k$-th variable for the $i$-th unit. A typical source of cross-sectional data in economics is through surveys like the [Current Population Survey (CPS)](https://www.census.gov/programs-surveys/cps.html) or the [American Community Survey (ACS)](https://www.census.gov/programs-surveys/acs). 
+
+
+### Mathematical Formalization of the Dataset 
+
+Since observational data is random, it is natural to we view the observed data vectors
+$$
+\boldsymbol{x}_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
+$$
+as a realization of the random vector
+$$
+\boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
+$$ 
+
+with some associated probability distribution. For example, we can think of the CPS dataset as consisting of random vectors
+
+$$
+\boldsymbol X_i = (sex_i, age_i, educ_i, wage_i)' \quad \text{for } i = 1, \ldots, n.
+$$
+For some specific individual $i$ in the CPS dataset, we then observe the vector of realized values[^1]
+
+$$
+\boldsymbol x_i = (1, 25, 16, 25000)'.
+$$
+Intuitively, the distinction between the random vector $\boldsymbol X_i$ and the realization $\boldsymbol x_i$ is that the former represents the $i$-th observation *before viewing the data* (unknown and random) and the latter represents the $i$-th observation *after viewing the data* (specific known value). 
+
+### Random Sampling 
+
+We have now represented the dataset as a collection of random vectors $\boldsymbol X_1, \ldots, \boldsymbol X_n$, each with some probability distribution $F_1 \ldots, F_n$. As it stands right now, the connection between the underlying DGP and the observed data is still unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each $\boldsymbol X_i$ to the underlying DGP in a straightforward manner. The simplest framework is that of **random sampling**.  Here, we assume that the random vectors $\boldsymbol X_1, \ldots , \boldsymbol X_n$ are **independent and identically distributed** (**iid**) with some common but unknown distribution $F$ on $\mathbb{R}^K$. Under this assumption, the data generating process $F$ is precisely the distribution that governs each individual random vector $\boldsymbol X_i$.
+
+#### Alternative Assumptions 
+The random sampling assumption is *one* potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets[^2], and (ii) it is the backbone of several statistical theorems and methods.[^3] However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. One approach to account for this is to instead assume mutual independence across **clusters** of units. Another example of a violation to the independence assumption is **time-series** data, where consecutive observations are usually correlated. Independence here is formulated in terms of **stationarity** and other concepts outside the scope of this post.  
+
+### Notation and Example 
+The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let's clarify some notation. We denote the *population-level random variables* as $X_1, \ldots, X_K$. The data generating process $F$ is the joint distribution of these random variables. For example, $wage$ denotes the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the *sample-level random variables* as $X_{i1}, \ldots, X_{iK}$. These represent the random variables associated with specific units in the sample. For example, $wage_i$ denotes the random variable for the wage of individual $i$ in the sample. Finally, we denote the *realized observations* as $x_{i1}, \ldots, x_{iK}$. These represent the actual data we observe. For example, $wage_i = 25,000$ denotes that individual $i$ has an observed wage of $25,000$ dollars.
+
+Now suppose our data generating process consists of one random variable with an exponential distribution with scale parameter $\beta = 1$:
+$$
+X \sim \text{Exp}(1) \quad \text{with density } f(x) = e^{-x} \text{ for } x \geq 0.
+$$
+
+If we assume our dataset is a random sample of size 30 from the above DGP, then 
+$$
+X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} \quad  X_i \perp X_j  \, \, \text{ for } i \neq j.
+$$
+
+The figure below plots the empirical kernel density of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between empirical and true densities in the figure below.[^4] 
+
+```{r}
+#| code-fold: true
+
+# Simulate IID sample of 30 obs from exp(1)
+set.seed(123)
+n <- 30
+x <- rexp(n, rate = 1)
+
+# Empirical Density 
+dens <- density(x)
+
+# True Exponential Density
+xs <- seq(0, max(x), length.out = 200)
+ys <- dexp(xs, rate = 1)
+
+# Plot
+plot(dens, main = "", xlab = "Observed Data", ylab = "Density", xlim = c(0, 5), ylim = c(0, max(c(dens$y, ys))))
+curve(dexp(x, rate = 1), from = min(x), add = TRUE, col = "red", lwd = 2)
+
+```
+
+
+## Point Estimation 
+
+An **estimand** $\theta$ is a function of the data generating process $F$. For example, the the population mean of a random variable $X$
+$$
+\mu = \mathbb{E}_F[X]
+$$
+is an estimand. However, we do not know the data generating process $F$ and therefore cannot calculate any estimand. Instead, we use the observed data to guess the value of the estimand. An **estimator** $\hat \theta$ is a function of the sample that provides a "good guess" for $\theta$. 
+
+In statistics, there are several **estimation methods** that provide systematic ways (i.e. rules) to construct estimators. One common method is the **analog principle** (or **plug-in principle**). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.[^5] Thus, the sample mean is the **analog estimator** for the population mean:
+
+$$
+\hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i.
+$$
+
+## Necessity for Statistical Models 
+
+### Sampling Distribution 
+
+How do we define a good guess? How do we choose between two different estimators? 
+
+
+we make certain simplifying assumptions about the general structure of $F$ and then
+
+We will be able to quantify the uncertainty of the guess if we make stronger starting assumptions about the data generating process.
+
+
+### Inference Is *Within* Statistical Models 
+
+
+The discussion in this sectiono is summarized by the figure below.
+
+```{mermaid}
+%%| fig-align: center
+flowchart LR
+  classDef box fill:#f8f9fa,stroke:#444,stroke-width:1px,rx:10,ry:10;
+
+  DGP["Data Generating Process"]:::box
+  Data["Observed Data"]:::box
+  Model["Statistical Model"]:::box
+
+  %% Main flows
+  DGP -- "Randomness" --> Data
+  DGP -. "Assumptions" .-> Model
+  Model -- "Probability" --> Data
+  Data -- "Inference" --> Model
+  Model -. "Approximate Reality" .-> DGP
+```
+
+
+[^1]: Here, the value of $1$ refers to the individual being a male and $16$ means $16$ years of education. 
+[^2]: For example, if we collected data on a random subset of individuals from a large common population (e.g. the USA), it is reasonable to assume that the characteristics of one individual are independent of another individual and that they all come from the same population distribution.
+[^3]: Crucial theorems in asymptotic statistical theory, like the Law of Large Numbers and the Central Limit Theorem, require the random sampling assumption to hold.
+[^4]: Technically, under iid sampling, the empirical distribution converges to the true distribution as the sample size tends to infinity — a result known as the Glivenko–Cantelli theorem. Nevertheless, in any finite sample, uncertainty remains, and with it the need for statistical inference.
+[^5]: To quote my Mathematical Statistics Professor Daniel Weiner: "Do to the sample to get your estimator, as you would do to your population to get your estimand." 

@@ -6,6 +6,7 @@ categories: [Linear Regression]
 bibliography: lin-reg-model.bib
 nocite: |
   @*
+draft: true
 ---
 ```{r setup, include=FALSE}
 library(ggplot2)

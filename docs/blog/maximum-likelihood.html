@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-15">
-<meta name="description" content="The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.">
+<meta name="dcterms.date" content="2025-08-13">
+<meta name="description" content="MLE is one of the most important estimation principles in statistics and is widely used in econometrics. I introduce the concept and its properties in this post.">
 
-<title>Vignesh Somjit - Covariance Matrix</title>
+<title>Vignesh Somjit - Maximum Likelihood Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,10 +140,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#variance-and-covariance-of-random-variables" id="toc-variance-and-covariance-of-random-variables" class="nav-link active" data-scroll-target="#variance-and-covariance-of-random-variables">Variance and Covariance of Random Variables</a></li>
-  <li><a href="#covariance-matrix" id="toc-covariance-matrix" class="nav-link" data-scroll-target="#covariance-matrix">Covariance Matrix</a></li>
-  <li><a href="#cross-covariance-matrix" id="toc-cross-covariance-matrix" class="nav-link" data-scroll-target="#cross-covariance-matrix">Cross-Covariance Matrix</a></li>
-  <li><a href="#block-matrix" id="toc-block-matrix" class="nav-link" data-scroll-target="#block-matrix">Block Matrix</a></li>
+  <li><a href="#likelihood-function" id="toc-likelihood-function" class="nav-link active" data-scroll-target="#likelihood-function">Likelihood Function</a></li>
   </ul>
 </nav>
     </div>
@@ -152,15 +149,15 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Covariance Matrix</h1>
+<h1 class="title">Maximum Likelihood Estimation</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Probability</div>
+    <div class="quarto-category">Mathematical Statistics</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.
+    MLE is one of the most important estimation principles in statistics and is widely used in econometrics. I introduce the concept and its properties in this post.
   </div>
 </div>
 
@@ -171,7 +168,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 15, 2025</p>
+      <p class="date">August 13, 2025</p>
     </div>
   </div>
   
@@ -183,37 +180,16 @@ window.Quarto = {
 </header>
 
 
-<section id="variance-and-covariance-of-random-variables" class="level2">
-<h2 class="anchored" data-anchor-id="variance-and-covariance-of-random-variables">Variance and Covariance of Random Variables</h2>
-</section>
-<section id="covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="covariance-matrix">Covariance Matrix</h2>
-<p>For a random vector <span class="math inline">\(X \in \mathbb{R}^m\)</span>, the <strong>covariance matrix</strong> <span class="math inline">\(\Sigma \in \mathbb{R}^{m \times m}\)</span> is defined as</p>
-<p><span id="eq-cov-matrix"><span class="math display">\[
-\Sigma = \text{var}(X) = \mathbb{E}\big[\big(X - \mathbb{E}[X]\big)\big(X - \mathbb{E}[X]\big)'\big].
-\tag{1}\]</span></span></p>
-<p>Observe that <a href="#eq-cov-matrix" class="quarto-xref">Equation&nbsp;1</a> is the expectation of the <strong>outer product</strong> of the vector <span class="math inline">\(X - \mathbb{E}[X]\)</span> with itself. Thus, the covariance matrix is given by</p>
-<p><span class="math display">\[
-\Sigma = \begin{pmatrix} \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]\\
-\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp;
-\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big] \\
-\vdots &amp; \ddots &amp; \vdots \\
-\mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]
-\end{pmatrix}.
-\]</span> Observing that the diagonal elements of <span class="math inline">\(\Sigma\)</span> are the variances of the individual random variables and the off-diagonal elements are the covariances between pairs of random variables, we get</p>
-<p><span class="math display">\[
-\Sigma = \begin{pmatrix} \text{var}(X_1) &amp; \text{cov}(X_1, X_2) &amp; \ldots &amp; \text{cov}(X_1, X_m)\\
-\text{cov}(X_2, X_1) &amp; \text{var}(X_2) &amp; \ldots &amp; \text{cov}(X_2, X_m) \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-\text{cov}(X_m, X_1) &amp; \text{cov}(X_m, X_2) &amp; \ldots &amp; \text{var}(X_m)
-\end{pmatrix}.
+<section id="likelihood-function" class="level2">
+<h2 class="anchored" data-anchor-id="likelihood-function">Likelihood Function</h2>
+<p><a href="../blog/statistical-modeling.html">Recall</a> that in a statistical model, we view our dataset <span class="math inline">\(\mathbf{X}=\{X_{i1}, \ldots, X_{iK}\}_{i=1}^n\)</span> as a collection of random variables with some unknown joint distribution <span class="math inline">\(F(X_1, \ldots, X_K)\)</span>. A <strong>parametric</strong> statistical model assumes that the joint distribution generating the data belongs to a family of distributions that are fully described by a finite number of parameters. For example, the family of normal distributions <span class="math display">\[
+\mathcal{F}= \{ \mathcal{N}(\mu, \sigma^2) : \mu \in \mathbb{R}, \sigma^2 &gt; 0 \}
 \]</span></p>
-</section>
-<section id="cross-covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="cross-covariance-matrix">Cross-Covariance Matrix</h2>
-</section>
-<section id="block-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="block-matrix">Block Matrix</h2>
+<p>is a parametric family fully described by two parameters: the mean <span class="math inline">\(\mu\)</span> and the variance <span class="math inline">\(\sigma^2\)</span>.</p>
+<p>Suppose we are using a parametric model to describe how our dataset is generated. In this context, the <strong>likelihood</strong> is the joint probability mass (if discrete) or density (if continuous) of the observed data under different parameter values of the parametric model being used. More formally, the <strong>likelihood function</strong> is the joint probability distribution of the dataset viewed as a function of the parameters of the model:</p>
+<p><span class="math display">\[
+L(\theta | \mathbf{X}) = f(\mathbf{X} | \theta)
+\]</span></p>
 
 
 </section>

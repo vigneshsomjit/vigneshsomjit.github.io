@@ -3,10 +3,7 @@
     "listing": "/blog/blog-index.html",
     "items": [
       "/blog/sem-intro.html",
-      "/blog/linear-reg-rationale.html",
-      "/blog/cov-matrices.html",
-      "/blog/linear-reg-model.html",
-      "/blog/statistical-modeling.html"
+      "/blog/random-sampling.html"
     ]
   }
 ]
