@@ -3,6 +3,9 @@ title: "Random Sampling and Model-Based Inference"
 description: "Intuitive but detailed treatment of what statistical inference entails in the context of a random sampling framework."
 date: today
 categories: [Mathematical Statistics]
+bibliography: [statistical-inference.bib]
+nocite: |
+  @*
 ---
 
 ## What is Statistical Inference? 
@@ -47,13 +50,13 @@ Intuitively, the distinction between the random vector $\boldsymbol X_i$ and the
 
 ### Random Sampling 
 
-We have now represented the dataset as a collection of random vectors $\boldsymbol X_1, \ldots, \boldsymbol X_n$, each with some probability distribution $F_1 \ldots, F_n$. As it stands right now, the connection between the underlying DGP and the observed data is still unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each $\boldsymbol X_i$ to the underlying DGP in a straightforward manner. The simplest framework is that of **random sampling**.  Here, we assume that the random vectors $\boldsymbol X_1, \ldots , \boldsymbol X_n$ are **independent and identically distributed** (**iid**) with some common but unknown distribution $F$ on $\mathbb{R}^K$. Under this assumption, the data generating process $F$ is precisely the distribution that governs each individual random vector $\boldsymbol X_i$.
+We have now represented the dataset as a collection of random vectors $\boldsymbol X_1, \ldots, \boldsymbol X_n$, each with some probability distribution $F_1 \ldots, F_n$. However, the connection between the underlying DGP and the observed data remains unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each $\boldsymbol X_i$ to the underlying DGP in a straightforward manner. The simplest framework is that of **random sampling**.  Here, we assume that the random vectors $\boldsymbol X_1, \ldots , \boldsymbol X_n$ are **independent and identically distributed** (**iid**) with some common but unknown distribution $F$ on $\mathbb{R}^K$. Under this assumption, the data generating process $F$ is precisely the distribution that governs each individual random vector $\boldsymbol X_i$.
 
 #### Alternative Assumptions 
-The random sampling assumption is *one* potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets[^2], and (ii) it is the backbone of several statistical theorems and methods.[^3] However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. One approach to account for this is to instead assume mutual independence across **clusters** of units. Another example of a violation to the independence assumption is **time-series** data, where consecutive observations are usually correlated. Independence here is formulated in terms of **stationarity** and other concepts outside the scope of this post.  
+The random sampling assumption is *one* potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets[^2], and (ii) it is the backbone of several statistical theorems and methods.[^3] However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. An alternative approach in such cases is to instead assume mutual independence across **clusters** of units. Another example of a violation to the independence assumption is **time-series** data, where the individual unit is indexed by time. Here, consecutive observations are usually correlated and independence is instead formulated in terms of [**stationarity**](https://en.wikipedia.org/wiki/Stationary_process) and other concepts outside the scope of this post.  
 
 ### Notation and Example 
-The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let's clarify some notation. We denote the *population-level random variables* as $X_1, \ldots, X_K$. The data generating process $F$ is the joint distribution of these random variables. For example, $wage$ denotes the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the *sample-level random variables* as $X_{i1}, \ldots, X_{iK}$. These represent the random variables associated with specific units in the sample. For example, $wage_i$ denotes the random variable for the wage of individual $i$ in the sample. Finally, we denote the *realized observations* as $x_{i1}, \ldots, x_{iK}$. These represent the actual data we observe. For example, $wage_i = 25,000$ denotes that individual $i$ has an observed wage of $25,000$ dollars.
+The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let's clarify some notation used in the random sampling framework. We denote the *population-level random variables* as $X_1, \ldots, X_K$. The data generating process $F$ is the joint distribution of these random variables. For example, $wage$ denotes the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the *sample-level random variables* as $X_{i1}, \ldots, X_{iK}$. These represent the random variables associated with specific units in the sample. For example, $wage_i$ denotes the random variable representing the wage of individual $i$ in the sample. Finally, we denote the *realized observations* as $X_{i1}=x_{i1}, \ldots, X_{iK}=x_{iK}$. These are the actual values we observe. For example, $wage_i = 25,000$ means that the observed wage of individual $i$ is $25,000$.
 
 Now suppose our data generating process consists of one random variable with an exponential distribution with scale parameter $\beta = 1$:
 $$
@@ -65,7 +68,7 @@ $$
 X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} \quad  X_i \perp X_j  \, \, \text{ for } i \neq j.
 $$
 
-The figure below plots the empirical kernel density of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between empirical and true densities in the figure below.[^4] 
+The figure below plots the empirical [kernel density](https://en.wikipedia.org/wiki/Kernel_density_estimation#:~:text=In%20statistics%2C%20kernel%20density%20estimation,based%20on%20kernels%20as%20weights.) of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between empirical and true densities in the figure below.[^4] 
 
 ```{r}
 #| code-fold: true
@@ -91,24 +94,37 @@ curve(dexp(x, rate = 1), from = min(x), add = TRUE, col = "red", lwd = 2)
 
 ## Point Estimation 
 
-An **estimand** $\theta$ is a function of the data generating process $F$. For example, the the population mean of a random variable $X$
-$$
-\mu = \mathbb{E}_F[X]
-$$
-is an estimand. However, we do not know the data generating process $F$ and therefore cannot calculate any estimand. Instead, we use the observed data to guess the value of the estimand. An **estimator** $\hat \theta$ is a function of the sample that provides a "good guess" for $\theta$. 
+**Point estimation** is the first step of statistical inference, and involves constructing a "good guess" for a feature of the unknown data generating process. To be more precise, this feature is called an **estimand** $\theta$ and is defined as a function of the data generating process $F$: 
 
-In statistics, there are several **estimation methods** that provide systematic ways (i.e. rules) to construct estimators. One common method is the **analog principle** (or **plug-in principle**). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.[^5] Thus, the sample mean is the **analog estimator** for the population mean:
+$$
+\theta = \theta(F).
+$$
+
+An example of an estimand is the the population mean of a random variable $X$:
+$$
+\mu = \mathbb{E}_F[X].
+$$
+
+Since the DGP is unknown, the best we can do is use the observed data to guess the value of the estimand. An **estimator** $\hat \theta$ is a function of the sample that is intended to provide a guess of the estimand:
+
+$$
+\hat{\theta} = \hat{\theta}(X_1, \ldots, X_n).
+$$
+
+In statistics, there are several **estimation methods** that provide systematic ways (i.e. rules) to construct estimators. One common method is the **analog principle** (or **plug-in principle**). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.[^5] Thus, the **analog estimator** for the population mean is the sample mean, defined as
 
 $$
 \hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i.
 $$
 
-## Necessity for Statistical Models 
+### Estimator Properties 
+
+How do we know if an estimator is any good? And when we have two competing estimators, how do we decide which one to use? To answer these questions, statisticians study desirable properties that an estimator should ideally satisfy. A full treatment of estimator properties is typically the focus of a mathematical statistics course, but it is still valuable to briefly highlight some fundamental properties here. 
+
+
+## The Necessity for Statistical Models 
 
 ### Sampling Distribution 
-
-How do we define a good guess? How do we choose between two different estimators? 
-
 
 we make certain simplifying assumptions about the general structure of $F$ and then
 

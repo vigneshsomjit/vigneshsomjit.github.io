@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-15">
+<meta name="dcterms.date" content="2025-09-16">
 <meta name="description" content="Intuitive but detailed treatment of what statistical inference entails in the context of a random sampling framework.">
 
 <title>Vignesh Somjit - Random Sampling and Model-Based Inference</title>
@@ -56,7 +56,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -184,8 +204,11 @@ window.Quarto = {
   <li><a href="#random-sampling" id="toc-random-sampling" class="nav-link" data-scroll-target="#random-sampling">Random Sampling</a></li>
   <li><a href="#notation-and-example" id="toc-notation-and-example" class="nav-link" data-scroll-target="#notation-and-example">Notation and Example</a></li>
   </ul></li>
-  <li><a href="#point-estimation" id="toc-point-estimation" class="nav-link" data-scroll-target="#point-estimation">Point Estimation</a></li>
-  <li><a href="#necessity-for-statistical-models" id="toc-necessity-for-statistical-models" class="nav-link" data-scroll-target="#necessity-for-statistical-models">Necessity for Statistical Models</a>
+  <li><a href="#point-estimation" id="toc-point-estimation" class="nav-link" data-scroll-target="#point-estimation">Point Estimation</a>
+  <ul class="collapse">
+  <li><a href="#estimator-properties" id="toc-estimator-properties" class="nav-link" data-scroll-target="#estimator-properties">Estimator Properties</a></li>
+  </ul></li>
+  <li><a href="#the-necessity-for-statistical-models" id="toc-the-necessity-for-statistical-models" class="nav-link" data-scroll-target="#the-necessity-for-statistical-models">The Necessity for Statistical Models</a>
   <ul class="collapse">
   <li><a href="#sampling-distribution" id="toc-sampling-distribution" class="nav-link" data-scroll-target="#sampling-distribution">Sampling Distribution</a></li>
   <li><a href="#inference-is-within-statistical-models" id="toc-inference-is-within-statistical-models" class="nav-link" data-scroll-target="#inference-is-within-statistical-models">Inference Is <em>Within</em> Statistical Models</a></li>
@@ -217,7 +240,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 15, 2025</p>
+      <p class="date">September 16, 2025</p>
     </div>
   </div>
   
@@ -258,22 +281,22 @@ window.Quarto = {
 </section>
 <section id="random-sampling" class="level3">
 <h3 class="anchored" data-anchor-id="random-sampling">Random Sampling</h3>
-<p>We have now represented the dataset as a collection of random vectors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span>, each with some probability distribution <span class="math inline">\(F_1 \ldots, F_n\)</span>. As it stands right now, the connection between the underlying DGP and the observed data is still unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each <span class="math inline">\(\boldsymbol X_i\)</span> to the underlying DGP in a straightforward manner. The simplest framework is that of <strong>random sampling</strong>. Here, we assume that the random vectors <span class="math inline">\(\boldsymbol X_1, \ldots , \boldsymbol X_n\)</span> are <strong>independent and identically distributed</strong> (<strong>iid</strong>) with some common but unknown distribution <span class="math inline">\(F\)</span> on <span class="math inline">\(\mathbb{R}^K\)</span>. Under this assumption, the data generating process <span class="math inline">\(F\)</span> is precisely the distribution that governs each individual random vector <span class="math inline">\(\boldsymbol X_i\)</span>.</p>
+<p>We have now represented the dataset as a collection of random vectors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span>, each with some probability distribution <span class="math inline">\(F_1 \ldots, F_n\)</span>. However, the connection between the underlying DGP and the observed data remains unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each <span class="math inline">\(\boldsymbol X_i\)</span> to the underlying DGP in a straightforward manner. The simplest framework is that of <strong>random sampling</strong>. Here, we assume that the random vectors <span class="math inline">\(\boldsymbol X_1, \ldots , \boldsymbol X_n\)</span> are <strong>independent and identically distributed</strong> (<strong>iid</strong>) with some common but unknown distribution <span class="math inline">\(F\)</span> on <span class="math inline">\(\mathbb{R}^K\)</span>. Under this assumption, the data generating process <span class="math inline">\(F\)</span> is precisely the distribution that governs each individual random vector <span class="math inline">\(\boldsymbol X_i\)</span>.</p>
 <section id="alternative-assumptions" class="level4">
 <h4 class="anchored" data-anchor-id="alternative-assumptions">Alternative Assumptions</h4>
-<p>The random sampling assumption is <em>one</em> potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and (ii) it is the backbone of several statistical theorems and methods.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. One approach to account for this is to instead assume mutual independence across <strong>clusters</strong> of units. Another example of a violation to the independence assumption is <strong>time-series</strong> data, where consecutive observations are usually correlated. Independence here is formulated in terms of <strong>stationarity</strong> and other concepts outside the scope of this post.</p>
+<p>The random sampling assumption is <em>one</em> potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and (ii) it is the backbone of several statistical theorems and methods.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. An alternative approach in such cases is to instead assume mutual independence across <strong>clusters</strong> of units. Another example of a violation to the independence assumption is <strong>time-series</strong> data, where the individual unit is indexed by time. Here, consecutive observations are usually correlated and independence is instead formulated in terms of <a href="https://en.wikipedia.org/wiki/Stationary_process"><strong>stationarity</strong></a> and other concepts outside the scope of this post.</p>
 </section>
 </section>
 <section id="notation-and-example" class="level3">
 <h3 class="anchored" data-anchor-id="notation-and-example">Notation and Example</h3>
-<p>The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let’s clarify some notation. We denote the <em>population-level random variables</em> as <span class="math inline">\(X_1, \ldots, X_K\)</span>. The data generating process <span class="math inline">\(F\)</span> is the joint distribution of these random variables. For example, <span class="math inline">\(wage\)</span> denotes the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the <em>sample-level random variables</em> as <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>. These represent the random variables associated with specific units in the sample. For example, <span class="math inline">\(wage_i\)</span> denotes the random variable for the wage of individual <span class="math inline">\(i\)</span> in the sample. Finally, we denote the <em>realized observations</em> as <span class="math inline">\(x_{i1}, \ldots, x_{iK}\)</span>. These represent the actual data we observe. For example, <span class="math inline">\(wage_i = 25,000\)</span> denotes that individual <span class="math inline">\(i\)</span> has an observed wage of <span class="math inline">\(25,000\)</span> dollars.</p>
+<p>The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let’s clarify some notation used in the random sampling framework. We denote the <em>population-level random variables</em> as <span class="math inline">\(X_1, \ldots, X_K\)</span>. The data generating process <span class="math inline">\(F\)</span> is the joint distribution of these random variables. For example, <span class="math inline">\(wage\)</span> denotes the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the <em>sample-level random variables</em> as <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>. These represent the random variables associated with specific units in the sample. For example, <span class="math inline">\(wage_i\)</span> denotes the random variable representing the wage of individual <span class="math inline">\(i\)</span> in the sample. Finally, we denote the <em>realized observations</em> as <span class="math inline">\(X_{i1}=x_{i1}, \ldots, X_{iK}=x_{iK}\)</span>. These are the actual values we observe. For example, <span class="math inline">\(wage_i = 25,000\)</span> means that the observed wage of individual <span class="math inline">\(i\)</span> is <span class="math inline">\(25,000\)</span>.</p>
 <p>Now suppose our data generating process consists of one random variable with an exponential distribution with scale parameter <span class="math inline">\(\beta = 1\)</span>: <span class="math display">\[
 X \sim \text{Exp}(1) \quad \text{with density } f(x) = e^{-x} \text{ for } x \geq 0.
 \]</span></p>
 <p>If we assume our dataset is a random sample of size 30 from the above DGP, then <span class="math display">\[
 X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} \quad  X_i \perp X_j  \, \, \text{ for } i \neq j.
 \]</span></p>
-<p>The figure below plots the empirical kernel density of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between empirical and true densities in the figure below.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>The figure below plots the empirical <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation#:~:text=In%20statistics%2C%20kernel%20density%20estimation,based%20on%20kernels%20as%20weights.">kernel density</a> of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between empirical and true densities in the figure below.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -305,19 +328,30 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
 </section>
 <section id="point-estimation" class="level2">
 <h2 class="anchored" data-anchor-id="point-estimation">Point Estimation</h2>
-<p>An <strong>estimand</strong> <span class="math inline">\(\theta\)</span> is a function of the data generating process <span class="math inline">\(F\)</span>. For example, the the population mean of a random variable <span class="math inline">\(X\)</span> <span class="math display">\[
-\mu = \mathbb{E}_F[X]
-\]</span> is an estimand. However, we do not know the data generating process <span class="math inline">\(F\)</span> and therefore cannot calculate any estimand. Instead, we use the observed data to guess the value of the estimand. An <strong>estimator</strong> <span class="math inline">\(\hat \theta\)</span> is a function of the sample that provides a “good guess” for <span class="math inline">\(\theta\)</span>.</p>
-<p>In statistics, there are several <strong>estimation methods</strong> that provide systematic ways (i.e.&nbsp;rules) to construct estimators. One common method is the <strong>analog principle</strong> (or <strong>plug-in principle</strong>). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Thus, the sample mean is the <strong>analog estimator</strong> for the population mean:</p>
+<p><strong>Point estimation</strong> is the first step of statistical inference, and involves constructing a “good guess” for a feature of the unknown data generating process. To be more precise, this feature is called an <strong>estimand</strong> <span class="math inline">\(\theta\)</span> and is defined as a function of the data generating process <span class="math inline">\(F\)</span>:</p>
+<p><span class="math display">\[
+\theta = \theta(F).
+\]</span></p>
+<p>An example of an estimand is the the population mean of a random variable <span class="math inline">\(X\)</span>: <span class="math display">\[
+\mu = \mathbb{E}_F[X].
+\]</span></p>
+<p>Since the DGP is unknown, the best we can do is use the observed data to guess the value of the estimand. An <strong>estimator</strong> <span class="math inline">\(\hat \theta\)</span> is a function of the sample that is intended to provide a guess of the estimand:</p>
+<p><span class="math display">\[
+\hat{\theta} = \hat{\theta}(X_1, \ldots, X_n).
+\]</span></p>
+<p>In statistics, there are several <strong>estimation methods</strong> that provide systematic ways (i.e.&nbsp;rules) to construct estimators. One common method is the <strong>analog principle</strong> (or <strong>plug-in principle</strong>). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Thus, the <strong>analog estimator</strong> for the population mean is the sample mean, defined as</p>
 <p><span class="math display">\[
 \hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i.
 \]</span></p>
+<section id="estimator-properties" class="level3">
+<h3 class="anchored" data-anchor-id="estimator-properties">Estimator Properties</h3>
+<p>How do we know if an estimator is any good? And when we have two competing estimators, how do we decide which one to use? To answer these questions, statisticians study desirable properties that an estimator should ideally satisfy. A full treatment of estimator properties is typically the focus of a mathematical statistics course, but it is still valuable to briefly highlight some fundamental properties here.</p>
 </section>
-<section id="necessity-for-statistical-models" class="level2">
-<h2 class="anchored" data-anchor-id="necessity-for-statistical-models">Necessity for Statistical Models</h2>
+</section>
+<section id="the-necessity-for-statistical-models" class="level2">
+<h2 class="anchored" data-anchor-id="the-necessity-for-statistical-models">The Necessity for Statistical Models</h2>
 <section id="sampling-distribution" class="level3">
 <h3 class="anchored" data-anchor-id="sampling-distribution">Sampling Distribution</h3>
-<p>How do we define a good guess? How do we choose between two different estimators?</p>
 <p>we make certain simplifying assumptions about the general structure of <span class="math inline">\(F\)</span> and then</p>
 <p>We will be able to quantify the uncertainty of the guess if we make stronger starting assumptions about the data generating process.</p>
 </section>
@@ -350,11 +384,16 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
 </div>
 
 
+
 </section>
 </section>
 
 
-<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-hansen2022probability" class="csl-entry" role="listitem">
+Hansen, Bruce E. 2022. <em>Probability and Statistics for Economists</em>. Princeton University Press.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
 <li id="fn1"><p>Here, the value of <span class="math inline">\(1\)</span> refers to the individual being a male and <span class="math inline">\(16\)</span> means <span class="math inline">\(16\)</span> years of education.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
