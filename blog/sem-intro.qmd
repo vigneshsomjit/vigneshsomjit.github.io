@@ -6,6 +6,7 @@ categories: [Structural Equation Modeling]
 bibliography: [sem.bib]
 nocite: |
   @*
+draft: true
 ---
 
 ## Structural Equation Modeling: A Way of Thinking 

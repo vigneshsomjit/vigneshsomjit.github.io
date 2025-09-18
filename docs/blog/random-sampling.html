@@ -6,8 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-16">
-<meta name="description" content="Intuitive but detailed treatment of what statistical inference entails in the context of a random sampling framework.">
+<meta name="dcterms.date" content="2025-09-17">
+<meta name="description" content="Big picture intuition for statistical inference under the random sampling framework.">
 
 <title>Vignesh Somjit - Random Sampling and Model-Based Inference</title>
 <style>
@@ -198,7 +198,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#what-is-statistical-inference" id="toc-what-is-statistical-inference" class="nav-link active" data-scroll-target="#what-is-statistical-inference">What is Statistical Inference?</a></li>
-  <li><a href="#random-sampling-framework" id="toc-random-sampling-framework" class="nav-link" data-scroll-target="#random-sampling-framework">Random Sampling Framework</a>
+  <li><a href="#the-random-sampling-framework" id="toc-the-random-sampling-framework" class="nav-link" data-scroll-target="#the-random-sampling-framework">The Random Sampling Framework</a>
   <ul class="collapse">
   <li><a href="#mathematical-formalization-of-the-dataset" id="toc-mathematical-formalization-of-the-dataset" class="nav-link" data-scroll-target="#mathematical-formalization-of-the-dataset">Mathematical Formalization of the Dataset</a></li>
   <li><a href="#random-sampling" id="toc-random-sampling" class="nav-link" data-scroll-target="#random-sampling">Random Sampling</a></li>
@@ -210,9 +210,9 @@ window.Quarto = {
   </ul></li>
   <li><a href="#the-necessity-for-statistical-models" id="toc-the-necessity-for-statistical-models" class="nav-link" data-scroll-target="#the-necessity-for-statistical-models">The Necessity for Statistical Models</a>
   <ul class="collapse">
-  <li><a href="#sampling-distribution" id="toc-sampling-distribution" class="nav-link" data-scroll-target="#sampling-distribution">Sampling Distribution</a></li>
-  <li><a href="#inference-is-within-statistical-models" id="toc-inference-is-within-statistical-models" class="nav-link" data-scroll-target="#inference-is-within-statistical-models">Inference Is <em>Within</em> Statistical Models</a></li>
+  <li><a href="#constructing-confidence-intervals-for-hatmu" id="toc-constructing-confidence-intervals-for-hatmu" class="nav-link" data-scroll-target="#constructing-confidence-intervals-for-hatmu">Constructing Confidence Intervals for <span class="math inline">\(\hat\mu\)</span></a></li>
   </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -229,7 +229,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Intuitive but detailed treatment of what statistical inference entails in the context of a random sampling framework.
+    Big picture intuition for statistical inference under the random sampling framework.
   </div>
 </div>
 
@@ -240,7 +240,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 16, 2025</p>
+      <p class="date">September 17, 2025</p>
     </div>
   </div>
   
@@ -257,8 +257,8 @@ window.Quarto = {
 <p>Observational data is inherently random: if we were to measure the same variables repeatedly, we would almost certainly get different values each time. A classical explanation for the source of this randomness is the <strong>model-based</strong> (or <strong>sampling-based</strong>) perspective. In this abstraction, we assume there exists an underlying <strong>superpopulation</strong> or <strong>data generating process</strong> (<strong>DGP</strong>): a fixed but unknown probability distribution <span class="math inline">\(F\)</span> that can, in principle, generate infinitely many observations. Randomness then arises because we only observe finitely many realizations from <span class="math inline">\(F\)</span> — never the entire distribution. Within this framework, we define <strong>statistical inference</strong> as the process of using the observed random data to estimate features of <span class="math inline">\(F\)</span> and quantify the uncertainty in those estimates.</p>
 <p>Notice that the exposition above implicitly assumes that there is a single underlying distribution <span class="math inline">\(F\)</span> from which all observed data are drawn. To make this mathematically precise, we need to introduce the <strong>random sampling</strong> assumption. This provides the framework to connect the observed data to the DGP, and thereby lays the foundation for statistical inference.</p>
 </section>
-<section id="random-sampling-framework" class="level2">
-<h2 class="anchored" data-anchor-id="random-sampling-framework">Random Sampling Framework</h2>
+<section id="the-random-sampling-framework" class="level2">
+<h2 class="anchored" data-anchor-id="the-random-sampling-framework">The Random Sampling Framework</h2>
 <p>The discussion going forward will primarily focus on <strong>cross-sectional</strong> datasets. These consist of several observations of a collection of variables for a given point in time and can be denoted as</p>
 <p><span class="math display">\[
 \{x_{i1}, x_{i2} \ldots, x_{iK}\}_{i=1}^n,
@@ -266,7 +266,7 @@ window.Quarto = {
 <p>where <span class="math inline">\(x_{ik}\)</span> is the value of the <span class="math inline">\(k\)</span>-th variable for the <span class="math inline">\(i\)</span>-th unit. A typical source of cross-sectional data in economics is through surveys like the <a href="https://www.census.gov/programs-surveys/cps.html">Current Population Survey (CPS)</a> or the <a href="https://www.census.gov/programs-surveys/acs">American Community Survey (ACS)</a>.</p>
 <section id="mathematical-formalization-of-the-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="mathematical-formalization-of-the-dataset">Mathematical Formalization of the Dataset</h3>
-<p>Since observational data is random, it is natural to we view the observed data vectors <span class="math display">\[
+<p>Since observational data is random, it is natural to we view the observed data vector <span class="math display">\[
 \boldsymbol{x}_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
 \]</span> as a realization of the random vector <span class="math display">\[
 \boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
@@ -281,7 +281,7 @@ window.Quarto = {
 </section>
 <section id="random-sampling" class="level3">
 <h3 class="anchored" data-anchor-id="random-sampling">Random Sampling</h3>
-<p>We have now represented the dataset as a collection of random vectors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span>, each with some probability distribution <span class="math inline">\(F_1 \ldots, F_n\)</span>. However, the connection between the underlying DGP and the observed data remains unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each <span class="math inline">\(\boldsymbol X_i\)</span> to the underlying DGP in a straightforward manner. The simplest framework is that of <strong>random sampling</strong>. Here, we assume that the random vectors <span class="math inline">\(\boldsymbol X_1, \ldots , \boldsymbol X_n\)</span> are <strong>independent and identically distributed</strong> (<strong>iid</strong>) with some common but unknown distribution <span class="math inline">\(F\)</span> on <span class="math inline">\(\mathbb{R}^K\)</span>. Under this assumption, the data generating process <span class="math inline">\(F\)</span> is precisely the distribution that governs each individual random vector <span class="math inline">\(\boldsymbol X_i\)</span>.</p>
+<p>We have now represented the dataset as a collection of random vectors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span>, each with some probability distribution <span class="math inline">\(F_1 \ldots, F_n\)</span>. However, the connection between the underlying DGP and the observed data remains unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each <span class="math inline">\(\boldsymbol X_i\)</span> to the underlying DGP in a straightforward manner. The simplest framework is that of <strong>random sampling</strong>. Here, we assume that the random vectors <span class="math inline">\(\boldsymbol X_1, \ldots , \boldsymbol X_n\)</span> are <strong>independent and identically distributed</strong> (<strong>iid</strong>) with some common but unknown distribution <span class="math inline">\(F\)</span> on <span class="math inline">\(\mathbb{R}^K\)</span>. Thus, under this assumption, the data generating process is precisely the distribution that governs each individual random vector <span class="math inline">\(\boldsymbol X_i\)</span>.</p>
 <section id="alternative-assumptions" class="level4">
 <h4 class="anchored" data-anchor-id="alternative-assumptions">Alternative Assumptions</h4>
 <p>The random sampling assumption is <em>one</em> potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and (ii) it is the backbone of several statistical theorems and methods.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. An alternative approach in such cases is to instead assume mutual independence across <strong>clusters</strong> of units. Another example of a violation to the independence assumption is <strong>time-series</strong> data, where the individual unit is indexed by time. Here, consecutive observations are usually correlated and independence is instead formulated in terms of <a href="https://en.wikipedia.org/wiki/Stationary_process"><strong>stationarity</strong></a> and other concepts outside the scope of this post.</p>
@@ -289,14 +289,14 @@ window.Quarto = {
 </section>
 <section id="notation-and-example" class="level3">
 <h3 class="anchored" data-anchor-id="notation-and-example">Notation and Example</h3>
-<p>The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let’s clarify some notation used in the random sampling framework. We denote the <em>population-level random variables</em> as <span class="math inline">\(X_1, \ldots, X_K\)</span>. The data generating process <span class="math inline">\(F\)</span> is the joint distribution of these random variables. For example, <span class="math inline">\(wage\)</span> denotes the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the <em>sample-level random variables</em> as <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>. These represent the random variables associated with specific units in the sample. For example, <span class="math inline">\(wage_i\)</span> denotes the random variable representing the wage of individual <span class="math inline">\(i\)</span> in the sample. Finally, we denote the <em>realized observations</em> as <span class="math inline">\(X_{i1}=x_{i1}, \ldots, X_{iK}=x_{iK}\)</span>. These are the actual values we observe. For example, <span class="math inline">\(wage_i = 25,000\)</span> means that the observed wage of individual <span class="math inline">\(i\)</span> is <span class="math inline">\(25,000\)</span>.</p>
+<p>The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let’s clarify some notation used in the random sampling framework. We denote the <em>population-level random variables</em> as <span class="math inline">\(X_1, \ldots, X_K\)</span>. The data generating process <span class="math inline">\(F\)</span> is the joint distribution of these random variables. For example, <span class="math inline">\(X_1\)</span> could denote the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the <em>sample-level random variables</em> as <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>. These represent the random variables associated with specific units in the sample. Continuing the example, <span class="math inline">\(X_{i1}\)</span> denotes the random variable representing the wage of individual <span class="math inline">\(i\)</span> in the sample. Finally, we denote the <em>realized observations</em> as <span class="math inline">\(X_{i1}=x_{i1}, \ldots, X_{iK}=x_{iK}\)</span>. These are the actual values we observe. So, <span class="math inline">\(X_{i1} = 25,000\)</span> means that the observed wage of individual <span class="math inline">\(i\)</span> is <span class="math inline">\(25,000\)</span>.</p>
 <p>Now suppose our data generating process consists of one random variable with an exponential distribution with scale parameter <span class="math inline">\(\beta = 1\)</span>: <span class="math display">\[
 X \sim \text{Exp}(1) \quad \text{with density } f(x) = e^{-x} \text{ for } x \geq 0.
 \]</span></p>
 <p>If we assume our dataset is a random sample of size 30 from the above DGP, then <span class="math display">\[
 X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} \quad  X_i \perp X_j  \, \, \text{ for } i \neq j.
 \]</span></p>
-<p>The figure below plots the empirical <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation#:~:text=In%20statistics%2C%20kernel%20density%20estimation,based%20on%20kernels%20as%20weights.">kernel density</a> of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between empirical and true densities in the figure below.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p>The figure below plots the empirical <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation#:~:text=In%20statistics%2C%20kernel%20density%20estimation,based%20on%20kernels%20as%20weights.">kernel density</a> of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between the empirical and true densities in the figure below.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -337,27 +337,53 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
 \]</span></p>
 <p>Since the DGP is unknown, the best we can do is use the observed data to guess the value of the estimand. An <strong>estimator</strong> <span class="math inline">\(\hat \theta\)</span> is a function of the sample that is intended to provide a guess of the estimand:</p>
 <p><span class="math display">\[
-\hat{\theta} = \hat{\theta}(X_1, \ldots, X_n).
+\hat{\theta} = \hat{\theta}(\boldsymbol X_1, \ldots, \boldsymbol X_n).
 \]</span></p>
-<p>In statistics, there are several <strong>estimation methods</strong> that provide systematic ways (i.e.&nbsp;rules) to construct estimators. One common method is the <strong>analog principle</strong> (or <strong>plug-in principle</strong>). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Thus, the <strong>analog estimator</strong> for the population mean is the sample mean, defined as</p>
+<p>When the estimator is evaluated at a specific realization of the sample, we obtain an <strong>estimate</strong> <span class="math inline">\(\hat\theta(\boldsymbol x_1, \ldots, \boldsymbol x_n)\)</span> of the estimand. It’s worth emphasizing that the estimand is a fixed but unknown number, the estimator is a random variable, and the estimate is a fixed and known number.</p>
+<p>In statistics, there are several <strong>estimation principles</strong> that provide systematic ways (i.e.&nbsp;rules) to construct estimators. One common method is the <strong>analog principle</strong> (or <strong>plug-in principle</strong>). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Thus, the <strong>analog estimator</strong> for the population mean is the sample mean, defined as</p>
 <p><span class="math display">\[
-\hat{\mu} = \frac{1}{n} \sum_{i=1}^n X_i.
+\hat{\mu} = \frac{1}{n} \sum_{i=1}^n \boldsymbol X_i.
 \]</span></p>
 <section id="estimator-properties" class="level3">
 <h3 class="anchored" data-anchor-id="estimator-properties">Estimator Properties</h3>
-<p>How do we know if an estimator is any good? And when we have two competing estimators, how do we decide which one to use? To answer these questions, statisticians study desirable properties that an estimator should ideally satisfy. A full treatment of estimator properties is typically the focus of a mathematical statistics course, but it is still valuable to briefly highlight some fundamental properties here.</p>
+<p>How do we know if an estimator is any good? To answer this question, statisticians study desirable properties that an estimator should ideally satisfy. A full treatment of estimator properties is typically the focus of a mathematical statistics course, but it is still valuable to briefly highlight some fundamental properties here.</p>
+<p>The <strong>error</strong> of an estimator is defined as the difference between the estimate and the estimand:</p>
+<p><span class="math display">\[
+e(\boldsymbol x_1, \ldots, \boldsymbol x_n) = \hat\theta(\boldsymbol x_1, \ldots, \boldsymbol x_n) - \theta.
+\]</span> The <strong>bias</strong> of an estimator is the average error of the estimator across all possible samples of size <span class="math inline">\(n\)</span> from the DGP:</p>
+<p><span class="math display">\[
+B(\hat\theta) = \mathbb{E}_F[\hat{\theta}] - \theta
+\]</span> Intuitively, the bias captures the systematic error of the estimator: if the bias is positive, the estimator tends to overestimate the estimand, and if the bias is negative, the estimator tends to underestimate the estimand. We say an estimator <span class="math inline">\(\hat{\theta}\)</span> is <strong>unbiased</strong> for <span class="math inline">\(\theta\)</span> if its bias is zero:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p><span class="math display">\[
+\mathbb{E}_F[\hat{\theta}] - \theta = 0.
+\]</span> Thus, the errors of an unbiased estimator are purely due to randomness in the data. As it turns out, the sample mean is an unbiased estimator of the population mean under the random sampling assumption:</p>
+<p><span class="math display">\[
+\mathbb{E}_F[\hat{\mu}] = \frac{1}{n} \sum_{i=1}^n \mathbb{E}_F[\boldsymbol X_i] = \frac{1}{n} \sum_{i=1}^n \mu = \mu.
+\]</span> The first equality follows from the linearity of expectations, the second equality follows from the random sampling assumption, and the third equality is a simplification.</p>
+<p>While bias quantifies how far the estimator’s average is from the estimand, the <strong>variance</strong> (or <strong>sampling variance</strong>) measures how much the estimator varies across repeated samples of size <span class="math inline">\(n\)</span>:</p>
+<p><span class="math display">\[
+Var(\hat\theta) = \mathbb{E}_F[(\hat\theta - \mathbb{E}_F[\hat\theta])^2].
+\]</span> The variance of the sample mean under the random sampling assumption is given by</p>
+<p><span class="math display">\[
+\operatorname {Var} \left[\hat\mu\right] = \frac{1}{n^2}\operatorname{Var} \left[ \sum_{i=1}^n \boldsymbol X_i\right] = \frac{1}{n^2} \sum_{i=1}^n \operatorname{Var}[\boldsymbol X_i] = \frac{1}{n^2} \sum_{i=1}^n \sigma^2 = \frac{\sigma^2}{n},
+\]</span> where <span class="math inline">\(\sigma^2\)</span> is the population variance <span class="math inline">\(\operatorname{Var}[X]\)</span>. The first equality uses the properties of variance. The second equality follows from the fact that the independence of each <span class="math inline">\(\boldsymbol X_i\)</span> means they are uncorrelated, and so the variance of their sum equals the sum of their variance. The third equality uses the fact that each <span class="math inline">\(\boldsymbol X_i\)</span> are drawn from an identical distribution and so have the same variance <span class="math inline">\(\sigma^2\)</span>. The fourth equality is an algebraic simplification.</p>
 </section>
 </section>
 <section id="the-necessity-for-statistical-models" class="level2">
 <h2 class="anchored" data-anchor-id="the-necessity-for-statistical-models">The Necessity for Statistical Models</h2>
-<section id="sampling-distribution" class="level3">
-<h3 class="anchored" data-anchor-id="sampling-distribution">Sampling Distribution</h3>
-<p>we make certain simplifying assumptions about the general structure of <span class="math inline">\(F\)</span> and then</p>
-<p>We will be able to quantify the uncertainty of the guess if we make stronger starting assumptions about the data generating process.</p>
+<p>The <strong>sampling distribution</strong> of an estimator is the probability distribution that describes how the estimator’s estimates vary across all possible samples of size <span class="math inline">\(n\)</span> drawn from the DGP. Intuitively, it characterizes the behavior of the estimator under repeated sampling. Under the random sampling assumption, the sampling distribution is completely determined by the DGP <span class="math inline">\(F\)</span>, the sample size <span class="math inline">\(n\)</span>, and the functional form of the estimator <span class="math inline">\(\hat\theta\)</span>.</p>
+<p>Let’s revisit the example of the sample mean estimator <span class="math inline">\(\hat\mu\)</span> for the population mean <span class="math inline">\(\mu\)</span>. We have already established some features of the sampling distribution of <span class="math inline">\(\hat\mu\)</span> despite knowing nothing about <span class="math inline">\(F\)</span>. Particularly, the mean of <span class="math inline">\(\hat\mu\)</span> is <span class="math inline">\(\mu\)</span> and its variance is <span class="math inline">\(\sigma^2/n\)</span>. However, to say more about the distribution of <span class="math inline">\(\hat\mu\)</span> — like its shape — we need to make assumptions about the DGP.</p>
+<p>A <strong>statistical model</strong> is a set of assumptions about the general structure of the data generating process <span class="math inline">\(F\)</span>. Put differently, we can think of a statistical model as a family of possible distributions that <span class="math inline">\(F\)</span> could belong to. To illustrate the added value of statistical models, suppose our sample <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span> is drawn iid from <span class="math inline">\(\mathcal{N}(\mu, \sigma^2)\)</span>. Since</p>
+<p><span class="math display">\[
+\hat\mu = \frac{1}{n} \sum_{i=1}^n \boldsymbol X_i,
+\]</span></p>
+<p>is a linear combination of normally distributed random variables, it is also normally distributed. Moreover, we have previously established that <span class="math inline">\(\mathbb{E}_F[\hat\mu] = \mu\)</span> and <span class="math inline">\(\operatorname{Var}[\hat\mu] = \sigma^2/n\)</span> for any DGP <span class="math inline">\(F\)</span>. Thus, assumption of a normal DGP allows us to completely characterize the sampling distribution of <span class="math inline">\(\hat\mu\)</span> as <span class="math inline">\(\mathcal{N}(\mu, \sigma^2/n)\)</span>. This is powerful because we can use this sampling distribution to quantify the uncertainty in our estimates by constructing <strong>confidence intervals</strong> and conducting <strong>hypothesis tests</strong>.</p>
+<section id="constructing-confidence-intervals-for-hatmu" class="level3">
+<h3 class="anchored" data-anchor-id="constructing-confidence-intervals-for-hatmu">Constructing Confidence Intervals for <span class="math inline">\(\hat\mu\)</span></h3>
 </section>
-<section id="inference-is-within-statistical-models" class="level3">
-<h3 class="anchored" data-anchor-id="inference-is-within-statistical-models">Inference Is <em>Within</em> Statistical Models</h3>
-<p>The discussion in this sectiono is summarized by the figure below.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div>
@@ -371,7 +397,7 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
   Model["Statistical Model"]:::box
 
   %% Main flows
-  DGP -- "Randomness" --&gt; Data
+  DGP -- "Random Sampling" --&gt; Data
   DGP -. "Assumptions" .-&gt; Model
   Model -- "Probability" --&gt; Data
   Data -- "Inference" --&gt; Model
@@ -382,10 +408,10 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
 </div>
 </div>
 </div>
+<p>It is important to note that statistical inference is valid only <em>if</em> the assumptions of statistical model hold.</p>
 
 
 
-</section>
 </section>
 
 
@@ -401,6 +427,7 @@ Hansen, Bruce E. 2022. <em>Probability and Statistics for Economists</em>. Princ
 <li id="fn3"><p>Crucial theorems in asymptotic statistical theory, like the Law of Large Numbers and the Central Limit Theorem, require the random sampling assumption to hold.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>Technically, under iid sampling, the empirical distribution converges to the true distribution as the sample size tends to infinity — a result known as the Glivenko–Cantelli theorem. Nevertheless, in any finite sample, uncertainty remains, and with it the need for statistical inference.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>To quote my Mathematical Statistics Professor Daniel Weiner: “Do to the sample to get your estimator, as you would do to your population to get your estimand.”<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>To be more precise, <span class="math inline">\(\hat\theta\)</span> is unbiased for <span class="math inline">\(\theta\)</span> if <span class="math inline">\(\mathbb{E}[\hat\theta]=\theta\)</span> for all <span class="math inline">\(F \in \mathcal{F}\)</span>, where <span class="math inline">\(\mathcal{F}\)</span> is a class of distributions.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
