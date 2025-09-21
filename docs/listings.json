@@ -2,7 +2,8 @@
   {
     "listing": "/blog/blog-index.html",
     "items": [
-      "/blog/random-sampling.html"
+      "/blog/linalg-basics.html",
+      "/blog/statistical-inference.html"
     ]
   }
 ]

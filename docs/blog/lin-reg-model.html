@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-08-31">
+<meta name="description" content="A detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters.">
+
+<title>Vignesh Somjit - The Linear Regression Model and its OLS Estimation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Vignesh Somjit</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/blog-index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+    <a href="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#random-sampling-framework" id="toc-random-sampling-framework" class="nav-link active" data-scroll-target="#random-sampling-framework">Random Sampling Framework</a></li>
+  <li><a href="#defining-the-linear-regression-model" id="toc-defining-the-linear-regression-model" class="nav-link" data-scroll-target="#defining-the-linear-regression-model">Defining the Linear Regression Model</a></li>
+  <li><a href="#interpreting-the-assumptions" id="toc-interpreting-the-assumptions" class="nav-link" data-scroll-target="#interpreting-the-assumptions">Interpreting the Assumptions</a>
+  <ul class="collapse">
+  <li><a href="#restrictiveness-of-the-assumptions" id="toc-restrictiveness-of-the-assumptions" class="nav-link" data-scroll-target="#restrictiveness-of-the-assumptions">Restrictiveness of the Assumptions</a></li>
+  <li><a href="#implications-of-random-sampling" id="toc-implications-of-random-sampling" class="nav-link" data-scroll-target="#implications-of-random-sampling">Implications of Random Sampling</a></li>
+  <li><a href="#what-is-not-assumed" id="toc-what-is-not-assumed" class="nav-link" data-scroll-target="#what-is-not-assumed">What is NOT Assumed</a></li>
+  </ul></li>
+  <li><a href="#ordinary-least-squares-ols-estimation" id="toc-ordinary-least-squares-ols-estimation" class="nav-link" data-scroll-target="#ordinary-least-squares-ols-estimation">Ordinary Least Squares (OLS) Estimation</a>
+  <ul class="collapse">
+  <li><a href="#principle-of-ols" id="toc-principle-of-ols" class="nav-link" data-scroll-target="#principle-of-ols">Principle of OLS</a></li>
+  <li><a href="#deriving-the-ols-estimator" id="toc-deriving-the-ols-estimator" class="nav-link" data-scroll-target="#deriving-the-ols-estimator">Deriving the OLS Estimator</a></li>
+  </ul></li>
+  <li><a href="#example-ols-in-action" id="toc-example-ols-in-action" class="nav-link" data-scroll-target="#example-ols-in-action">Example: OLS in Action</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The Linear Regression Model and its OLS Estimation</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Linear Regression</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    A detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 31, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="random-sampling-framework" class="level2">
+<h2 class="anchored" data-anchor-id="random-sampling-framework">Random Sampling Framework</h2>
+<p>We are interested in datasets of the form <span class="math inline">\(\{y_{i}, x_{i1}, \ldots, x_{iK}\}_{i=1}^n\)</span> where <span class="math inline">\(y_{i}\)</span> is the <strong>outcome</strong> and <span class="math inline">\(x_{i1}, \ldots, x_{iK}\)</span> are the <strong>regressors</strong>. To mathematically formalize how this data was generated, we view the observations as realizations of random variables that are drawn from some joint distribution <span class="math inline">\(F\)</span>, also called the <strong>data generating process (DGP)</strong>. The random sampling assumption is one possible characterization of these draws.</p>
+<div class="assumption-box">
+<p><strong>Assumption 1. Random Sampling</strong></p>
+<p>The observations <span class="math inline">\(\{y_i, x_{i1}, \ldots, x_{iK}\}^n_{i=1}\)</span> are realizations of the random variables <span class="math inline">\(\{Y_i, X_{i1}, \ldots , X_{iK}\}_{i=1}^n\)</span>, which are <strong>independent and identically distributed (i.i.d)</strong> draws from the joint distribution <span class="math inline">\(F(Y,X_1, \ldots, X_K)\)</span>.</p>
+</div>
+<p>It’s easy to get confused about the notation and terminology here, so let’s clarify. The random variables <span class="math inline">\(Y, X_1, \ldots, X_K\)</span> are theoretical objects that are used when talking about the data generating process <em>in general</em>. The random variables <span class="math inline">\(Y_i, X_{i1}, \ldots, X_{iK}\)</span> are the theoretical objects that correspond to each observation in the sample. Intuitively, we can think of these as the data <em>before</em> it was collected. The realizations <span class="math inline">\(y_i, x_{i1}, \ldots, x_{iK}\)</span> are the actual data (numbers) we observe <em>after</em> data collection. This abstraction allows us to use the tools of probability theory and mathematical statistics to infer from our dataset.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</section>
+<section id="defining-the-linear-regression-model" class="level2">
+<h2 class="anchored" data-anchor-id="defining-the-linear-regression-model">Defining the Linear Regression Model</h2>
+<p>Recall that a statistical model is simply a set of assumptions about some DGP. In the case of the linear regression model, we are interested in the joint distribution <span class="math inline">\(F(Y, X_1, \ldots, X_K)\)</span>. Under the random sampling assumption, however, each observation <span class="math inline">\(Y_i, X_{i1}, \ldots X_{iK}\)</span> is an i.i.d draw from <span class="math inline">\(F\)</span>. This means that we can just as well frame our assumptions in terms of the random variables <span class="math inline">\(\{Y_i, X_{i1}, \ldots, X_{iK}\}_{i=1}^n\)</span>. As we will see, this formulation of the model is useful because it allows us to use matrix algebra to derive the estimator for the parameters.</p>
+<div id="assump-linreg" class="assumption-box">
+<p><strong>Assumption 2. The Linear Regression Model</strong></p>
+<p><strong>(A)</strong> <strong>(Linearity)</strong> The outcome <span class="math inline">\(Y_i\)</span> is a linear combination of the regressors <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>, plus some random <strong>error</strong> <span class="math inline">\(e_i\)</span> that captures measurement error and idiosyncratic fluctuation in <span class="math inline">\(Y_i\)</span>: <span id="eq-linearity"><span class="math display">\[
+Y_i = \beta_1X_{i1} + \ldots + \beta_kX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
+\tag{1}\]</span></span></p>
+<p><strong>(B)</strong> <strong>(No Multicollinearity)</strong> None of the regressors are an exact linear combination of each other.</p>
+<p><strong>(C)</strong> <strong>(Strict Exogeneity)</strong> The error <span class="math inline">\(e_i\)</span> has a conditional mean of zero given the regressors of all observations <span id="eq-strict-exogeneity"><span class="math display">\[
+\mathbb{E}[e_i \mid \boldsymbol{X}_1 \ldots , \boldsymbol{X}_n] = 0 \quad \forall \, i = 1, \ldots, n
+\tag{2}\]</span></span> where <span class="math inline">\(\boldsymbol{X}_i = (X_{i1}, \ldots, X_{iK})'\)</span>.</p>
+</div>
+<p>For notational compactness, it is useful to recast the model in matrix notation. First note that we can stack <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> as a system of <span class="math inline">\(n\)</span> equations</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y_1 &amp;= \beta_1 X_{11} + \ldots + \beta_k X_{1K} + e_1 = \boldsymbol{X}_1'\boldsymbol{\beta} + e_1\\\
+Y_2 &amp;= \beta_1 X_{21}+ \ldots + \beta_k X_{2K} + e_2 = \boldsymbol{X}_2'\boldsymbol{\beta} + e_2 \\
+&amp;\;\;\vdots \\
+Y_n &amp;= \beta_1X_{n1} + \ldots + \beta_k X_{nK} + e_n= \boldsymbol{X}_n'\boldsymbol{\beta} + e_n,
+\end{aligned}
+\]</span> where <span class="math display">\[
+\boldsymbol{X}_i = \begin{pmatrix} X_{i1} \\ \vdots \\ X_{iK} \end{pmatrix} \in \mathbb{R}^{K \times 1} \quad  \text{and} \quad \boldsymbol{\beta}= \begin{pmatrix} \beta_1 \\ \vdots \\ \beta_K \end{pmatrix} \in \mathbb{R}^{K \times 1}.
+\]</span></p>
+<p>Now, we can collapse this system of equations into a single matrix equation: <span id="eq-linreg-matrix"><span class="math display">\[
+\boldsymbol{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{e},
+\tag{3}\]</span></span> where <span class="math display">\[
+\boldsymbol{Y} = \begin{pmatrix} Y_1 \\ \vdots \\ Y_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad \boldsymbol{e} = \begin{pmatrix} e_1 \\ \vdots \\ e_n \end{pmatrix} \in \mathbb{R}^{n \times 1}, \quad  \mathbf{X} = \begin{pmatrix} \boldsymbol{X}_1' \\ \vdots \\ \boldsymbol{X}_n' \end{pmatrix} = \begin{pmatrix} X_{11} &amp; \ldots &amp; X_{1K} \\ \vdots &amp; \ddots &amp; \vdots \\ X_{n1} &amp; \ldots &amp; X_{nK} \end{pmatrix} \in \mathbb{R}^{n \times K}.
+\]</span></p>
+<p>The quantity <span class="math inline">\(\mathbf{X}\)</span> is called the <strong>design matrix</strong>. <a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+</section>
+<section id="interpreting-the-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="interpreting-the-assumptions">Interpreting the Assumptions</h2>
+<p>It is good practice to carefully think through what is being assumed in any given model. The linearity assumption in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> and <a href="#eq-linreg-matrix" class="quarto-xref">Equation&nbsp;3</a> states that (i) the functional form of the relationship between the outcome and regressors is linear <em>in the parameters</em>, and (ii) the error is <strong>additive</strong>.</p>
+<p>The assumption of no multicollinearity ensures that the design matrix <span class="math inline">\(\mathbf{X}\)</span> has <strong>full column rank</strong>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This in turn means the square matrix <span class="math inline">\(\mathbf{X}'\mathbf{X}\)</span> is invertible, which is a crucial property when deriving the ordinary least squares (OLS) estimator for the parameters.</p>
+<p>The strict exogeneity assumption states that the conditional expectation of the error given the regressors of <em>all observations</em> is zero. This is a crucial assumption of the model, and has several implications:</p>
+<ol type="1">
+<li><p>The unconditional mean of the error is zero: <span id="eq-uncond-mean-error"><span class="math display">\[
+\mathbb{E}[e_i] \overset{(a)}{=} \mathbb{E}[\mathbb{E}[e_i \mid \mathbf{X}]] \overset{(b)}{=} 0 \quad \forall \, i = 1, \ldots, n,
+\tag{4}\]</span></span> where <span class="math inline">\((a)\)</span> uses the law of iterated expectations and <span class="math inline">\((b)\)</span> follow from <a href="#eq-strict-exogeneity" class="quarto-xref">Equation&nbsp;2</a>. Also, since the conditional mean equals the unconditional mean, the error <span class="math inline">\(e_i\)</span> is <strong>mean independent</strong> of the regressors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n.\)</span></p></li>
+<li><p>The error is <strong>orthogonal</strong> to the regressors of all observations: <span id="eq-orthogonality"><span class="math display">\[
+\begin{align}
+\mathbb{E}[X_{jk}e_i]
+&amp;\overset{(a)}{=} \mathbb{E}\big[\mathbb{E}[X_{jk}e_i \mid X_{jk}]\big] \\
+&amp;\overset{(b)}{=} \mathbb{E}\big[X_{jk} \mathbb{E}[e_i \mid X_{jk}]\big]  \\
+&amp;\overset{(c)}{=} 0 \quad \quad \quad \quad \quad \quad \quad \quad \forall \, i,j = 1, \ldots, n; k = 1, \ldots, K,
+\end{align}
+\tag{5}\]</span></span> where <span class="math inline">\((a)\)</span> uses the law of iterated expectations, <span class="math inline">\((b)\)</span> uses the linearity of expectations, and <span class="math inline">\((c)\)</span> follows from the fact that <span class="math display">\[
+\mathbb{E}[e_i \mid X_{jk} ]= \mathbb{E}\big[\mathbb{E}[e_i \mid \mathbf{X} ] \mid X_{jk}\big] =0
+\]</span> by the generalized law of iterated expectations.</p></li>
+<li><p>The error is uncorrelated with the regressors of all observations: <span id="eq-uncorrelatedness"><span class="math display">\[
+\text{Cov}(e_i, X_{jk})
+\overset{(a)}{=} \mathbb{E}[X_{jk}e_i] - \mathbb{E}[X_{jk}]\mathbb{E}[e_i]
+\overset{(b)}{=} \mathbb{E}[e_iX_{jk}]
+\overset{(c)}{=} 0
+\quad \forall \, i,j,k,
+\tag{6}\]</span></span> where <span class="math inline">\((a)\)</span> is the definition, <span class="math inline">\((b)\)</span> uses <a href="#eq-uncond-mean-error" class="quarto-xref">Equation&nbsp;4</a>, and <span class="math inline">\((c)\)</span> uses <a href="#eq-orthogonality" class="quarto-xref">Equation&nbsp;5</a>. Intuitively, this means the error term and regressors do not contain any information about one another.</p></li>
+<li><p>The conditional expectation of <span class="math inline">\(\boldsymbol{Y}\)</span> given <span class="math inline">\(\mathbf{X}\)</span>, called the <strong>regression</strong> of <span class="math inline">\(\boldsymbol{Y}\)</span> on <span class="math inline">\(\mathbf{X}\)</span>, is a linear function of the realized values: <span class="math display">\[
+\mathbb{E}[\boldsymbol{Y} \mid \mathbf{X}] = \mathbb{E}[\mathbf{X}\beta + \boldsymbol{e} \mid \mathbf{X}]=\mathbb{E}[{\mathbf{X}\beta \mid  \mathbf{X}}]=\mathbf{X}\beta.
+\]</span></p></li>
+</ol>
+<section id="restrictiveness-of-the-assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="restrictiveness-of-the-assumptions">Restrictiveness of the Assumptions</h3>
+<p>The linearity and no-multicollinearity assumptions are non-trivial in the sense that it is possible for a dataset to violate them. The assumption that the conditional mean of the error is a constant function is also non-trivial, but the fact that this constant equals zero is trivial (i.e.&nbsp;not restrictive) if the linear regression model is of the form <span id="eq-intercept-model"><span class="math display">\[
+Y_i = \beta_1 + \beta_2X_{i2} + \ldots + \beta_kX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
+\tag{7}\]</span></span></p>
+<p>In <a href="#eq-intercept-model" class="quarto-xref">Equation&nbsp;7</a>, we set the first regressor to equal one for all observations and thus obtain a <strong>constant intercept term</strong> <span class="math inline">\(\beta_1\)</span> in the model. In this setting, if the conditional mean of the error is some non-zero constant <span class="math inline">\(\mu\)</span>, we can simply redefine the intercept term to be <span class="math inline">\(\beta_1^\star = \beta_1 + \mu\)</span> and the error to be <span class="math inline">\(e_i^\star = e_i - \mu\)</span>. Then, the conditional mean of the new error <span class="math inline">\(e_i^\star\)</span> is zero:</p>
+<p><span class="math display">\[
+\mathbb{E}[e_i^\star \mid \boldsymbol{X}_1, \ldots, \boldsymbol{X}_n] = \mathbb{E}[e_i - \mu \mid \boldsymbol{X}_1, \ldots, \boldsymbol{X}_n] = \mathbb{E}[e_i \mid \boldsymbol{X}_1, \ldots, \boldsymbol{X}_n] - \mu = 0.
+\]</span></p>
+<p>For this reason, it is generally recommended to include a constant intercept term in the linear regression model.</p>
+</section>
+<section id="implications-of-random-sampling" class="level3">
+<h3 class="anchored" data-anchor-id="implications-of-random-sampling">Implications of Random Sampling</h3>
+<p>Random sampling has two key implications for the linear regression model. First, it implies that the errors are independent (and therefore uncorrelated) across observations. To see this, first note that under random sampling</p>
+<p><span class="math display">\[
+(Y_i, \boldsymbol{X}_i) \perp (Y_j, \boldsymbol{X}_j) \quad \forall \, i \neq j.
+\]</span> Since independence is preserved under functional transformations, and the error is a function of the outcome and regressors, <span class="math display">\[
+e_i = f(Y_i, \boldsymbol{X}_i) = Y_i - \boldsymbol{X}_i\boldsymbol{\beta} \quad \forall \, i = 1, \ldots, n,
+\]</span></p>
+<p>it follows that the errors <span class="math inline">\(e_i\)</span> are independent across observations.</p>
+<p>A second implication is that random sampling allows us to simplify the strict exogeneity assumption. Specifically, since random sampling implies<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
+<p><span class="math display">\[
+(e_i, \boldsymbol{X}_i) \perp (\boldsymbol{X}_j) \quad \forall \, i \neq j,
+\]</span> it follows that</p>
+<p><span class="math display">\[
+\mathbb{E}[e_i \mid \boldsymbol{X}_1, \ldots, \boldsymbol{X}_n] = \mathbb{E}[e_i \mid \boldsymbol{X}_i] \quad \forall \, i = 1, \ldots, n.
+\]</span></p>
+<p>Thus, under random sampling, the strict exogeneity assumption is equivalent to the simpler assumption</p>
+<p><span class="math display">\[
+\mathbb{E}[e_i \mid \boldsymbol{X}_i] = 0 \quad \forall \, i = 1, \ldots, n.
+\]</span></p>
+<p>Intuitively, random sampling eliminates any cross-sectional dependence between the error term and the regressors of other observations. As a result, the linear regression model only needs to assert that each error <span class="math inline">\(e_i\)</span> is mean independent of its <em>own</em> regressors <span class="math inline">\(\boldsymbol{X}_i\)</span>.</p>
+</section>
+<section id="what-is-not-assumed" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-not-assumed">What is NOT Assumed</h3>
+<p>Before proceeding, it is worth clarifying what we do not assume in the linear regression model. First, we do not assume that <span class="math inline">\(Y\)</span> is a linear function of <span class="math inline">\((X_1, \ldots, X_k)\)</span> in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a>; we only require that the parameters <span class="math inline">\(\boldsymbol{\beta}\)</span> enter the equation linearly. This means that we are free to include non-linear transformations of the regressor variables in <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;1</a> as long as linearity in <span class="math inline">\(\boldsymbol{\beta}\)</span> is preserved (see <a href="#eq-linreg-quad" class="quarto-xref">Equation&nbsp;10</a> for an example). Second, we make no assumptions about the distribution of the covariates. Third, we do not make assumptions about the distribution or variance of the error term <span class="math inline">\(e\)</span>.</p>
+</section>
+</section>
+<section id="ordinary-least-squares-ols-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="ordinary-least-squares-ols-estimation">Ordinary Least Squares (OLS) Estimation</h2>
+<section id="principle-of-ols" class="level3">
+<h3 class="anchored" data-anchor-id="principle-of-ols">Principle of OLS</h3>
+<p><a href="../blog/statistical-modeling.html">Recall</a> that an <strong>estimation method</strong> is the guiding principle we follow to construct an <strong>estimator</strong> — a function that maps the data to the parameters of a statistical model. One common estimation method for the linear regression model is the principle of <strong>ordinary least squares (OLS)</strong>. This method finds the parameter values that minimize the sum of squared differences between the observed outcomes and the part of the outcome explained by the regressors. Formally, the <strong>ordinary least squares estimator</strong> <span class="math inline">\(\hat{\boldsymbol{\beta}}_{OLS}\)</span> is defined as the solution of the quadratic minimization problem</p>
+<p><span id="eq-ols-def"><span class="math display">\[
+\begin{aligned}
+\hat{\boldsymbol{\beta}} &amp;:= \underset{\boldsymbol\beta \in \mathbb{R^{k\times1}}}{\arg\min} \, S(\boldsymbol\beta) \\
+\text{where} \quad S(\boldsymbol{\beta}) := \sum_{i=1}^n (Y_i &amp;- \boldsymbol{X}_i'\boldsymbol{\beta})^2 =  (\boldsymbol{Y} - \mathbf{X}\boldsymbol{\beta})'(\boldsymbol{Y} - \mathbf{X}\boldsymbol{\beta}).
+\end{aligned}
+\tag{8}\]</span></span></p>
+<p>The quantity <span class="math inline">\(S(\boldsymbol\beta)\)</span> is called the <strong>sum of squared errors (SSE)</strong>. Intuitively, the motivation behind OLS is to choose the parameters such that the <strong>fitted outcomes</strong> of the form <span class="math inline">\(\hat{Y}_i = \boldsymbol X_i' \hat{\boldsymbol\beta}\)</span> lie as close as possible to the observed outcomes <span class="math inline">\(Y_i\)</span> in terms of their total squared vertical distance. This is visualized in <a href="#fig-ols" class="quarto-xref">Figure&nbsp;2</a> below.</p>
+</section>
+<section id="deriving-the-ols-estimator" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-the-ols-estimator">Deriving the OLS Estimator</h3>
+<p>We choose the OLS estimator to be the solution to the minimization problem in <a href="#eq-ols-def" class="quarto-xref">Equation&nbsp;8</a>. In other words, it is the estimator that satisfies the first-order condition (FOC).<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Using matrix algebra and calculus, the FOC is given by <span class="math display">\[
+\begin{aligned}
+\frac{\partial}{\partial \boldsymbol\beta}S(\boldsymbol\beta)
+&amp;\overset{(a)}{=} \frac{\partial}{\partial \boldsymbol\beta}\big( \boldsymbol Y'\boldsymbol Y-\boldsymbol Y'\boldsymbol X\boldsymbol \beta -  (\boldsymbol X \boldsymbol \beta)'\boldsymbol Y + (\boldsymbol X \boldsymbol \beta)'(\boldsymbol X \boldsymbol \beta) \big) \\
+&amp;\overset{(b)}{=} \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - \boldsymbol Y' \boldsymbol X \boldsymbol \beta - \boldsymbol\beta ' \boldsymbol X' \boldsymbol Y + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&amp;\overset{(c)}{=} \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - \boldsymbol Y' \boldsymbol X \boldsymbol \beta - (\boldsymbol Y' \boldsymbol X \boldsymbol \beta)' + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&amp;\overset{(d)}{=} \frac{\partial}{\partial \boldsymbol\beta} \big( \boldsymbol Y'\boldsymbol Y - 2(\boldsymbol Y' \boldsymbol X \boldsymbol \beta) + \boldsymbol \beta' \boldsymbol X' \boldsymbol X \boldsymbol \beta \big) \\
+&amp;\overset{(e)}{=} -2 \boldsymbol X' \boldsymbol Y + 2 \boldsymbol X' \boldsymbol X \boldsymbol \beta. \\
+&amp;= 0,
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\((a)\)</span> expands <a href="#eq-ols-def" class="quarto-xref">Equation&nbsp;8</a>, <span class="math inline">\((b)\)</span> follows from <span class="math inline">\((\boldsymbol X \boldsymbol \beta)' = \boldsymbol \beta' \boldsymbol X'\)</span>, <span class="math inline">\((c)\)</span> follows from <span class="math inline">\((\boldsymbol Y' \boldsymbol X \boldsymbol \beta)' = \boldsymbol \beta' \boldsymbol X' \boldsymbol Y\)</span>, <span class="math inline">\((d)\)</span> uses the fact that the scalar <span class="math inline">\(\boldsymbol Y' \boldsymbol X \boldsymbol \beta\)</span> equals its transpose, and <span class="math inline">\((e)\)</span> applies the following matrix calculus results:</p>
+<p><span class="math display">\[
+\frac{\partial}{\partial \boldsymbol b}(\boldsymbol a' \boldsymbol b) = \boldsymbol a \quad \text{and} \quad \frac{\partial}{\partial \boldsymbol b}(\boldsymbol b' \boldsymbol A \boldsymbol b) = 2\boldsymbol A\boldsymbol b,
+\]</span> for any conformable vectors <span class="math inline">\(\boldsymbol a, \boldsymbol b\)</span> and any conformable symmetric matrix <span class="math inline">\(\boldsymbol A\)</span>.</p>
+<p>Rearranging the FOC above, we see that the OLS estimator satisfies the <strong>least squares normal equations</strong> <span class="math display">\[
+\boldsymbol X' \boldsymbol X \hat{\boldsymbol \beta}_{OLS}  = \boldsymbol X' \boldsymbol Y.
+\]</span> Since the matrix <span class="math inline">\(\boldsymbol X' \boldsymbol X\)</span> is invertible, we have the the following closed form representation of the OLS estimator</p>
+<p><span id="eq-ols-estimator"><span class="math display">\[
+\hat{\boldsymbol\beta}_{OLS} = (\boldsymbol X' \boldsymbol X)^{-1} \boldsymbol X' \boldsymbol Y.
+\tag{9}\]</span></span></p>
+</section>
+</section>
+<section id="example-ols-in-action" class="level2">
+<h2 class="anchored" data-anchor-id="example-ols-in-action">Example: OLS in Action</h2>
+<p>The phrase “OLS fits the best line to the data” is often used to describe what the OLS estimator does. However, this language is a bit loose and perpetuates the common misconception that the least squares estimation method can only fit a straight line to the data. In reality, the functional form of the relationship between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> is entirely determined by the <em>researcher’s choice</em> of regressors to include when specifying the model. Least squares simply chooses the linear combination of those regressors that best fits the data in terms of minimizing the total squared vertical distance to the observed outcomes.</p>
+<p>Let’s walk through a simple example to illustrate this point. Suppose we observe the following dataset:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulated data</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>n  <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>X  <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">length.out =</span> n)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>Y  <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> X<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">X =</span> X, <span class="at">Y =</span> Y)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the observed data</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(X, Y)) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">4</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"X"</span>, <span class="at">y =</span> <span class="st">"Y"</span>) <span class="sc">+</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-data" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="lin-reg-model_files/figure-html/fig-data-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-data-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Observed Data with Nonlinear Relationship Between Outcome and Regressor
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The scatter plot in <a href="#fig-data" class="quarto-xref">Figure&nbsp;1</a> suggests that the functional form of the relationship between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span> is approximately a quadratic function. Thus, we can specify the linear regression model as <span id="eq-linreg-quad"><span class="math display">\[
+Y = \beta_1 + \beta_2 X + \beta_3 X^2 + e.
+\tag{10}\]</span></span></p>
+<p>The next step is to estimate the parameters <span class="math inline">\(\beta_1, \beta_2, \beta_3\)</span> using the principle of ordinary least squares. We can do this using the <code>lm</code> function in R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> X <span class="sc">+</span> <span class="fu">I</span>(X<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> df)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ X + I(X^2), data = df)
+
+Coefficients:
+(Intercept)            X       I(X^2)  
+     1.9706      -0.1942       0.5306  </code></pre>
+</div>
+</div>
+<p>These numbers correspond to what we would get if we applied <a href="#eq-ols-estimator" class="quarto-xref">Equation&nbsp;9</a> to the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span>, df<span class="sc">$</span>X, (df<span class="sc">$</span>X)<span class="sc">^</span><span class="dv">2</span>)                     <span class="co"># Design matrix</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> df<span class="sc">$</span>Y                                         <span class="co"># Outcome vector</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">crossprod</span>(X), <span class="fu">crossprod</span>(X, Y))  <span class="co"># Solves (X'X) b = X'Y</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>((beta_hat[<span class="dv">1</span>]), (beta_hat[<span class="dv">2</span>]), (beta_hat[<span class="dv">3</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  1.9705793 -0.1941996  0.5305615</code></pre>
+</div>
+</div>
+<p>The benefit of using the <code>lm</code> function is that it also can report inferential statistics — such as, the p-value, standard error, etc. — for the estimates. The meaning of these quantities is discussed in this <a href="lin-reg-inference.qmd">post</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Y ~ X + I(X^2), data = df)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-2.5348 -0.4087 -0.1239  0.7664  2.1883 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  1.97058    0.34115   5.776 3.82e-06 ***
+X           -0.19420    0.12688  -1.531    0.138    
+I(X^2)       0.53056    0.07935   6.686 3.54e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 1.245 on 27 degrees of freedom
+Multiple R-squared:  0.6354,    Adjusted R-squared:  0.6084 
+F-statistic: 23.53 on 2 and 27 DF,  p-value: 1.216e-06</code></pre>
+</div>
+</div>
+<p>Finally, we can visualize the estimation results. In <a href="#fig-ols" class="quarto-xref">Figure&nbsp;2</a>, the black crosses are the observed data points, the red curve is a plot of the fitted function <span class="math display">\[
+\hat{Y}_i = \hat{\beta}_1 + \hat{\beta}_2 X_i + \hat{\beta}_3 X_i^2
+\]</span></p>
+<p>in the <span class="math inline">\(X-Y\)</span> plane, and the vertical dotted lines represent the residuals <span class="math inline">\(e_i = Y_i - \hat{Y}_i\)</span>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Show code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fitted values</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>Yhat <span class="ot">&lt;-</span> <span class="fu">fitted</span>(fit)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Smooth curve for plotting (only over observed range)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>xg   <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(df<span class="sc">$</span>X), <span class="fu">max</span>(df<span class="sc">$</span>X), <span class="at">length.out =</span> <span class="dv">400</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">X =</span> xg)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>grid<span class="sc">$</span>Yhat <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> grid)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(X, Y)) <span class="sc">+</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Observed Data"</span>), <span class="at">shape =</span> <span class="dv">4</span>, <span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> X, <span class="at">xend =</span> X,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                   <span class="at">y =</span> <span class="fu">pmin</span>(Y, Yhat), <span class="at">yend =</span> <span class="fu">pmax</span>(Y, Yhat)),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">linewidth =</span> <span class="fl">0.4</span>, <span class="at">color =</span> <span class="st">"blue"</span>) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> grid, <span class="fu">aes</span>(<span class="at">y =</span> Yhat, <span class="at">color =</span> <span class="st">"OLS Best Fit Curve"</span>), <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Observed Data"</span> <span class="ot">=</span> <span class="st">"black"</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                                <span class="st">"OLS Best Fit Curve"</span> <span class="ot">=</span> <span class="st">"red"</span>),</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                     <span class="at">breaks =</span> <span class="fu">c</span>(<span class="st">"Observed Data"</span>, <span class="st">"OLS Best Fit Curve"</span>),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                     <span class="at">name =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"X"</span>, <span class="at">y =</span> <span class="st">"Y"</span>) <span class="sc">+</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">range</span>(df<span class="sc">$</span>X)) <span class="sc">+</span>  <span class="co"># avoid accidental extrapolation</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.border =</span> <span class="fu">element_rect</span>(<span class="at">color =</span> <span class="st">"black"</span>, <span class="at">fill =</span> <span class="cn">NA</span>)) <span class="sc">+</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.18</span>),</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.background =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.key =</span> <span class="fu">element_blank</span>()</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: A numeric `legend.position` argument in `theme()` was deprecated in ggplot2
+3.5.0.
+ℹ Please use the `legend.position.inside` argument of `theme()` instead.</code></pre>
+</div>
+<div class="cell-output-display">
+<div id="fig-ols" class="quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-ols-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="lin-reg-model_files/figure-html/fig-ols-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-ols-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: OLS Estimation for Linear Regression Model with Quadratic Regressor
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-hansen_econometrics_2022" class="csl-entry" role="listitem">
+Hansen, Bruce E. 2022. <em>Econometrics</em>. Princeton University Press.
+</div>
+<div id="ref-hayashi_econometrics_2000" class="csl-entry" role="listitem">
+Hayashi, Fumio. 2000. <em>Econometrics</em>. Princeton University Press.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>This <a href="../blog/statistical-modeling.html">post</a> discuses the big picture intuition for statistical modeling and inference in more detail.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>There is some notational ambiguity here. Any bold, italicized letter represents a vector. Any bold, upright letter represents a matrix. So, <span class="math inline">\(\boldsymbol{X}_i\)</span> refers to the vector of random regressor variables <span class="math inline">\((X_{i1}, \ldots, X_{ik})\)</span>, while <span class="math inline">\(\mathbf{X}\)</span> refers to the design matrix.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Because in any given row of the design matrix, the column entries are linearly independent of one another.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This is again because <span class="math inline">\((e_i, \boldsymbol X_i)\)</span> and <span class="math inline">\(\boldsymbol X_j\)</span> are simply functional transformations of the outcome and regressors.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Technically we have to also check the second order condition as well. But this follows from the fact that <span class="math inline">\(\boldsymbol{X}\)</span> has a full column rank, and so <span class="math inline">\(\boldsymbol X' \boldsymbol X\)</span> is positive definite.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/vigneshsomjit\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2025 Vignesh Somjit ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p><a class="link-dark" href="mailto:somjit.vignesh@gmail.com" title="Email" style="margin-right: 24px;"> <i class="bi bi-envelope-fill" style="font-size: 1.25rem;"></i> </a> <a class="link-dark" href="https://www.linkedin.com/in/vignesh-somjit/" title="LinkedIn" target="_blank" rel="noopener" style="margin-right: 24px;"> <i class="bi bi-linkedin" style="font-size: 1.25rem;"></i> </a> <a class="link-dark" href="https://github.com/vigneshsomjit" title="GitHub" target="_blank" rel="noopener"> <i class="bi bi-github" style="font-size: 1.25rem;"></i> </a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.553">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-09-20">
+<meta name="description" content="Discussion of fundamental concepts in linear algebra, including vector spaces, linear combination and independence, basis vectors, and subspaces.">
+
+<title>Vignesh Somjit - Basic Concepts in Linear Algebra</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="../site_libs/plotly-binding-4.11.0/plotly.js"></script>
+<script src="../site_libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="../site_libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="../site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+<script src="../site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+<link href="../site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="../site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Vignesh Somjit</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../blog/blog-index.html"> 
+<span class="menu-text">Blog</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+    <a href="" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#vector-spaces-vectors-and-matrices" id="toc-vector-spaces-vectors-and-matrices" class="nav-link active" data-scroll-target="#vector-spaces-vectors-and-matrices">Vector Spaces, Vectors, and Matrices</a></li>
+  <li><a href="#basis-and-dimension" id="toc-basis-and-dimension" class="nav-link" data-scroll-target="#basis-and-dimension">Basis and Dimension</a>
+  <ul class="collapse">
+  <li><a href="#linear-combination-span-and-linear-independence" id="toc-linear-combination-span-and-linear-independence" class="nav-link" data-scroll-target="#linear-combination-span-and-linear-independence">Linear Combination, Span, and Linear Independence</a></li>
+  <li><a href="#dimension" id="toc-dimension" class="nav-link" data-scroll-target="#dimension">Dimension</a></li>
+  <li><a href="#basis-sets-are-not-unique" id="toc-basis-sets-are-not-unique" class="nav-link" data-scroll-target="#basis-sets-are-not-unique">Basis Sets Are Not Unique</a></li>
+  </ul></li>
+  <li><a href="#subspaces" id="toc-subspaces" class="nav-link" data-scroll-target="#subspaces">Subspaces</a>
+  <ul class="collapse">
+  <li><a href="#importance-of-origin" id="toc-importance-of-origin" class="nav-link" data-scroll-target="#importance-of-origin">Importance of Origin</a></li>
+  <li><a href="#basis-of-subspaces" id="toc-basis-of-subspaces" class="nav-link" data-scroll-target="#basis-of-subspaces">Basis of Subspaces</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Basic Concepts in Linear Algebra</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Linear Algebra</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Discussion of fundamental concepts in linear algebra, including vector spaces, linear combination and independence, basis vectors, and subspaces.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 20, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="vector-spaces-vectors-and-matrices" class="level2">
+<h2 class="anchored" data-anchor-id="vector-spaces-vectors-and-matrices">Vector Spaces, Vectors, and Matrices</h2>
+<p>In mathematics, an <strong>algebraic structure</strong> is an abstraction consisting of (i) a set of elements, (ii) operations that manipulate those elements, and (iii) axioms that the operations must satisfy. The power of this abstraction is that once the core properties of the structure are formalized in general, they can be applied to any specific system — mathematical or real-world — that shares the same structure. For example, the <strong>field</strong> <span class="math inline">\(F\)</span> is an algebraic structure consisting of elements called <strong>scalars</strong> with operations of addition and multiplication that satisfy a number of <a href="https://en.wikipedia.org/wiki/Field_(mathematics)">axioms</a>. A ubiquitous field is the set of real numbers <span class="math inline">\(\mathbb{R}\)</span>.</p>
+<p>Linear algebra is the study of <strong>vector spaces</strong> <span class="math inline">\(V\)</span>, which is an algebraic structure defined in the context of a field. The elements in a vector space are called <strong>vectors</strong>. For any two vectors <span class="math inline">\(\boldsymbol u,\boldsymbol v \in V\)</span>, the operation of <strong>vector addition</strong> creates a third vector <span class="math inline">\(\boldsymbol u + \boldsymbol v \in V\)</span>; this is known as <strong>closure</strong> under vector addition. For any scalar <span class="math inline">\(c \in F\)</span> and vector <span class="math inline">\(\boldsymbol u \in V\)</span>, the operation of <strong>scalar multiplication</strong> creates another vector <span class="math inline">\(c \boldsymbol u \in V\)</span>; this is known as <strong>closure</strong> under scalar multiplication. The 8 axioms that govern these two operations are listed <a href="https://en.wikipedia.org/wiki/Vector_space">here</a>.</p>
+<p>Any sets of elements equipped with vector addition and scalar multiplication that satisfy the closure property and the 8 axioms is considered a vector space. Of particular interest are <span class="math inline">\(n\)</span>-tuples of the form</p>
+<p><span class="math display">\[
+\boldsymbol u = (u_1, u_2, \ldots, u_n),
+\]</span></p>
+<p>where the <strong>components</strong> <span class="math inline">\(u_1, \ldots, u_n\)</span> are scalars from a field <span class="math inline">\(F\)</span>. The set of all such <span class="math inline">\(n\)</span>-tuples is denoted by <span class="math inline">\(F^n\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> For example, <span class="math inline">\(\mathbb{R}^3\)</span> is the set of all 3-tuples of real numbers. Here, vector addition is defined as the component-wise operation:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\boldsymbol u = (u_1, u_2, &amp;\ldots, u_n) \in F^n \quad\text{and}\quad \boldsymbol v = (v_1, v_2, \ldots, v_n) \in F^n \\
+\\
+\boldsymbol u + \boldsymbol v &amp;= (u_1 + v_1, u_2 + v_2, \ldots, u_n + v_n) \in F^n.
+\end{aligned}
+\]</span></p>
+<p>Similarly, scalar multiplication is defined as the component-wise operation:</p>
+<p><span class="math display">\[
+\begin{aligned}
+c \in F \quad&amp;\text{and}\quad \boldsymbol u = (u_1,u_2, \ldots, u_n) \in F^n \\
+\\
+c \boldsymbol u &amp;= (c u_1, c u_2, \ldots, c u_n) \in F^n.
+\end{aligned}
+\]</span></p>
+<p>A natural generalization of <span class="math inline">\(n\)</span>-tuples is the <span class="math inline">\(m \times n\)</span> array called the <strong>matrix</strong>:</p>
+<p><span class="math display">\[
+\mathbf A = \begin{pmatrix}
+a_{11} &amp; a_{12} &amp; \ldots &amp; a_{1n} \\
+a_{21} &amp; a_{22} &amp; \ldots &amp; a_{2n} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{m1} &amp; a_{m2} &amp; \ldots &amp; a_{mn}
+\end{pmatrix}, \quad a_{ij} \in F.
+\]</span></p>
+<p>The set of all <span class="math inline">\(m \times n\)</span> matrices with components in a field <span class="math inline">\(F\)</span> is denoted by <span class="math inline">\(F^{m \times n}\)</span>. Vector addition and scalar multiplication are defined analogously to the component-wise operations for <span class="math inline">\(n\)</span>-tuples. Specifically, for any two matrices <span class="math inline">\(A, B \in F^{m \times n}\)</span>, vector addition creates a third matrix <span class="math inline">\(A + B \in F^{m \times n}\)</span> whose components are given by</p>
+<p><span class="math display">\[
+(\mathbf{A} + \mathbf B)_{ij} = \mathbf A_{ij} + \mathbf B_{ij}.
+\]</span></p>
+<p>For any scalar <span class="math inline">\(c \in F\)</span>, scalar multiplication creates another matrix <span class="math inline">\(cA \in F^{m \times n}\)</span> where</p>
+<p><span class="math display">\[
+c \mathbf A_{ij} = c (\mathbf A_{ij}).
+\]</span></p>
+</section>
+<section id="basis-and-dimension" class="level2">
+<h2 class="anchored" data-anchor-id="basis-and-dimension">Basis and Dimension</h2>
+<p>A vector space <span class="math inline">\(V\)</span> contains infinitely many vectors. We are interested in finding a smaller set of vectors that captures the entire structure in a much more tractable manner. For example, consider the vector space <span class="math inline">\(\mathbb{R}^3\)</span> in <a href="#fig-3d" class="quarto-xref">Figure&nbsp;1</a>. It seems like any point (i.e.&nbsp;vector or 3-tuple) on the blue lattice structure can be described by how far it extends along the <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, and <span class="math inline">\(z\)</span> axes. This section formalizes this idea.</p>
+<div class="cell">
+<div id="fig-3d" class="cell-output-display quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ca060710a8822eda5eef" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-ca060710a8822eda5eef">{"x":{"visdat":{"d5091f06cf69":["function () ","plotlyVisDat"],"d509781b0668":["function () ","data"]},"cur_data":"d509781b0668","attrs":{"d509781b0668":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"z":{},"type":"scatter3d","mode":"markers","opacity":0.12,"marker":{"size":2},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.4":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.5":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.6":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.7":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.8":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.9":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,-6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.10":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,-6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.11":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[6,6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d509781b0668.12":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[6,6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"aspectmode":"cube","xaxis":{"title":"x","range":[-6,6],"showgrid":false,"zeroline":false},"yaxis":{"title":"y","range":[-6,6],"showgrid":false,"zeroline":false},"zaxis":{"title":"z","range":[-6,6],"showgrid":false,"zeroline":false},"bgcolor":"white"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6],"y":[-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6],"z":[-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],"type":"scatter3d","mode":"markers","opacity":0.12,"marker":{"color":"rgba(31,119,180,1)","size":2,"line":{"color":"rgba(31,119,180,1)"}},"showlegend":false,"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(214,39,40,1)","line":{"color":"rgba(214,39,40,1)"}},"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(148,103,189,1)","line":{"color":"rgba(148,103,189,1)"}},"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(140,86,75,1)","line":{"color":"rgba(140,86,75,1)"}},"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(227,119,194,1)","line":{"color":"rgba(227,119,194,1)"}},"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(127,127,127,1)","line":{"color":"rgba(127,127,127,1)"}},"error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(188,189,34,1)","line":{"color":"rgba(188,189,34,1)"}},"error_y":{"color":"rgba(188,189,34,1)"},"error_x":{"color":"rgba(188,189,34,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,-6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(23,190,207,1)","line":{"color":"rgba(23,190,207,1)"}},"error_y":{"color":"rgba(23,190,207,1)"},"error_x":{"color":"rgba(23,190,207,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,-6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[6,6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[6,6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3d-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The R³ vector space.
+</figcaption>
+</figure>
+</div>
+</div>
+<section id="linear-combination-span-and-linear-independence" class="level3">
+<h3 class="anchored" data-anchor-id="linear-combination-span-and-linear-independence">Linear Combination, Span, and Linear Independence</h3>
+<p>Let <span class="math inline">\(\mathcal{A} = \{\boldsymbol{u}_1, \ldots, \boldsymbol{u}_n\}\)</span> be some finite subset of vectors in <span class="math inline">\(V\)</span>. One way to formalize the idea of <span class="math inline">\(\mathcal{A}\)</span> capturing the <em>entire</em> structure of <span class="math inline">\(V\)</span> is if any vector <span class="math inline">\(\boldsymbol{v} \in V\)</span> can be expressed as a <strong>linear combination</strong> of the vectors in <span class="math inline">\(\mathcal{A}\)</span>:</p>
+<p><span class="math display">\[
+\boldsymbol v = c_1 \boldsymbol u_1 + c_2 \boldsymbol u_2 + \ldots + c_n \boldsymbol u_n = \sum_{i=1}^n c_i \boldsymbol u_i \in V,
+\]</span></p>
+<p>where <span class="math inline">\(c_1, \ldots, c_n \in F\)</span>. If this is the case, then we say that the set <span class="math inline">\(\mathcal{A}\)</span> <strong>spans</strong> the vector space <span class="math inline">\(V\)</span>. An equivalent characterization is that the set of all linear combinations of the vectors in <span class="math inline">\(\mathcal{A}\)</span> — the <strong>span</strong> of <span class="math inline">\(\mathcal{A}\)</span> — is equal to <span class="math inline">\(V\)</span>.</p>
+<p>We are also interested in efficiency. That is to say, we want <span class="math inline">\(\mathcal{A}\)</span> to be as small as possible while still spanning <span class="math inline">\(V\)</span>. We call a set of vectors <strong>linearly dependent</strong> if one of the vectors can be expressed as a linear combination of the others. More formally, the vectors <span class="math inline">\(\boldsymbol{u}_1, \ldots, \boldsymbol{u}_n\)</span> in <span class="math inline">\(\mathcal{A}\)</span> would be linearly dependent if</p>
+<p><span class="math display">\[
+c_1 \boldsymbol u_1 + c_2 \boldsymbol u_2 + \ldots + c_n \boldsymbol u_n = 0,
+\]</span></p>
+<p>and not all of the <span class="math inline">\(c_i\)</span> are zero. Thus, we would like to remove any linearly dependent vectors from <span class="math inline">\(\mathcal{A}\)</span>: such vectors are going to be redundant since they will be a part of the span of the other vectors in <span class="math inline">\(\mathcal{A}\)</span>. Formally, we say that the vectors <span class="math inline">\(\boldsymbol{u}_1, \ldots, \boldsymbol{u}_n\)</span> in <span class="math inline">\(\mathcal{A}\)</span> are <strong>linearly independent</strong> if</p>
+<p><span class="math display">\[
+c_1 \boldsymbol u_1 + c_2 \boldsymbol u_2 + \ldots + c_n \boldsymbol u_n = 0,
+\]</span></p>
+<p>only if <span class="math inline">\(c_1 = c_2 = \ldots = c_n = 0\)</span>.</p>
+<p>Taken together, these two ideas — spanning and linear independence — gives us exactly what we were looking for: a minimal yet complete description of the vector space <span class="math inline">\(V\)</span>. More formally, we call a set of vectors a <strong>basis</strong> <span class="math inline">\(\mathcal{B}\)</span> for the vector space <span class="math inline">\(V\)</span> if it is a linearly independent subset that spans <span class="math inline">\(V\)</span>. The vectors in a basis are called <strong>basis vectors</strong>.</p>
+</section>
+<section id="dimension" class="level3">
+<h3 class="anchored" data-anchor-id="dimension">Dimension</h3>
+<p>Notice that in the above definition of the basis set <span class="math inline">\(\mathcal{B}\)</span>, we did not assume that the number of basis vectors is finite. In fact, there exists vector spaces that require infinitely many basis vectors. For example, an <span class="math inline">\(n\)</span>-degree <strong>polynomial</strong> is defined as</p>
+<p><span class="math display">\[
+f(x) = a_nx^n + a_{n-1}x^{n-1} + \ldots + a_1 x + a_0,
+\]</span> where <span class="math inline">\(x\)</span> is a variable, <span class="math inline">\(a_i \in F\)</span>, and <span class="math inline">\(n \geq 0\)</span> is an integer. The vector space of all polynomials with coefficients in a field <span class="math inline">\(F\)</span>, denoted <span class="math inline">\(P(F)\)</span>, has the infinite basis set</p>
+<p><span class="math display">\[
+\mathcal{B}_{P(F)} = \{1, x, x^2, x^3, \ldots\}.
+\]</span> Nevertheless, note that the definition of linear combination requires a finite number of vectors. Thus, even if a basis set <span class="math inline">\(\mathcal{B}\)</span> for a vector space <span class="math inline">\(V\)</span> is infinite, any vector <span class="math inline">\(\boldsymbol v \in V\)</span> can be represented as a linear combination of a finite subset of vectors in <span class="math inline">\(\mathcal{B}\)</span>.</p>
+<p>To distinguish between vector spaces with finite and infinite basis sets, we introduce the notion of <strong>dimension</strong>, which is simply the number of basis vectors in a basis set <span class="math inline">\(\mathcal{B}\)</span> for the vector space <span class="math inline">\(V\)</span>. If <span class="math inline">\(V\)</span> has a finite basis, then we say that <span class="math inline">\(V\)</span> is <strong>finite-dimensional</strong>; otherwise, it is <strong>infinite-dimensional</strong>.</p>
+</section>
+<section id="basis-sets-are-not-unique" class="level3">
+<h3 class="anchored" data-anchor-id="basis-sets-are-not-unique">Basis Sets Are Not Unique</h3>
+<p>An important property of basis sets is that they are not unique. Let us revisit the vector space <span class="math inline">\(\mathbb{R}^3\)</span> to illustrate this point. At the start of this section, I mentioned that it seems possible to describe any point in <span class="math inline">\(\mathbb{R}^3\)</span> by how far it extends along the <span class="math inline">\(x\)</span>, <span class="math inline">\(y\)</span>, and <span class="math inline">\(z\)</span> axes. With this intuition, we can define the following basis set</p>
+<p><span class="math display">\[
+\mathcal{B}_{\mathbb{R}^3} = \{(1,0,0), (0,1,0), (0,0,1)\} = \{\boldsymbol e_1, \boldsymbol e_2, \boldsymbol e_3\}.
+\]</span></p>
+<p>This is known as the <strong>standard basis</strong> for <span class="math inline">\(\mathbb{R}^3\)</span>. We can verify that it is a valid basis by confirming that (i) the three vectors are linearly independent and (ii) any vector <span class="math inline">\(\boldsymbol u = (u_1,u_2,u_3) \in \mathbb{R}^3\)</span> can be expressed as a linear combination of the basis vectors. As an example, the vectors <span class="math inline">\(w = (2,1.5,3)\)</span> and <span class="math inline">\(v=(-1.5,0.6, -1.2)\)</span> are plotted below.</p>
+<div class="cell">
+<div id="fig-3d-span" class="cell-output-display quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3d-span-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-426b6fa5cb4b788b99d7" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-426b6fa5cb4b788b99d7">{"x":{"visdat":{"d509664eebc9":["function () ","plotlyVisDat"]},"cur_data":"d509664eebc9","attrs":{"d509664eebc9":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-4,4],"y":[0,0],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":"none","showlegend":false,"inherit":true},"d509664eebc9.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[0,0],"y":[-4,4],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":"none","showlegend":false,"inherit":true},"d509664eebc9.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[0,0],"y":[0,0],"z":[-4,4],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":"none","showlegend":false,"inherit":true},"d509664eebc9.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,0],"z":[0,0],"line":{"color":"#d62728","width":2},"marker":{"size":3,"color":"#d62728"},"name":"e1","inherit":true},"d509664eebc9.4":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,0],"y":[0,1],"z":[0,0],"line":{"color":"#2ca02c","width":2},"marker":{"size":3,"color":"#2ca02c"},"name":"e2","inherit":true},"d509664eebc9.5":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,0],"y":[0,0],"z":[0,1],"line":{"color":"#1f77b4","width":2},"marker":{"size":3,"color":"#1f77b4"},"name":"e3","inherit":true},"d509664eebc9.6":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,2],"y":[0,1.5],"z":[0,3],"line":{"color":"purple","width":4},"marker":{"size":3,"color":"purple"},"name":"w","inherit":true},"d509664eebc9.7":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,-1.5],"y":[0,0.59999999999999998],"z":[0,-1.2],"line":{"color":"#ff7f0e","width":4},"marker":{"size":3,"color":"#ff7f0e"},"name":"v","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"","range":[-4,4],"showgrid":true,"showline":true,"showticklabels":false,"zeroline":false},"yaxis":{"title":"","range":[-4,4],"showgrid":true,"showline":true,"showticklabels":false,"zeroline":false},"zaxis":{"title":"","range":[-4,4],"showgrid":true,"showline":true,"showticklabels":false,"zeroline":false},"aspectmode":"cube","camera":{"eye":{"x":1,"y":1,"z":0.29999999999999999},"up":{"x":0,"y":0,"z":1},"center":{"x":0,"y":0,"z":0}}},"showlegend":true,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"type":"scatter3d","mode":"lines","x":[-4,4],"y":[0,0],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":["none","none"],"showlegend":false,"marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[0,0],"y":[-4,4],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":["none","none"],"showlegend":false,"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[0,0],"y":[0,0],"z":[-4,4],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":["none","none"],"showlegend":false,"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,0],"z":[0,0],"line":{"color":"#d62728","width":2},"marker":{"color":"#d62728","size":3,"line":{"color":"rgba(214,39,40,1)"}},"name":"e1","error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,0],"y":[0,1],"z":[0,0],"line":{"color":"#2ca02c","width":2},"marker":{"color":"#2ca02c","size":3,"line":{"color":"rgba(148,103,189,1)"}},"name":"e2","error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,0],"y":[0,0],"z":[0,1],"line":{"color":"#1f77b4","width":2},"marker":{"color":"#1f77b4","size":3,"line":{"color":"rgba(140,86,75,1)"}},"name":"e3","error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,2],"y":[0,1.5],"z":[0,3],"line":{"color":"purple","width":4},"marker":{"color":"purple","size":3,"line":{"color":"rgba(227,119,194,1)"}},"name":"w","error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,-1.5],"y":[0,0.59999999999999998],"z":[0,-1.2],"line":{"color":"#ff7f0e","width":4},"marker":{"color":"#ff7f0e","size":3,"line":{"color":"rgba(127,127,127,1)"}},"name":"v","error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3d-span-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Basis vectors and their linear combinations in R³.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>However, any <em>any</em> set of three linearly independent vectors in <span class="math inline">\(\mathbb{R}^3\)</span> that span <span class="math inline">\(\mathbb{R}^3\)</span> can serve as a basis. For example, the following set is also a valid basis for <span class="math inline">\(\mathbb{R}^3\)</span>:</p>
+<p><span class="math display">\[
+\mathcal{B}'_{\mathbb{R}^3} = \{(1,0,0), (1,1,0), (1,1,1)\}.
+\]</span> The figure below provides visual intuition for this basis.</p>
+<div class="cell">
+<div id="fig-3d-alt-span" class="cell-output-display quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3d-alt-span-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-2a9dbf7f24a758ead6d7" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-2a9dbf7f24a758ead6d7">{"x":{"visdat":{"d509794de934":["function () ","plotlyVisDat"]},"cur_data":"d509794de934","attrs":{"d509794de934":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-4,4],"y":[0,0],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":"none","showlegend":false,"inherit":true},"d509794de934.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[0,0],"y":[-4,4],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":"none","showlegend":false,"inherit":true},"d509794de934.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[0,0],"y":[0,0],"z":[-4,4],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":"none","showlegend":false,"inherit":true},"d509794de934.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,0],"z":[0,0],"line":{"color":"#d62728","width":3},"marker":{"size":3,"color":"#d62728"},"name":"v1","inherit":true},"d509794de934.4":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,1],"z":[0,0],"line":{"color":"#2ca02c","width":3},"marker":{"size":3,"color":"#2ca02c"},"name":"v2","inherit":true},"d509794de934.5":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,1],"z":[0,1],"line":{"color":"#1f77b4","width":3},"marker":{"size":3,"color":"#1f77b4"},"name":"v3","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"","range":[-4,4],"showgrid":true,"showline":true,"showticklabels":false,"zeroline":false},"yaxis":{"title":"","range":[-4,4],"showgrid":true,"showline":true,"showticklabels":false,"zeroline":false},"zaxis":{"title":"","range":[-4,4],"showgrid":true,"showline":true,"showticklabels":false,"zeroline":false},"aspectmode":"cube","camera":{"eye":{"x":1,"y":0.5,"z":0.29999999999999999},"up":{"x":0,"y":0,"z":1},"center":{"x":0,"y":0,"z":0}}},"showlegend":true,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"type":"scatter3d","mode":"lines","x":[-4,4],"y":[0,0],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":["none","none"],"showlegend":false,"marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[0,0],"y":[-4,4],"z":[0,0],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":["none","none"],"showlegend":false,"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[0,0],"y":[0,0],"z":[-4,4],"line":{"color":"rgba(100,100,100,0.6)","width":3},"hoverinfo":["none","none"],"showlegend":false,"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,0],"z":[0,0],"line":{"color":"#d62728","width":3},"marker":{"color":"#d62728","size":3,"line":{"color":"rgba(214,39,40,1)"}},"name":"v1","error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,1],"z":[0,0],"line":{"color":"#2ca02c","width":3},"marker":{"color":"#2ca02c","size":3,"line":{"color":"rgba(148,103,189,1)"}},"name":"v2","error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"frame":null},{"type":"scatter3d","mode":"lines+markers","x":[0,1],"y":[0,1],"z":[0,1],"line":{"color":"#1f77b4","width":3},"marker":{"color":"#1f77b4","size":3,"line":{"color":"rgba(140,86,75,1)"}},"name":"v3","error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3d-alt-span-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Alternative basis vectors for R³.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+</section>
+<section id="subspaces" class="level2">
+<h2 class="anchored" data-anchor-id="subspaces">Subspaces</h2>
+<p>It is often useful to consider a lower-dimension vector space that still preserves the properties of the original vector space. Formally, for a vector space <span class="math inline">\(V\)</span>, we define the <strong>subspace</strong> <span class="math inline">\(W\)</span> to be any vector space that consists of a nonempty <em>subset</em> of the vectors in <span class="math inline">\(V\)</span> endowed with the <em>same</em> operations of vector addition and scalar multiplication defined on <span class="math inline">\(V\)</span>.</p>
+<p>This definition can seem abstract at first, and so it’s valuable to walk through a concrete example. Consider the following subset of <span class="math inline">\(\mathbb{R}^3\)</span></p>
+<p><span class="math display">\[
+W = \{(x,y,0): x, y \in \mathbb{R}\} \subseteq {\mathbb{R^3}},
+\]</span></p>
+<p>which is visualized as the turquoise <span class="math inline">\(x-y\)</span> plane in the figure below.</p>
+<div class="cell">
+<div id="fig-3d-subspace" class="cell-output-display quarto-figure quarto-figure-center quarto-float anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3d-subspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-5d80686e07c0bbcd9287" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-5d80686e07c0bbcd9287">{"x":{"visdat":{"d5093b8e1d2d":["function () ","plotlyVisDat"],"d5096f1d93e6":["function () ","data"]},"cur_data":"d5096f1d93e6","attrs":{"d5096f1d93e6":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"x":{},"y":{},"z":{},"type":"scatter3d","mode":"markers","opacity":0.12,"marker":{"size":2},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.1":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"z":[[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0]],"type":"surface","x":[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6],"y":[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6],"opacity":0.34999999999999998,"showscale":false,"inherit":true},"d5096f1d93e6.2":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[0,0],"z":[0,0],"line":{"width":6},"hoverinfo":"skip","inherit":true},"d5096f1d93e6.3":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[0,0],"y":[-6,6],"z":[0,0],"line":{"width":6},"hoverinfo":"skip","inherit":true},"d5096f1d93e6.4":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[0,0],"y":[0,0],"z":[-6,6],"line":{"width":6},"hoverinfo":"skip","inherit":true},"d5096f1d93e6.5":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.6":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.7":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.8":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.9":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.10":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[-6,-6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.11":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.12":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.13":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,-6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.14":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,-6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.15":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[6,6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true},"d5096f1d93e6.16":{"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d","mode":"lines","x":[6,6],"y":[6,6],"z":[-6,6],"line":{"width":4,"color":"orange"},"showlegend":false,"hoverinfo":"skip","inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"aspectmode":"cube","xaxis":{"title":"x","range":[-6,6],"showgrid":false,"zeroline":false},"yaxis":{"title":"y","range":[-6,6],"showgrid":false,"zeroline":false},"zaxis":{"title":"z","range":[-6,6],"showgrid":false,"zeroline":false},"bgcolor":"white"},"showlegend":false,"hovermode":"closest"},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6,-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6],"y":[-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6],"z":[-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-6,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-5,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-4,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6],"type":"scatter3d","mode":"markers","opacity":0.12,"marker":{"color":"rgba(31,119,180,1)","size":2,"line":{"color":"rgba(31,119,180,1)"}},"showlegend":false,"hoverinfo":["skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip","skip"],"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null},{"colorbar":{"title":"z","ticklen":2},"colorscale":[["0","rgba(37,144,140,1)"],["1","rgba(37,144,140,1)"]],"showscale":false,"z":[[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0]],"type":"surface","x":[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6],"y":[-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6],"opacity":0.34999999999999998,"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[0,0],"z":[0,0],"line":{"color":"rgba(44,160,44,1)","width":6},"hoverinfo":["skip","skip"],"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[0,0],"y":[-6,6],"z":[0,0],"line":{"color":"rgba(214,39,40,1)","width":6},"hoverinfo":["skip","skip"],"marker":{"color":"rgba(214,39,40,1)","line":{"color":"rgba(214,39,40,1)"}},"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[0,0],"y":[0,0],"z":[-6,6],"line":{"color":"rgba(148,103,189,1)","width":6},"hoverinfo":["skip","skip"],"marker":{"color":"rgba(148,103,189,1)","line":{"color":"rgba(148,103,189,1)"}},"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(140,86,75,1)","line":{"color":"rgba(140,86,75,1)"}},"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(227,119,194,1)","line":{"color":"rgba(227,119,194,1)"}},"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[-6,-6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(127,127,127,1)","line":{"color":"rgba(127,127,127,1)"}},"error_y":{"color":"rgba(127,127,127,1)"},"error_x":{"color":"rgba(127,127,127,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,6],"y":[6,6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(188,189,34,1)","line":{"color":"rgba(188,189,34,1)"}},"error_y":{"color":"rgba(188,189,34,1)"},"error_x":{"color":"rgba(188,189,34,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(23,190,207,1)","line":{"color":"rgba(23,190,207,1)"}},"error_y":{"color":"rgba(23,190,207,1)"},"error_x":{"color":"rgba(23,190,207,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[-6,-6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(255,127,14,1)","line":{"color":"rgba(255,127,14,1)"}},"error_y":{"color":"rgba(255,127,14,1)"},"error_x":{"color":"rgba(255,127,14,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,6],"z":[6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(44,160,44,1)","line":{"color":"rgba(44,160,44,1)"}},"error_y":{"color":"rgba(44,160,44,1)"},"error_x":{"color":"rgba(44,160,44,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[-6,-6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(214,39,40,1)","line":{"color":"rgba(214,39,40,1)"}},"error_y":{"color":"rgba(214,39,40,1)"},"error_x":{"color":"rgba(214,39,40,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[-6,-6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(148,103,189,1)","line":{"color":"rgba(148,103,189,1)"}},"error_y":{"color":"rgba(148,103,189,1)"},"error_x":{"color":"rgba(148,103,189,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[-6,-6],"y":[6,6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(140,86,75,1)","line":{"color":"rgba(140,86,75,1)"}},"error_y":{"color":"rgba(140,86,75,1)"},"error_x":{"color":"rgba(140,86,75,1)"},"frame":null},{"type":"scatter3d","mode":"lines","x":[6,6],"y":[6,6],"z":[-6,6],"line":{"color":"orange","width":4},"showlegend":false,"hoverinfo":["skip","skip"],"marker":{"color":"rgba(227,119,194,1)","line":{"color":"rgba(227,119,194,1)"}},"error_y":{"color":"rgba(227,119,194,1)"},"error_x":{"color":"rgba(227,119,194,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3d-subspace-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: A 2D plane through the origin is a subspace of R³.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>The subset <span class="math inline">\(W\)</span> is a subspace of <span class="math inline">\(\mathbb{R}^3\)</span>. To see this, note that for any <span class="math inline">\(\boldsymbol u = (u_1, u_2, 0) \in W\)</span>, <span class="math inline">\(\boldsymbol v = (v_1, v_2, 0) \in W\)</span>, and <span class="math inline">\(c \in \mathbb{R}\)</span>, the component-wise definitions of vector addition and scalar multiplication for <span class="math inline">\(\mathbb{R}^3\)</span> are <strong>closed</strong> in <span class="math inline">\(W\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\boldsymbol u + \boldsymbol v = &amp;(u_1 + v_1, u_2 + v_2, 0) \in W \\
+\\
+c \boldsymbol u &amp;= (c u_1, c u_2, 0) \in W,
+\end{aligned}
+\]</span> and thus <span class="math inline">\(W\)</span> is a valid vector space.</p>
+<section id="importance-of-origin" class="level3">
+<h3 class="anchored" data-anchor-id="importance-of-origin">Importance of Origin</h3>
+<p>Notice that the origin <span class="math inline">\((0,0,0)\)</span> — the <strong>additive identity</strong> for <span class="math inline">\(\mathbb{R}^3\)</span> — is contained in <span class="math inline">\(W\)</span>. This is not a coincidence: every subspace of <span class="math inline">\(\mathbb{R}^3\)</span> <em>must</em> contain the origin. To see this, consider the <span class="math inline">\(x-y\)</span> plane shifted up by one unit:</p>
+<p><span class="math display">\[
+W' = \{(x,y,1): x, y \in \mathbb{R}\} \subseteq {\mathbb{R^3}}.
+\]</span></p>
+<p>This set does not include the origin, and it fails to be a subspace because the operations of vector addition and scalar multiplication are not closed in <span class="math inline">\(W'\)</span>. Specifically, for any <span class="math inline">\(\boldsymbol u = (u_1, u_2, 1) \in W'\)</span>, <span class="math inline">\(\boldsymbol v = (v_1, v_2, 1) \in W'\)</span>, and <span class="math inline">\(c \in \{\mathbb{R} / 1\}\)</span>, we have that</p>
+<p><span class="math display">\[
+\begin{aligned}
+\boldsymbol u + \boldsymbol v = &amp;(u_1 + v_1, u_2 + v_2, 2) \notin W' \\
+\\
+c \boldsymbol u &amp;= (c u_1, c u_2, c) \notin W',
+\end{aligned}
+\]</span> and so <span class="math inline">\(W'\)</span> is not a valid vector space. Importantly, this is a general property not limited to <span class="math inline">\(\mathbb{R}^3\)</span>: any subspace must contain the <strong>additive identity</strong> (also called the <strong>zero vector</strong>) of the parent vector space.</p>
+</section>
+<section id="basis-of-subspaces" class="level3">
+<h3 class="anchored" data-anchor-id="basis-of-subspaces">Basis of Subspaces</h3>
+<p>A general property of subspaces of a finite-dimensional vector space is that their dimension is less than the dimension of the parent vector space.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> For example, in the example above, a basis for the <span class="math inline">\(x-y\)</span> plane in <span class="math inline">\(\mathbb{R}^3\)</span> is</p>
+<p><span class="math display">\[
+\mathcal{B}_W = \{(1,0,0), (0,1,0)\}.
+\]</span></p>
+<p>Thus, the dimension of <span class="math inline">\(W\)</span> is 2.</p>
+
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-DeisenrothFaisalOng2020" class="csl-entry" role="listitem">
+Deisenroth, Marc Peter, A. Aldo Faisal, and Cheng Soon Ong. 2020. <em>Mathematics for Machine Learning</em>. Cambridge University Press. <a href="https://mml-book.github.io/">https://mml-book.github.io/</a>.
+</div>
+<div id="ref-FriedbergInselSpence2019" class="csl-entry" role="listitem">
+Friedberg, Stephen H., Arnold J. Insel, and Lawrence E. Spence. 2019. <em>Linear Algebra</em>. 5th ed. Pearson.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>These tuples are usually called <strong>vectors</strong> in most applied settings, but to avoid confusion with the more general definition of vectors in a vector space, I refer to them as <span class="math inline">\(n\)</span>-tuples.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>To be precise, I should say “less than or equal to”, because the vector space is a subspace of itself.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/vigneshsomjit\.github\.io");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2025 Vignesh Somjit ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+</div>   
+    <div class="nav-footer-center">
+<p><a class="link-dark" href="mailto:somjit.vignesh@gmail.com" title="Email" style="margin-right: 24px;"> <i class="bi bi-envelope-fill" style="font-size: 1.25rem;"></i> </a> <a class="link-dark" href="https://www.linkedin.com/in/vignesh-somjit/" title="LinkedIn" target="_blank" rel="noopener" style="margin-right: 24px;"> <i class="bi bi-linkedin" style="font-size: 1.25rem;"></i> </a> <a class="link-dark" href="https://github.com/vigneshsomjit" title="GitHub" target="_blank" rel="noopener"> <i class="bi bi-github" style="font-size: 1.25rem;"></i> </a></p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

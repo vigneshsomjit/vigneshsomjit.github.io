@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vigneshsomjit.github.io/index.html</loc>
-    <lastmod>2025-09-04T23:09:07.479Z</lastmod>
+    <lastmod>2025-09-20T01:50:55.199Z</lastmod>
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/about.html</loc>
@@ -26,6 +26,18 @@
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/blog/random-sampling.html</loc>
+    <lastmod>2025-09-18T04:41:57.160Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vigneshsomjit.github.io/blog/linear-algebra-1.html</loc>
+    <lastmod>2025-09-20T01:52:41.689Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vigneshsomjit.github.io/blog/linalg-basics.html</loc>
+    <lastmod>2025-09-21T00:06:18.985Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vigneshsomjit.github.io/blog/statistical-inference.html</loc>
     <lastmod>2025-09-18T04:41:57.160Z</lastmod>
   </url>
 </urlset>

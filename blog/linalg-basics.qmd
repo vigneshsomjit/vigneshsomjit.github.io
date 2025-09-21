@@ -1,0 +1,483 @@
+---
+title: "Basic Concepts in Linear Algebra"
+description: "Discussion of fundamental concepts in linear algebra, including vector spaces, linear combination and independence, basis vectors, and subspaces."
+date: today
+categories: [Linear Algebra]
+bibliography: linalg-basics.bib
+nocite: |
+  @*
+---
+```{r setup, include=FALSE}
+library(ggplot2)
+library(plotly)
+```
+
+## Vector Spaces, Vectors, and Matrices
+In mathematics, an **algebraic structure** is an abstraction consisting of (i) a set of elements, (ii) operations that manipulate those elements, and (iii) axioms that the operations must satisfy. The power of this abstraction is that once the core properties of the structure are formalized in general, they can be applied to any specific system — mathematical or real-world — that shares the same structure. For example, the **field** $F$ is an algebraic structure consisting of elements called **scalars** with operations of addition and multiplication that satisfy a number of [axioms](https://en.wikipedia.org/wiki/Field_(mathematics)). A ubiquitous field is the set of real numbers $\mathbb{R}$.
+
+Linear algebra is the study of **vector spaces** $V$, which is an algebraic structure defined in the context of a field. The elements in a vector space are called **vectors**. For any two vectors $\boldsymbol u,\boldsymbol v \in V$, the operation of **vector addition** creates a third vector $\boldsymbol u + \boldsymbol v \in V$; this is known as **closure** under vector addition.  For any scalar $c \in F$ and vector $\boldsymbol u \in V$, the operation of **scalar multiplication** creates another vector $c \boldsymbol u \in V$; this is known as **closure** under scalar multiplication. The 8 axioms that govern these two operations are listed [here](https://en.wikipedia.org/wiki/Vector_space). 
+
+Any sets of elements equipped with vector addition and scalar multiplication that satisfy the closure property and the 8 axioms is considered a vector space. Of particular interest are $n$-tuples of the form
+
+$$
+\boldsymbol u = (u_1, u_2, \ldots, u_n),
+$$
+
+where the **components** $u_1, \ldots, u_n$ are scalars from a field $F$. The set of all such $n$-tuples is denoted by $F^n$.[^1] For example, $\mathbb{R}^3$ is the set of all 3-tuples of real numbers. Here, vector addition is defined as the component-wise operation: 
+
+$$
+\begin{aligned}
+\boldsymbol u = (u_1, u_2, &\ldots, u_n) \in F^n \quad\text{and}\quad \boldsymbol v = (v_1, v_2, \ldots, v_n) \in F^n \\
+\\
+\boldsymbol u + \boldsymbol v &= (u_1 + v_1, u_2 + v_2, \ldots, u_n + v_n) \in F^n.
+\end{aligned}
+$$
+
+Similarly, scalar multiplication is defined as the component-wise operation:
+
+$$
+\begin{aligned}
+c \in F \quad&\text{and}\quad \boldsymbol u = (u_1,u_2, \ldots, u_n) \in F^n \\
+\\
+c \boldsymbol u &= (c u_1, c u_2, \ldots, c u_n) \in F^n.
+\end{aligned}
+$$
+
+A natural generalization of $n$-tuples is the $m \times n$ array called the **matrix**:
+
+$$
+\mathbf A = \begin{pmatrix}
+a_{11} & a_{12} & \ldots & a_{1n} \\
+a_{21} & a_{22} & \ldots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \ldots & a_{mn}
+\end{pmatrix}, \quad a_{ij} \in F.
+$$
+
+The set of all $m \times n$ matrices with components in a field $F$ is denoted by $F^{m \times n}$. Vector addition and scalar multiplication are defined analogously to the component-wise operations for $n$-tuples. Specifically, for any two matrices $A, B \in F^{m \times n}$, vector addition creates a third matrix $A + B \in F^{m \times n}$ whose components are given by 
+
+$$
+(\mathbf{A} + \mathbf B)_{ij} = \mathbf A_{ij} + \mathbf B_{ij}.
+$$
+
+For any scalar $c \in F$, scalar multiplication creates another matrix $cA \in F^{m \times n}$ where
+
+$$
+c \mathbf A_{ij} = c (\mathbf A_{ij}).
+$$
+
+## Basis and Dimension
+
+A vector space $V$ contains infinitely many vectors. We are interested in finding a smaller set of vectors that captures the entire structure in a much more tractable manner. For example, consider the vector space $\mathbb{R}^3$ in @fig-3d. It seems like any point (i.e. vector or 3-tuple) on the blue lattice structure can be described by how far it extends along the $x$, $y$, and $z$ axes. This section formalizes this idea. 
+
+```{r}
+#| echo: false
+#| label: fig-3d
+#| fig-cap: "The R³ vector space."
+
+L <- 6       # half-size of the cube window
+step <- 1    # spacing of lattice points
+
+# Lattice points: all 3D triples on a grid
+g <- seq(-L, L, by = step)
+pts <- expand.grid(x = g, y = g, z = g)
+
+# Define cube edges
+edges <- list(
+  rbind(c(-L,-L,-L), c( L,-L,-L)),  rbind(c(-L, L,-L), c( L, L,-L)),
+  rbind(c(-L,-L, L), c( L,-L, L)),  rbind(c(-L, L, L), c( L, L, L)),
+  rbind(c(-L,-L,-L), c(-L, L,-L)),  rbind(c( L,-L,-L), c( L, L,-L)),
+  rbind(c(-L,-L, L), c(-L, L, L)),  rbind(c( L,-L, L), c( L, L, L)),
+  rbind(c(-L,-L,-L), c(-L,-L, L)),  rbind(c( L,-L,-L), c( L,-L, L)),
+  rbind(c(-L, L,-L), c(-L, L, L)),  rbind(c( L, L,-L), c( L, L, L))
+)
+
+p <- plot_ly()
+
+# (1) Lattice points (all possible 3-tuples)
+p <- add_markers(
+  p, data = pts, x = ~x, y = ~y, z = ~z,
+  opacity = 0.12, marker = list(size = 2),
+  showlegend = FALSE, hoverinfo = "skip"
+)
+
+# (2) Wireframe cube (orange edges only)
+for (e in edges) {
+  p <- add_trace(
+    p, type = "scatter3d", mode = "lines",
+    x = e[,1], y = e[,2], z = e[,3],
+    line = list(width = 4, color = "orange"),
+    showlegend = FALSE, hoverinfo = "skip"
+  )
+}
+
+# Layout
+p <- layout(
+  p,
+  scene = list(
+    aspectmode = "cube",
+    xaxis = list(title = "x", range = c(-L, L), showgrid = FALSE, zeroline = FALSE),
+    yaxis = list(title = "y", range = c(-L, L), showgrid = FALSE, zeroline = FALSE),
+    zaxis = list(title = "z", range = c(-L, L), showgrid = FALSE, zeroline = FALSE),
+    bgcolor = "white"
+  ),
+  showlegend = FALSE
+)
+
+p
+```
+
+### Linear Combination, Span, and Linear Independence
+Let $\mathcal{A} = \{\boldsymbol{u}_1, \ldots, \boldsymbol{u}_n\}$ be some finite subset of vectors in $V$. One way to formalize the idea of $\mathcal{A}$ capturing the *entire* structure of $V$ is if any vector $\boldsymbol{v} \in V$ can be expressed as a **linear combination** of the vectors in $\mathcal{A}$:
+
+$$
+\boldsymbol v = c_1 \boldsymbol u_1 + c_2 \boldsymbol u_2 + \ldots + c_n \boldsymbol u_n = \sum_{i=1}^n c_i \boldsymbol u_i \in V,
+$$
+
+where $c_1, \ldots, c_n \in F$. If this is the case, then we say that the set $\mathcal{A}$ **spans** the vector space $V$. An equivalent characterization is that the set of all linear combinations of the vectors in $\mathcal{A}$ — the **span** of $\mathcal{A}$ — is equal to $V$.
+
+We are also interested in efficiency. That is to say, we want $\mathcal{A}$ to be as small as possible while still spanning $V$. We call a set of vectors **linearly dependent** if one of the vectors can be expressed as a linear combination of the others. More formally, the vectors $\boldsymbol{u}_1, \ldots, \boldsymbol{u}_n$ in $\mathcal{A}$ would be linearly dependent if
+
+$$
+c_1 \boldsymbol u_1 + c_2 \boldsymbol u_2 + \ldots + c_n \boldsymbol u_n = 0,
+$$
+
+and not all of the $c_i$ are zero. Thus, we would like to remove any linearly dependent vectors from $\mathcal{A}$: such vectors are going to be redundant since they will be a part of the span of the other vectors in $\mathcal{A}$. Formally, we say that the vectors $\boldsymbol{u}_1, \ldots, \boldsymbol{u}_n$ in $\mathcal{A}$ are **linearly independent** if 
+
+$$
+c_1 \boldsymbol u_1 + c_2 \boldsymbol u_2 + \ldots + c_n \boldsymbol u_n = 0,
+$$
+
+only if $c_1 = c_2 = \ldots = c_n = 0$. 
+
+Taken together, these two ideas — spanning and linear independence — gives us exactly what we were looking for: a minimal yet complete description of the vector space $V$. More formally, we call a set of vectors a **basis** $\mathcal{B}$ for the vector space $V$ if it is a linearly independent subset that spans $V$. The vectors in a basis are called **basis vectors**. 
+
+### Dimension
+
+Notice that in the above definition of the basis set $\mathcal{B}$, we did not assume that the number of basis vectors is finite. In fact, there exists vector spaces that require infinitely many basis vectors. For example, an $n$-degree **polynomial** is defined as
+
+$$
+f(x) = a_nx^n + a_{n-1}x^{n-1} + \ldots + a_1 x + a_0,
+$$
+where $x$ is a variable, $a_i \in F$, and $n \geq 0$ is an integer. The vector space of all polynomials with coefficients in a field $F$, denoted $P(F)$, has the infinite basis set 
+
+$$
+\mathcal{B}_{P(F)} = \{1, x, x^2, x^3, \ldots\}.
+$$
+Nevertheless, note that the definition of linear combination requires a finite number of vectors. Thus, even if a basis set $\mathcal{B}$ for a vector space $V$ is infinite, any vector $\boldsymbol v \in V$ can be represented as a linear combination of a finite subset of vectors in $\mathcal{B}$. 
+
+To distinguish between vector spaces with finite and infinite basis sets, we introduce the notion of **dimension**, which is simply the number of basis vectors in a basis set $\mathcal{B}$ for the vector space $V$. If $V$ has a finite basis, then we say that $V$ is **finite-dimensional**; otherwise, it is **infinite-dimensional**.
+
+### Basis Sets Are Not Unique
+
+An important property of basis sets is that they are not unique. Let us revisit the vector space $\mathbb{R}^3$ to illustrate this point. At the start of this section, I mentioned that it seems possible to describe any point in $\mathbb{R}^3$ by how far it extends along the $x$, $y$, and $z$ axes. With this intuition, we can define the following basis set 
+
+$$
+\mathcal{B}_{\mathbb{R}^3} = \{(1,0,0), (0,1,0), (0,0,1)\} = \{\boldsymbol e_1, \boldsymbol e_2, \boldsymbol e_3\}.
+$$
+
+This is known as the **standard basis** for $\mathbb{R}^3$. We can verify that it is a valid basis by confirming that (i) the three vectors are linearly independent and (ii) any vector $\boldsymbol u = (u_1,u_2,u_3) \in \mathbb{R}^3$ can be expressed as a linear combination of the basis vectors. As an example, the vectors $w = (2,1.5,3)$ and $v=(-1.5,0.6, -1.2)$ are plotted below. 
+
+```{r}
+#| echo: false
+#| label: fig-3d-span
+#| fig-cap: "Basis vectors and their linear combinations in R³."
+#| 
+L <- 4
+
+# Basis vectors
+e1 <- c(1, 0, 0)
+e2 <- c(0, 1, 0)
+e3 <- c(0, 0, 1)
+
+# Vectors
+w   <- c(2, 1.5, 3)          # main vector
+vng <- c(-1.5, 0.6, -1.2)   # negative-direction vector
+
+# Helper to add vector
+add_vec <- function(fig, v, name, col, width = 3, msize = 3) {
+  fig %>%
+    add_trace(
+      type="scatter3d", mode="lines+markers",
+      x=c(0, v[1]), y=c(0, v[2]), z=c(0, v[3]),
+      line=list(color=col, width=width),
+      marker=list(size=msize, color=col),
+      name=name
+    )
+}
+
+# Helper to add axis line
+add_axis_line <- function(fig, axis = c("x","y","z"), L = 4, alpha = 0.6, width = 3) {
+  axis <- match.arg(axis)
+  col <- paste0("rgba(100,100,100,", alpha, ")")
+  if (axis == "x") {
+    fig %>% add_trace(type="scatter3d", mode="lines",
+                      x=c(-L, L), y=c(0, 0), z=c(0, 0),
+                      line=list(color=col, width=width),
+                      hoverinfo="none", showlegend=FALSE)
+  } else if (axis == "y") {
+    fig %>% add_trace(type="scatter3d", mode="lines",
+                      x=c(0, 0), y=c(-L, L), z=c(0, 0),
+                      line=list(color=col, width=width),
+                      hoverinfo="none", showlegend=FALSE)
+  } else {
+    fig %>% add_trace(type="scatter3d", mode="lines",
+                      x=c(0, 0), y=c(0, 0), z=c(-L, L),
+                      line=list(color=col, width=width),
+                      hoverinfo="none", showlegend=FALSE)
+  }
+}
+
+fig <- plot_ly()
+
+# Axis lines
+fig <- add_axis_line(fig, "x", L=L)
+fig <- add_axis_line(fig, "y", L=L)
+fig <- add_axis_line(fig, "z", L=L)
+
+# Vectors
+fig <- add_vec(fig, e1, "e1", "#d62728", width=2)
+fig <- add_vec(fig, e2, "e2", "#2ca02c", width=2)
+fig <- add_vec(fig, e3, "e3", "#1f77b4", width=2)
+fig <- add_vec(fig, w,   "w",  "purple", width=4)
+fig <- add_vec(fig, vng, "v",  "#ff7f0e", width=4)   # made as thick as purple
+
+# Layout with cube box, no tick labels, standard orientation
+fig <- fig %>% layout(
+  scene = list(
+    xaxis = list(title="", range=c(-L,L), showgrid=TRUE, showline=TRUE,
+                 showticklabels=FALSE, zeroline=FALSE),
+    yaxis = list(title="", range=c(-L,L), showgrid=TRUE, showline=TRUE,
+                 showticklabels=FALSE, zeroline=FALSE),
+    zaxis = list(title="", range=c(-L,L), showgrid=TRUE, showline=TRUE,
+                 showticklabels=FALSE, zeroline=FALSE),
+    aspectmode = "cube",
+    camera = list(
+      eye = list(x = 1, y = 1, z = 0.3),  # symmetric orientation
+      up  = list(x = 0, y = 0, z = 1),        # z stays vertical
+      center = list(x = 0, y = 0, z = 0)
+    )
+  ),
+  showlegend = TRUE
+)
+
+fig
+```
+
+However, any *any* set of three linearly independent vectors in $\mathbb{R}^3$ that span $\mathbb{R}^3$ can serve as a basis. For example, the following set is also a valid basis for $\mathbb{R}^3$:
+
+$$
+\mathcal{B}'_{\mathbb{R}^3} = \{(1,0,0), (1,1,0), (1,1,1)\}.
+$$
+The figure below provides visual intuition for this basis.
+
+```{r}
+#| echo: false
+#| label: fig-3d-alt-span
+#| fig-cap: "Alternative basis vectors for R³."
+
+L <- 4
+
+# New vectors
+v1 <- c(1, 0, 0)
+v2 <- c(1, 1, 0)
+v3 <- c(1, 1, 1)
+
+# Helper to add vector
+add_vec <- function(fig, v, name, col, width = 3, msize = 3) {
+  fig %>%
+    add_trace(
+      type="scatter3d", mode="lines+markers",
+      x=c(0, v[1]), y=c(0, v[2]), z=c(0, v[3]),
+      line=list(color=col, width=width),
+      marker=list(size=msize, color=col),
+      name=name
+    )
+}
+
+# Helper to add axis line
+add_axis_line <- function(fig, axis = c("x","y","z"), L = 4, alpha = 0.6, width = 3) {
+  axis <- match.arg(axis)
+  col <- paste0("rgba(100,100,100,", alpha, ")")
+  if (axis == "x") {
+    fig %>% add_trace(type="scatter3d", mode="lines",
+                      x=c(-L, L), y=c(0, 0), z=c(0, 0),
+                      line=list(color=col, width=width),
+                      hoverinfo="none", showlegend=FALSE)
+  } else if (axis == "y") {
+    fig %>% add_trace(type="scatter3d", mode="lines",
+                      x=c(0, 0), y=c(-L, L), z=c(0, 0),
+                      line=list(color=col, width=width),
+                      hoverinfo="none", showlegend=FALSE)
+  } else {
+    fig %>% add_trace(type="scatter3d", mode="lines",
+                      x=c(0, 0), y=c(0, 0), z=c(-L, L),
+                      line=list(color=col, width=width),
+                      hoverinfo="none", showlegend=FALSE)
+  }
+}
+
+fig <- plot_ly()
+
+# Axis lines
+fig <- add_axis_line(fig, "x", L=L)
+fig <- add_axis_line(fig, "y", L=L)
+fig <- add_axis_line(fig, "z", L=L)
+
+# Vectors
+fig <- add_vec(fig, v1, "v1", "#d62728", width=3)
+fig <- add_vec(fig, v2, "v2", "#2ca02c", width=3)
+fig <- add_vec(fig, v3, "v3", "#1f77b4", width=3)
+
+# Layout with cube box
+fig <- fig %>% layout(
+  scene = list(
+    xaxis = list(title="", range=c(-L,L), showgrid=TRUE, showline=TRUE,
+                 showticklabels=FALSE, zeroline=FALSE),
+    yaxis = list(title="", range=c(-L,L), showgrid=TRUE, showline=TRUE,
+                 showticklabels=FALSE, zeroline=FALSE),
+    zaxis = list(title="", range=c(-L,L), showgrid=TRUE, showline=TRUE,
+                 showticklabels=FALSE, zeroline=FALSE),
+    aspectmode = "cube",
+    camera = list(
+      eye = list(x = 1, y = 0.5, z = 0.3),
+      up  = list(x = 0, y = 0, z = 1),
+      center = list(x = 0, y = 0, z = 0)
+    )
+  ),
+  showlegend = TRUE
+)
+
+fig
+```
+
+## Subspaces 
+
+It is often useful to consider a lower-dimension vector space that still preserves the properties of the original vector space. Formally, for a vector space $V$, we define the **subspace** $W$ to be any vector space that consists of a nonempty *subset* of the vectors in $V$ endowed with the *same* operations of vector addition and scalar multiplication defined on $V$. 
+
+This definition can seem abstract at first, and so it's valuable to walk through a concrete example. Consider the following subset of $\mathbb{R}^3$
+
+$$
+W = \{(x,y,0): x, y \in \mathbb{R}\} \subseteq {\mathbb{R^3}},
+$$
+
+which is visualized as the turquoise $x-y$ plane in the figure below.  
+
+```{r}
+#| echo: false
+#| label: fig-3d-subspace
+#| fig-cap: "A 2D plane through the origin is a subspace of R³."
+L <- 6       # half-size of the cube window
+step <- 1    # spacing of lattice points
+
+# Lattice points: all 3D triples on a grid
+g <- seq(-L, L, by = step)
+pts <- expand.grid(x = g, y = g, z = g)
+
+# Plane through the origin (z=0)
+Z <- matrix(0, length(g), length(g))
+
+# Define cube edges
+edges <- list(
+  rbind(c(-L,-L,-L), c( L,-L,-L)),  rbind(c(-L, L,-L), c( L, L,-L)),
+  rbind(c(-L,-L, L), c( L,-L, L)),  rbind(c(-L, L, L), c( L, L, L)),
+  rbind(c(-L,-L,-L), c(-L, L,-L)),  rbind(c( L,-L,-L), c( L, L,-L)),
+  rbind(c(-L,-L, L), c(-L, L, L)),  rbind(c( L,-L, L), c( L, L, L)),
+  rbind(c(-L,-L,-L), c(-L,-L, L)),  rbind(c( L,-L,-L), c( L,-L, L)),
+  rbind(c(-L, L,-L), c(-L, L, L)),  rbind(c( L, L,-L), c( L, L, L))
+)
+
+p <- plot_ly()
+
+# (1) Lattice points (all possible 3-tuples)
+p <- add_markers(
+  p, data = pts, x = ~x, y = ~y, z = ~z,
+  opacity = 0.12, marker = list(size = 2),
+  showlegend = FALSE, hoverinfo = "skip"
+)
+
+# (2) Plane through the origin
+p <- add_surface(
+  p, x = g, y = g, z = Z,
+  opacity = 0.35, showscale = FALSE
+)
+
+# (3) Axes
+p <- add_trace(p, type = "scatter3d", mode = "lines",
+               x = c(-L, L), y = c(0, 0), z = c(0, 0),
+               line = list(width = 6), hoverinfo = "skip")
+p <- add_trace(p, type = "scatter3d", mode = "lines",
+               x = c(0, 0), y = c(-L, L), z = c(0, 0),
+               line = list(width = 6), hoverinfo = "skip")
+p <- add_trace(p, type = "scatter3d", mode = "lines",
+               x = c(0, 0), y = c(0, 0), z = c(-L, L),
+               line = list(width = 6), hoverinfo = "skip")
+
+# (4) Wireframe cube (wideframe)
+for (e in edges) {
+  p <- add_trace(
+    p, type = "scatter3d", mode = "lines",
+    x = e[,1], y = e[,2], z = e[,3],
+    line = list(width = 4, color = "orange"),
+    showlegend = FALSE, hoverinfo = "skip"
+  )
+}
+
+# Layout
+p <- layout(
+  p,
+  scene = list(
+    aspectmode = "cube",
+    xaxis = list(title = "x", range = c(-L, L), showgrid = FALSE, zeroline = FALSE),
+    yaxis = list(title = "y", range = c(-L, L), showgrid = FALSE, zeroline = FALSE),
+    zaxis = list(title = "z", range = c(-L, L), showgrid = FALSE, zeroline = FALSE),
+    bgcolor = "white"
+  ),
+  showlegend = FALSE
+)
+
+p
+```
+
+The subset $W$ is a subspace of $\mathbb{R}^3$. To see this, note that for any $\boldsymbol u = (u_1, u_2, 0) \in W$,  $\boldsymbol v = (v_1, v_2, 0) \in W$, and $c \in \mathbb{R}$, the component-wise definitions of vector addition and scalar multiplication for $\mathbb{R}^3$ are **closed** in $W$
+
+$$
+\begin{aligned}
+\boldsymbol u + \boldsymbol v = &(u_1 + v_1, u_2 + v_2, 0) \in W \\
+\\
+c \boldsymbol u &= (c u_1, c u_2, 0) \in W,
+\end{aligned}
+$$
+and thus $W$ is a valid vector space. 
+
+### Importance of Origin
+Notice that the origin $(0,0,0)$ — the **additive identity** for $\mathbb{R}^3$ — is contained in $W$. This is not a coincidence: every subspace of $\mathbb{R}^3$ *must* contain the origin. To see this, consider the $x-y$ plane shifted up by one unit:
+
+$$
+W' = \{(x,y,1): x, y \in \mathbb{R}\} \subseteq {\mathbb{R^3}}.
+$$
+
+This set does not include the origin, and it fails to be a subspace because the operations of vector addition and scalar multiplication are not closed in $W'$. Specifically, for any $\boldsymbol u = (u_1, u_2, 1) \in W'$, $\boldsymbol v = (v_1, v_2, 1) \in W'$, and $c \in \{\mathbb{R} / 1\}$, we have that
+
+$$
+\begin{aligned}
+\boldsymbol u + \boldsymbol v = &(u_1 + v_1, u_2 + v_2, 2) \notin W' \\
+\\
+c \boldsymbol u &= (c u_1, c u_2, c) \notin W',
+\end{aligned}
+$$
+and so $W'$ is not a valid vector space. Importantly, this is a general property not limited to $\mathbb{R}^3$: any subspace must contain the **additive identity** (also called the **zero vector**) of the parent vector space. 
+
+### Basis of Subspaces 
+
+A general property of subspaces of a finite-dimensional vector space is that their dimension is less than the dimension of the parent vector space.[^2] For example, in the example above, a basis for the $x-y$ plane in $\mathbb{R}^3$ is 
+
+$$
+\mathcal{B}_W = \{(1,0,0), (0,1,0)\}.
+$$
+
+Thus, the dimension of $W$ is 2. 
+
+[^1]: These tuples are usually called **vectors** in most applied settings, but to avoid confusion with the more general definition of vectors in a vector space, I refer to them as $n$-tuples.
+
+[^2]: To be precise, I should say "less than or equal to", because the vector space is a subspace of itself.
