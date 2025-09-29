@@ -1,11 +1,11 @@
 ---
 title: "Hypothesis Testing for the Normal Sampling Model"
-description: "I review key concepts in hypothesis testing using the running example of the normal sampling model."
+description: "I motivate key concepts in hypothesis testing using the running example of the normal sampling model."
 date: today
 categories: [Mathematical Statistics]
 ---
 
-## Recapitulation 
+## Recap 
 
 [Recall](statistical-inference.qmd) the basic setup of statistical inference under the random sampling framework. Here, we view the observed data $\boldsymbol x = (x_1, \ldots, x_n)'$ as a realization of the random variables $\boldsymbol X = (X_1, \ldots, X_n)'$ independently drawn from a common, unknown distribution $F$. In other words, the data is a realization of a **random sample** from the **population** $F$. The goal of statistical inference is to use the random sample to make statements about $F$, while quantifying the uncertainty in those statements. 
 
@@ -32,7 +32,7 @@ T: \boldsymbol X \rightarrow \mathbb{R}.
 $$
 The role of the test statistic is to take any random sample from the population and compress it into a single number that reflects the information most relevant to the hypothesis. Since it is a function of random variables, the test statistic is itself a random variable. Second, we define a **critical region** $C$ to be some subset of the range of $T$. The decision rule can then be framed in terms of the observed realization of the test statistic, $t$: (i) reject $H_0$ if $t \in C$, and (ii) accept $H_0$ if $t \notin C$. 
 
-It's worth pausing here to emphasize two important features of this setup. First, the effectiveness of a hypothesis test depends on the choice of both the test statistic and critical region. If $T$ does not capture the right information, or if $C$ is poorly specified, the resulting decision rule will not be very insightful. Second, making incorrect decisions is inevitable in hypothesis testing because of the randomness inherent in the sample. Even with a well-chosen statistic and critical region, it is entirely possible to draw a sample with a mean far from the true population mean $\mu$ but close to the hypothesized mean $\mu_0$, or conversely, a sample from $\mu_0$ even when $\mu = \mu_0$. In both situations, we make an incorrect decision purely due to chance. 
+It's worth pausing here to emphasize two important features of this setup. First, the effectiveness of a hypothesis test depends on the choice of both the test statistic and critical region. If $T$ does not capture the right information, or if $C$ is poorly specified, the resulting decision rule will not be very insightful. Second, making incorrect decisions is inevitable in hypothesis testing because of the randomness inherent in the sample. Even with a well-chosen statistic and critical region, it is entirely possible to draw a sample with a mean far from the true population mean $\mu$ but close to the hypothesized mean $\mu_0$, or conversely, a sample far from $\mu_0$ even when $\mu = \mu_0$. In both situations, we make an incorrect decision purely due to chance. 
 
 Thus, in carrying out hypothesis tests, the focus is not on eliminating mistakes entirely, but rather on quantifying and controlling the *probability* of error. The following section formalizes this idea. 
 
@@ -41,6 +41,20 @@ Thus, in carrying out hypothesis tests, the focus is not on eliminating mistakes
 ### Error Probabilities and Power Function
 
 There are two types of incorrect decisions we could make in hypothesis testing. Rejecting the null when it is actually true is called a **Type I error**. Accepting the null when it is actually false is called a **Type II error**. 
+
+::: {#tbl-decision-outcomes}
+$$
+\begin{array}{c|c|c}
+ & \textbf{Accept $H_0$} & \textbf{Reject $H_0$} \\
+\hline
+\textbf{$H_0$ True} & \text{Correct Decision} & \text{Type I Error} \\
+\hline
+\textbf{$H_1$ True} & \text{Type II Error} & \text{Correct Decision} \\
+\end{array}
+$$
+
+Decision outcomes in hypothesis testing.
+:::
 
 To build the vocabulary and notation required to talk about the probability of making these two errors, we need to introduce the **power function** of a hypothesis test. This is the probability of rejecting the null $H_0$ under some population distribution $F$, and is denoted 
 $$
@@ -59,9 +73,38 @@ $$
 1 - \mathbb{P}[\text{Accept } H_0 \mid F_1] = \mathbb{P}[\text{Reject } H_0 \mid F_1] = \pi(F_1). 
 $$
 
-### Null Sampling Distribution 
+### Classical Approach to the Fundamental Tradeoff
 
-## Example: Two-Sided Test for Normal Samplign Model
+Notice that we could mechanically decrease the probability of a Type I error by reducing the size of $C$. However, this would in turn increase the probability of a Type II error. 
+Conversely, increasing the size of $C$ would decrease the probability of a Type II error, but increase the probability of a Type I error. This is the fundamental tradeoff in hypothesis testing: reducing the probability of one type of error comes at the cost of increasing the probability of the other.
+
+The **classical approach** to hypothesis testing is to bound the size of the test at some pre-specified level $\alpha \in (0,1)$, called the **significance level**. More formally, this means choosing the critical region $C$ so that 
+$$
+P[T \in C \mid F_0] \leq \alpha.
+$$
+
+To construct such a critical region, we need to know the distribution of the test statistic $T$ under the null hypothesis $H_0$, called the **null sampling distribution**: 
+
+$$
+G_0(t) = \mathbb{P}[T \leq t \mid F_0].
+$$
+
+One reason why we focus on bounding the probability of Type I errors instead of Type II errors is because the null sampling distribution is typically easier to derive than the distribution of $T$ under the various alternative hypotheses. 
+
+## Critical Values, One-Sided and Two-Sided Tests
+
+For most classical test statistics, the null sampling distribution is unimodal and symmetric, with probability that steadily decreases as we move away from the center. This implies that the least likely realizations of the test statistic under the null lie in the tails of the distribution. In such cases, the critical region can be fully characterized by a single **critical value** $c$. For a **one-sided test**, the critical region is
+$$
+C = \{t: t > c\} \quad \text{or} \quad C = \{t: t < c\}.
+$$
+For a **two-sided test**, the critical region is  
+$$
+C = \{t: |t| > c\}.
+$$
+
+## Two-Sided Test of the Mean in the Normal Sampling Model
+
+We have now developed all the theory needed to carry out the hypothesis test of the mean under the normal sampling model. 
 
 ### t-Statistic 
 
@@ -76,7 +119,7 @@ $$
 t = \frac{\bar X - \mu_0}{s / \sqrt{n}}.
 $$
 
-
-
 [^1]: It is worth emphasizing that while the parameter of interest is often the model parameters, the two are not always the same. 
 [^2]: Technically, the null hypothesis can be a set of values as well. However, in this post, we focus on **point (null) hypotheses**.
+
+## p-Values

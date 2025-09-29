@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2025-09-29">
-<meta name="description" content="I review key concepts in hypothesis testing using the running example of the normal sampling model.">
+<meta name="description" content="I motivate key concepts in hypothesis testing using the running example of the normal sampling model.">
 
 <title>Vignesh Somjit - Hypothesis Testing for the Normal Sampling Model</title>
 <style>
@@ -140,18 +140,20 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#recapitulation" id="toc-recapitulation" class="nav-link active" data-scroll-target="#recapitulation">Recapitulation</a></li>
+  <li><a href="#recap" id="toc-recap" class="nav-link active" data-scroll-target="#recap">Recap</a></li>
   <li><a href="#hypotheses" id="toc-hypotheses" class="nav-link" data-scroll-target="#hypotheses">Hypotheses</a></li>
   <li><a href="#test-statistic-and-critical-region" id="toc-test-statistic-and-critical-region" class="nav-link" data-scroll-target="#test-statistic-and-critical-region">Test Statistic and Critical Region</a></li>
   <li><a href="#classical-approach-to-hypothesis-testing" id="toc-classical-approach-to-hypothesis-testing" class="nav-link" data-scroll-target="#classical-approach-to-hypothesis-testing">Classical Approach to Hypothesis Testing</a>
   <ul class="collapse">
   <li><a href="#error-probabilities-and-power-function" id="toc-error-probabilities-and-power-function" class="nav-link" data-scroll-target="#error-probabilities-and-power-function">Error Probabilities and Power Function</a></li>
-  <li><a href="#null-sampling-distribution" id="toc-null-sampling-distribution" class="nav-link" data-scroll-target="#null-sampling-distribution">Null Sampling Distribution</a></li>
+  <li><a href="#classical-approach-to-the-fundamental-tradeoff" id="toc-classical-approach-to-the-fundamental-tradeoff" class="nav-link" data-scroll-target="#classical-approach-to-the-fundamental-tradeoff">Classical Approach to the Fundamental Tradeoff</a></li>
   </ul></li>
-  <li><a href="#example-two-sided-test-for-normal-samplign-model" id="toc-example-two-sided-test-for-normal-samplign-model" class="nav-link" data-scroll-target="#example-two-sided-test-for-normal-samplign-model">Example: Two-Sided Test for Normal Samplign Model</a>
+  <li><a href="#critical-values-one-sided-and-two-sided-tests" id="toc-critical-values-one-sided-and-two-sided-tests" class="nav-link" data-scroll-target="#critical-values-one-sided-and-two-sided-tests">Critical Values, One-Sided and Two-Sided Tests</a></li>
+  <li><a href="#two-sided-test-of-the-mean-in-the-normal-sampling-model" id="toc-two-sided-test-of-the-mean-in-the-normal-sampling-model" class="nav-link" data-scroll-target="#two-sided-test-of-the-mean-in-the-normal-sampling-model">Two-Sided Test of the Mean in the Normal Sampling Model</a>
   <ul class="collapse">
   <li><a href="#t-statistic" id="toc-t-statistic" class="nav-link" data-scroll-target="#t-statistic">t-Statistic</a></li>
   </ul></li>
+  <li><a href="#p-values" id="toc-p-values" class="nav-link" data-scroll-target="#p-values">p-Values</a></li>
   </ul>
 </nav>
     </div>
@@ -168,7 +170,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    I review key concepts in hypothesis testing using the running example of the normal sampling model.
+    I motivate key concepts in hypothesis testing using the running example of the normal sampling model.
   </div>
 </div>
 
@@ -191,8 +193,8 @@ window.Quarto = {
 </header>
 
 
-<section id="recapitulation" class="level2">
-<h2 class="anchored" data-anchor-id="recapitulation">Recapitulation</h2>
+<section id="recap" class="level2">
+<h2 class="anchored" data-anchor-id="recap">Recap</h2>
 <p><a href="../blog/statistical-inference.html">Recall</a> the basic setup of statistical inference under the random sampling framework. Here, we view the observed data <span class="math inline">\(\boldsymbol x = (x_1, \ldots, x_n)'\)</span> as a realization of the random variables <span class="math inline">\(\boldsymbol X = (X_1, \ldots, X_n)'\)</span> independently drawn from a common, unknown distribution <span class="math inline">\(F\)</span>. In other words, the data is a realization of a <strong>random sample</strong> from the <strong>population</strong> <span class="math inline">\(F\)</span>. The goal of statistical inference is to use the random sample to make statements about <span class="math inline">\(F\)</span>, while quantifying the uncertainty in those statements.</p>
 <p>Typically, to conduct statistical inference, we need to make some starting assumptions about the structure of <span class="math inline">\(F\)</span>. This is called a <strong>statistical model</strong> for <span class="math inline">\(F\)</span>. In this post, we will work with the <strong>normal sampling model</strong>, where we assume that <span class="math inline">\(F\)</span> is the normal distribution with unknown mean <span class="math inline">\(\mu\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>.</p>
 </section>
@@ -210,7 +212,7 @@ H_0: \mu = \mu_0 \quad \text{and} \quad H_1: \mu \neq \mu_0,
 <p><span class="math display">\[
 T: \boldsymbol X \rightarrow \mathbb{R}.
 \]</span> The role of the test statistic is to take any random sample from the population and compress it into a single number that reflects the information most relevant to the hypothesis. Since it is a function of random variables, the test statistic is itself a random variable. Second, we define a <strong>critical region</strong> <span class="math inline">\(C\)</span> to be some subset of the range of <span class="math inline">\(T\)</span>. The decision rule can then be framed in terms of the observed realization of the test statistic, <span class="math inline">\(t\)</span>: (i) reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(t \in C\)</span>, and (ii) accept <span class="math inline">\(H_0\)</span> if <span class="math inline">\(t \notin C\)</span>.</p>
-<p>It’s worth pausing here to emphasize two important features of this setup. First, the effectiveness of a hypothesis test depends on the choice of both the test statistic and critical region. If <span class="math inline">\(T\)</span> does not capture the right information, or if <span class="math inline">\(C\)</span> is poorly specified, the resulting decision rule will not be very insightful. Second, making incorrect decisions is inevitable in hypothesis testing because of the randomness inherent in the sample. Even with a well-chosen statistic and critical region, it is entirely possible to draw a sample with a mean far from the true population mean <span class="math inline">\(\mu\)</span> but close to the hypothesized mean <span class="math inline">\(\mu_0\)</span>, or conversely, a sample from <span class="math inline">\(\mu_0\)</span> even when <span class="math inline">\(\mu = \mu_0\)</span>. In both situations, we make an incorrect decision purely due to chance.</p>
+<p>It’s worth pausing here to emphasize two important features of this setup. First, the effectiveness of a hypothesis test depends on the choice of both the test statistic and critical region. If <span class="math inline">\(T\)</span> does not capture the right information, or if <span class="math inline">\(C\)</span> is poorly specified, the resulting decision rule will not be very insightful. Second, making incorrect decisions is inevitable in hypothesis testing because of the randomness inherent in the sample. Even with a well-chosen statistic and critical region, it is entirely possible to draw a sample with a mean far from the true population mean <span class="math inline">\(\mu\)</span> but close to the hypothesized mean <span class="math inline">\(\mu_0\)</span>, or conversely, a sample far from <span class="math inline">\(\mu_0\)</span> even when <span class="math inline">\(\mu = \mu_0\)</span>. In both situations, we make an incorrect decision purely due to chance.</p>
 <p>Thus, in carrying out hypothesis tests, the focus is not on eliminating mistakes entirely, but rather on quantifying and controlling the <em>probability</em> of error. The following section formalizes this idea.</p>
 </section>
 <section id="classical-approach-to-hypothesis-testing" class="level2">
@@ -218,6 +220,24 @@ T: \boldsymbol X \rightarrow \mathbb{R}.
 <section id="error-probabilities-and-power-function" class="level3">
 <h3 class="anchored" data-anchor-id="error-probabilities-and-power-function">Error Probabilities and Power Function</h3>
 <p>There are two types of incorrect decisions we could make in hypothesis testing. Rejecting the null when it is actually true is called a <strong>Type I error</strong>. Accepting the null when it is actually false is called a <strong>Type II error</strong>.</p>
+<div id="tbl-decision-outcomes" class="quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-decision-outcomes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Decision outcomes in hypothesis testing.
+</figcaption>
+<div aria-describedby="tbl-decision-outcomes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<p><span class="math display">\[
+\begin{array}{c|c|c}
+&amp; \textbf{Accept $H_0$} &amp; \textbf{Reject $H_0$} \\
+\hline
+\textbf{$H_0$ True} &amp; \text{Correct Decision} &amp; \text{Type I Error} \\
+\hline
+\textbf{$H_1$ True} &amp; \text{Type II Error} &amp; \text{Correct Decision} \\
+\end{array}
+\]</span></p>
+</div>
+</figure>
+</div>
 <p>To build the vocabulary and notation required to talk about the probability of making these two errors, we need to introduce the <strong>power function</strong> of a hypothesis test. This is the probability of rejecting the null <span class="math inline">\(H_0\)</span> under some population distribution <span class="math inline">\(F\)</span>, and is denoted <span class="math display">\[
 \pi(F) = \mathbb{P}[\text{Reject } H_0 \mid F] = \mathbb{P}[T \in C \mid F].
 \]</span></p>
@@ -229,12 +249,31 @@ T: \boldsymbol X \rightarrow \mathbb{R}.
 1 - \mathbb{P}[\text{Accept } H_0 \mid F_1] = \mathbb{P}[\text{Reject } H_0 \mid F_1] = \pi(F_1).
 \]</span></p>
 </section>
-<section id="null-sampling-distribution" class="level3">
-<h3 class="anchored" data-anchor-id="null-sampling-distribution">Null Sampling Distribution</h3>
+<section id="classical-approach-to-the-fundamental-tradeoff" class="level3">
+<h3 class="anchored" data-anchor-id="classical-approach-to-the-fundamental-tradeoff">Classical Approach to the Fundamental Tradeoff</h3>
+<p>Notice that we could mechanically decrease the probability of a Type I error by reducing the size of <span class="math inline">\(C\)</span>. However, this would in turn increase the probability of a Type II error. Conversely, increasing the size of <span class="math inline">\(C\)</span> would decrease the probability of a Type II error, but increase the probability of a Type I error. This is the fundamental tradeoff in hypothesis testing: reducing the probability of one type of error comes at the cost of increasing the probability of the other.</p>
+<p>The <strong>classical approach</strong> to hypothesis testing is to bound the size of the test at some pre-specified level <span class="math inline">\(\alpha \in (0,1)\)</span>, called the <strong>significance level</strong>. More formally, this means choosing the critical region <span class="math inline">\(C\)</span> so that <span class="math display">\[
+P[T \in C \mid F_0] \leq \alpha.
+\]</span></p>
+<p>To construct such a critical region, we need to know the distribution of the test statistic <span class="math inline">\(T\)</span> under the null hypothesis <span class="math inline">\(H_0\)</span>, called the <strong>null sampling distribution</strong>:</p>
+<p><span class="math display">\[
+G_0(t) = \mathbb{P}[T \leq t \mid F_0].
+\]</span></p>
+<p>One reason why we focus on bounding the probability of Type I errors instead of Type II errors is because the null sampling distribution is typically easier to derive than the distribution of <span class="math inline">\(T\)</span> under the various alternative hypotheses.</p>
 </section>
 </section>
-<section id="example-two-sided-test-for-normal-samplign-model" class="level2">
-<h2 class="anchored" data-anchor-id="example-two-sided-test-for-normal-samplign-model">Example: Two-Sided Test for Normal Samplign Model</h2>
+<section id="critical-values-one-sided-and-two-sided-tests" class="level2">
+<h2 class="anchored" data-anchor-id="critical-values-one-sided-and-two-sided-tests">Critical Values, One-Sided and Two-Sided Tests</h2>
+<p>For most classical test statistics, the null sampling distribution is unimodal and symmetric, with probability that steadily decreases as we move away from the center. This implies that the least likely realizations of the test statistic under the null lie in the tails of the distribution. In such cases, the critical region can be fully characterized by a single <strong>critical value</strong> <span class="math inline">\(c\)</span>. For a <strong>one-sided test</strong>, the critical region is <span class="math display">\[
+C = \{t: t &gt; c\} \quad \text{or} \quad C = \{t: t &lt; c\}.
+\]</span> For a <strong>two-sided test</strong>, the critical region is<br>
+<span class="math display">\[
+C = \{t: |t| &gt; c\}.
+\]</span></p>
+</section>
+<section id="two-sided-test-of-the-mean-in-the-normal-sampling-model" class="level2">
+<h2 class="anchored" data-anchor-id="two-sided-test-of-the-mean-in-the-normal-sampling-model">Two-Sided Test of the Mean in the Normal Sampling Model</h2>
+<p>We have now developed all the theory needed to carry out the hypothesis test of the mean under the normal sampling model.</p>
 <section id="t-statistic" class="level3">
 <h3 class="anchored" data-anchor-id="t-statistic">t-Statistic</h3>
 <p>Let <span class="math inline">\(\hat\theta\)</span> be an estimator of <span class="math inline">\(\theta\)</span>, some parameter of interest determined by the population <span class="math inline">\(F\)</span>. The <strong>t-ratio</strong> or <strong>t-statistic</strong> is defined as <span class="math display">\[
@@ -243,9 +282,12 @@ t = \frac{\hat\theta(\boldsymbol x) - \theta_0}{\widehat{SE}(\hat\theta)},
 <p>Recall that in the normal sampling model <span class="math inline">\(X_i \overset{iid}{\sim} \mathcal{N}(\mu, \sigma^2)\)</span>, the sample mean <span class="math inline">\(\bar X\)</span> is an estimator of the population mean <span class="math inline">\(\mu\)</span>, and has a standard error of <span class="math inline">\(\sigma / \sqrt{n}\)</span>. Since <span class="math inline">\(\sigma\)</span> is unknown, we estimate it using the sample standard deviation <span class="math inline">\(s\)</span>. Thus, the <strong>t-statistic</strong> for the normal sampling model is given by <span class="math display">\[
 t = \frac{\bar X - \mu_0}{s / \sqrt{n}}.
 \]</span></p>
-
-
 </section>
+</section>
+<section id="p-values" class="level2">
+<h2 class="anchored" data-anchor-id="p-values">p-Values</h2>
+
+
 </section>
 
 
