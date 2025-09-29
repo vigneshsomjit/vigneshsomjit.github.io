@@ -31,7 +31,7 @@ Since observational data is random, it is natural to we view the observed data v
 $$
 \boldsymbol{x}_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
 $$
-as a realization of the random vector
+as a realization of the random data vector
 $$
 \boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
 $$ 
@@ -102,7 +102,7 @@ $$
 
 An example of an estimand is the the population mean of a random variable $X$:
 $$
-\mu = \mathbb{E}_F[X].
+\mu = \mathbb{E}[X] = \int x \, dF(x).
 $$
 
 Since the DGP is unknown, the best we can do is use the observed data to guess the value of the estimand. An **estimator** $\hat \theta$ is a function of the sample that is intended to provide a guess of the estimand:

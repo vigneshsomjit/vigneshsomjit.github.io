@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="dcterms.date" content="2025-09-29">
+<meta name="description" content="I review key concepts in hypothesis testing using the running example of the normal sampling model.">
 
-<title>Vignesh Somjit -</title>
+<title>Vignesh Somjit - Hypothesis Testing for the Normal Sampling Model</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +32,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,35 +68,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -134,7 +105,7 @@ window.Quarto = {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+  <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -149,7 +120,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../blog/blog-index.html" aria-current="page"> 
+    <a class="nav-link" href="../blog/blog-index.html"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -161,122 +132,130 @@ window.Quarto = {
     </nav>
 </header>
 <!-- content -->
-<header id="title-block-header" class="quarto-title-block default page-columns page-full">
-  <div class="quarto-title-banner page-columns page-full">
-    <div class="quarto-title column-body">
-      
-            <p class="subtitle lead">“The first principle is that you must not fool yourself — and you are the easiest person to fool.” — Richard Feynman</p>
-                      </div>
-  </div>
-    
-  
-  <div class="quarto-title-meta">
-
-      
-    
-      
-    </div>
-    
-  
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(3)</span></div><div class="category" data-category="Linear Algebra">Linear Algebra <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Mathematical Statistics">Mathematical Statistics <span class="quarto-category-count">(2)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#recapitulation" id="toc-recapitulation" class="nav-link active" data-scroll-target="#recapitulation">Recapitulation</a></li>
+  <li><a href="#hypotheses" id="toc-hypotheses" class="nav-link" data-scroll-target="#hypotheses">Hypotheses</a></li>
+  <li><a href="#test-statistic-and-critical-region" id="toc-test-statistic-and-critical-region" class="nav-link" data-scroll-target="#test-statistic-and-critical-region">Test Statistic and Critical Region</a></li>
+  <li><a href="#classical-approach-to-hypothesis-testing" id="toc-classical-approach-to-hypothesis-testing" class="nav-link" data-scroll-target="#classical-approach-to-hypothesis-testing">Classical Approach to Hypothesis Testing</a>
+  <ul class="collapse">
+  <li><a href="#error-probabilities-and-power-function" id="toc-error-probabilities-and-power-function" class="nav-link" data-scroll-target="#error-probabilities-and-power-function">Error Probabilities and Power Function</a></li>
+  <li><a href="#null-sampling-distribution" id="toc-null-sampling-distribution" class="nav-link" data-scroll-target="#null-sampling-distribution">Null Sampling Distribution</a></li>
+  </ul></li>
+  <li><a href="#example-two-sided-test-for-normal-samplign-model" id="toc-example-two-sided-test-for-normal-samplign-model" class="nav-link" data-scroll-target="#example-two-sided-test-for-normal-samplign-model">Example: Two-Sided Test for Normal Samplign Model</a>
+  <ul class="collapse">
+  <li><a href="#t-statistic" id="toc-t-statistic" class="nav-link" data-scroll-target="#t-statistic">t-Statistic</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<main class="content quarto-banner-title-block" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Hypothesis Testing for the Normal Sampling Model</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Mathematical Statistics</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    I review key concepts in hypothesis testing using the running example of the normal sampling model.
+  </div>
+</div>
 
 
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 29, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
 
 
+</header>
 
 
+<section id="recapitulation" class="level2">
+<h2 class="anchored" data-anchor-id="recapitulation">Recapitulation</h2>
+<p><a href="../blog/statistical-inference.html">Recall</a> the basic setup of statistical inference under the random sampling framework. Here, we view the observed data <span class="math inline">\(\boldsymbol x = (x_1, \ldots, x_n)'\)</span> as a realization of the random variables <span class="math inline">\(\boldsymbol X = (X_1, \ldots, X_n)'\)</span> independently drawn from a common, unknown distribution <span class="math inline">\(F\)</span>. In other words, the data is a realization of a <strong>random sample</strong> from the <strong>population</strong> <span class="math inline">\(F\)</span>. The goal of statistical inference is to use the random sample to make statements about <span class="math inline">\(F\)</span>, while quantifying the uncertainty in those statements.</p>
+<p>Typically, to conduct statistical inference, we need to make some starting assumptions about the structure of <span class="math inline">\(F\)</span>. This is called a <strong>statistical model</strong> for <span class="math inline">\(F\)</span>. In this post, we will work with the <strong>normal sampling model</strong>, where we assume that <span class="math inline">\(F\)</span> is the normal distribution with unknown mean <span class="math inline">\(\mu\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>.</p>
+</section>
+<section id="hypotheses" class="level2">
+<h2 class="anchored" data-anchor-id="hypotheses">Hypotheses</h2>
+<p>Hypothesis testing is a fundamental tool to conduct statistical inference. At its core is the <strong>hypothesis</strong>: a statement about a scalar parameter of interest <span class="math inline">\(\theta\)</span> determined by the population <span class="math inline">\(F\)</span>. In a non-parametric model — where <span class="math inline">\(F\)</span> cannot be fully characterized by a finite set of model parameters — <span class="math inline">\(\theta\)</span> is some function of <span class="math inline">\(F\)</span>, like <span class="math inline">\(\mathbb{E}[X]\)</span> or <span class="math inline">\(\operatorname{Var}(X)\)</span>. In a parametric model — where <span class="math inline">\(F\)</span> is assumed to belong to a family of distribution characterized by a finite number of parameters — <span class="math inline">\(\theta\)</span> is typically one of the model parameters.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> For example, in the normal sampling model, our hypotheses are usually about <span class="math inline">\(\mu\)</span> or <span class="math inline">\(\sigma^2\)</span>.</p>
+<p>Hypothesis testing is formulated in terms of two complementary hypotheses. The <strong>null hypothesis</strong> <span class="math inline">\(H_0\)</span> is the hypothesis to be tested, while the <strong>alternative hypothesis</strong> <span class="math inline">\(H_1\)</span> is the complement of the null hypothesis. These hypotheses can be defined by how they restrict the <strong>parameter space</strong> of <span class="math inline">\(\theta\)</span>, denoted <span class="math inline">\(\Theta\)</span>. Specifically, the null is defined by the restriction <span class="math inline">\(\theta = \theta_0\)</span> for some hypothesized value <span class="math inline">\(\theta_0\)</span>, while the alternative is defined by the set <span class="math inline">\(\{\theta \in \Theta: \theta \neq \theta_0\}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
+<p>In this post, we will focus on the problem of testing hypotheses about the population mean <span class="math inline">\(\mu\)</span> under the normal sampling model. Specifically, our hypotheses are <span class="math display">\[
+H_0: \mu = \mu_0 \quad \text{and} \quad H_1: \mu \neq \mu_0,
+\]</span> where <span class="math inline">\(\mu_0\)</span> is some hypothesized value of <span class="math inline">\(\mu\)</span>. The goal of hypothesis testing is to test the validity of <span class="math inline">\(H_0\)</span> over <span class="math inline">\(H_1\)</span> using the random sample. In the next few sections, we will develop the machinery required to do exactly this.</p>
+</section>
+<section id="test-statistic-and-critical-region" class="level2">
+<h2 class="anchored" data-anchor-id="test-statistic-and-critical-region">Test Statistic and Critical Region</h2>
+<p>The outcome of a hypothesis test is a <strong>decision</strong>: either accept the null or reject the null in favor of the alternative. Thus, we want a <strong>decision rule</strong> that maps the <strong>sample space</strong> — the set of all possible realizations of the random sample — into one of these two actions. One way to formulate this rule is as follows. First, we construct a function of the random sample called the <strong>test statistic</strong></p>
+<p><span class="math display">\[
+T: \boldsymbol X \rightarrow \mathbb{R}.
+\]</span> The role of the test statistic is to take any random sample from the population and compress it into a single number that reflects the information most relevant to the hypothesis. Since it is a function of random variables, the test statistic is itself a random variable. Second, we define a <strong>critical region</strong> <span class="math inline">\(C\)</span> to be some subset of the range of <span class="math inline">\(T\)</span>. The decision rule can then be framed in terms of the observed realization of the test statistic, <span class="math inline">\(t\)</span>: (i) reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(t \in C\)</span>, and (ii) accept <span class="math inline">\(H_0\)</span> if <span class="math inline">\(t \notin C\)</span>.</p>
+<p>It’s worth pausing here to emphasize two important features of this setup. First, the effectiveness of a hypothesis test depends on the choice of both the test statistic and critical region. If <span class="math inline">\(T\)</span> does not capture the right information, or if <span class="math inline">\(C\)</span> is poorly specified, the resulting decision rule will not be very insightful. Second, making incorrect decisions is inevitable in hypothesis testing because of the randomness inherent in the sample. Even with a well-chosen statistic and critical region, it is entirely possible to draw a sample with a mean far from the true population mean <span class="math inline">\(\mu\)</span> but close to the hypothesized mean <span class="math inline">\(\mu_0\)</span>, or conversely, a sample from <span class="math inline">\(\mu_0\)</span> even when <span class="math inline">\(\mu = \mu_0\)</span>. In both situations, we make an incorrect decision purely due to chance.</p>
+<p>Thus, in carrying out hypothesis tests, the focus is not on eliminating mistakes entirely, but rather on quantifying and controlling the <em>probability</em> of error. The following section formalizes this idea.</p>
+</section>
+<section id="classical-approach-to-hypothesis-testing" class="level2">
+<h2 class="anchored" data-anchor-id="classical-approach-to-hypothesis-testing">Classical Approach to Hypothesis Testing</h2>
+<section id="error-probabilities-and-power-function" class="level3">
+<h3 class="anchored" data-anchor-id="error-probabilities-and-power-function">Error Probabilities and Power Function</h3>
+<p>There are two types of incorrect decisions we could make in hypothesis testing. Rejecting the null when it is actually true is called a <strong>Type I error</strong>. Accepting the null when it is actually false is called a <strong>Type II error</strong>.</p>
+<p>To build the vocabulary and notation required to talk about the probability of making these two errors, we need to introduce the <strong>power function</strong> of a hypothesis test. This is the probability of rejecting the null <span class="math inline">\(H_0\)</span> under some population distribution <span class="math inline">\(F\)</span>, and is denoted <span class="math display">\[
+\pi(F) = \mathbb{P}[\text{Reject } H_0 \mid F] = \mathbb{P}[T \in C \mid F].
+\]</span></p>
+<p>The power function formalizes the source of randomness in hypothesis tests. Our data is random because they are realizations of a random sample drawn from the distribution <span class="math inline">\(F\)</span>. Since the test statistic is computed from the data, its randomness is also induced by <span class="math inline">\(F\)</span>. Consequently, the decision to accept or reject the null is likewise determined by <span class="math inline">\(F\)</span>. The power function summarizes this chain by expressing the probability of rejection directly as a function of the underlying distribution <span class="math inline">\(F\)</span>.</p>
+<p>The probability of making a Type I error is the <strong>size</strong> of the hypothesis test, and is simply the power function evaluated under the distribution implied by the null, <span class="math inline">\(F_0\)</span>: <span class="math display">\[
+\mathbb{P}[\text{Reject } H_0 \mid F_0] = \pi(F_0).
+\]</span></p>
+<p>The <strong>power</strong> of the hypothesis is the <em>complement</em> of the probability of making a Type II error, and is given by the power function evaluated under the distribution implied by the alternative, <span class="math inline">\(F_1\)</span>: <span class="math display">\[
+1 - \mathbb{P}[\text{Accept } H_0 \mid F_1] = \mathbb{P}[\text{Reject } H_0 \mid F_1] = \pi(F_1).
+\]</span></p>
+</section>
+<section id="null-sampling-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="null-sampling-distribution">Null Sampling Distribution</h3>
+</section>
+</section>
+<section id="example-two-sided-test-for-normal-samplign-model" class="level2">
+<h2 class="anchored" data-anchor-id="example-two-sided-test-for-normal-samplign-model">Example: Two-Sided Test for Normal Samplign Model</h2>
+<section id="t-statistic" class="level3">
+<h3 class="anchored" data-anchor-id="t-statistic">t-Statistic</h3>
+<p>Let <span class="math inline">\(\hat\theta\)</span> be an estimator of <span class="math inline">\(\theta\)</span>, some parameter of interest determined by the population <span class="math inline">\(F\)</span>. The <strong>t-ratio</strong> or <strong>t-statistic</strong> is defined as <span class="math display">\[
+t = \frac{\hat\theta(\boldsymbol x) - \theta_0}{\widehat{SE}(\hat\theta)},
+\]</span> where <span class="math inline">\(\theta_0\)</span> is a hypothesized value of <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\widehat{SE}(\hat\theta)\)</span> is an estimator of the standard error of <span class="math inline">\(\hat\theta\)</span>. In words, this statistic measures how many estimated standard errors the estimate <span class="math inline">\(\hat\theta (\boldsymbol x)\)</span> is away from the hypothesized value <span class="math inline">\(\theta_0\)</span>.</p>
+<p>Recall that in the normal sampling model <span class="math inline">\(X_i \overset{iid}{\sim} \mathcal{N}(\mu, \sigma^2)\)</span>, the sample mean <span class="math inline">\(\bar X\)</span> is an estimator of the population mean <span class="math inline">\(\mu\)</span>, and has a standard error of <span class="math inline">\(\sigma / \sqrt{n}\)</span>. Since <span class="math inline">\(\sigma\)</span> is unknown, we estimate it using the sample standard deviation <span class="math inline">\(s\)</span>. Thus, the <strong>t-statistic</strong> for the normal sampling model is given by <span class="math display">\[
+t = \frac{\bar X - \mu_0}{s / \sqrt{n}}.
+\]</span></p>
 
 
+</section>
+</section>
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="Mathematical Statistics" data-listing-date-sort="1758945600000" data-listing-file-modified-sort="1758996526732" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="765">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/hypothesis.testing.html" class="no-external">Hypothesis Testing for the Normal Sampling Model</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/hypothesis.testing.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Mathematical Statistics'); return false;">
-Mathematical Statistics
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/hypothesis.testing.html" class="no-external">I review key concepts in hypothesis testing using the running example of the normal sampling model.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/hypothesis.testing.html" class="no-external">
-<div class="listing-date">
-Sep 27, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="Linear Algebra" data-listing-date-sort="1758945600000" data-listing-file-modified-sort="1758413178985" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3826">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/linalg-basics.html" class="no-external">Basic Concepts in Linear Algebra</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/linalg-basics.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Linear Algebra'); return false;">
-Linear Algebra
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/linalg-basics.html" class="no-external">Discussion of fundamental concepts in linear algebra, including vector spaces, linear combination and independence, basis vectors, and subspaces.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/linalg-basics.html" class="no-external">
-<div class="listing-date">
-Sep 27, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="Mathematical Statistics" data-listing-date-sort="1758945600000" data-listing-file-modified-sort="1758821171638" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2191">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/statistical-inference.html" class="no-external">Random Sampling and Model-Based Inference</a>
-</h3>
-<div class="listing-subtitle">
-<a href="../blog/statistical-inference.html" class="no-external"></a>
-</div>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('Mathematical Statistics'); return false;">
-Mathematical Statistics
-</div>
-</div>
-<div class="listing-description">
-<a href="../blog/statistical-inference.html" class="no-external">Big picture intuition for statistical inference under the random sampling framework.</a>
-</div>
-</div>
-<div class="metadata">
-<a href="../blog/statistical-inference.html" class="no-external">
-<div class="listing-date">
-Sep 27, 2025
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>It is worth emphasizing that while the parameter of interest is often the model parameters, the two are not always the same.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Technically, the null hypothesis can be a set of values as well. However, in this post, we focus on <strong>point (null) hypotheses</strong>.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

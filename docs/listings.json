@@ -2,6 +2,7 @@
   {
     "listing": "/blog/blog-index.html",
     "items": [
+      "/blog/hypothesis.testing.html",
       "/blog/linalg-basics.html",
       "/blog/statistical-inference.html"
     ]

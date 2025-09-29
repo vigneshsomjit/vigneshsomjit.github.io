@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-19">
+<meta name="dcterms.date" content="2025-09-27">
 <meta name="description" content="Big picture intuition for statistical inference under the random sampling framework.">
 
 <title>Vignesh Somjit - Random Sampling and Model-Based Inference</title>
@@ -240,7 +240,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 19, 2025</p>
+      <p class="date">September 27, 2025</p>
     </div>
   </div>
   
@@ -268,7 +268,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="mathematical-formalization-of-the-dataset">Mathematical Formalization of the Dataset</h3>
 <p>Since observational data is random, it is natural to we view the observed data vector <span class="math display">\[
 \boldsymbol{x}_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
-\]</span> as a realization of the random vector <span class="math display">\[
+\]</span> as a realization of the random data vector <span class="math display">\[
 \boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
 \]</span></p>
 <p>with some associated probability distribution. For example, we can think of the CPS dataset as consisting of random vectors</p>
@@ -333,7 +333,7 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
 \theta = \theta(F).
 \]</span></p>
 <p>An example of an estimand is the the population mean of a random variable <span class="math inline">\(X\)</span>: <span class="math display">\[
-\mu = \mathbb{E}_F[X].
+\mu = \mathbb{E}[X] = \int x \, dF(x).
 \]</span></p>
 <p>Since the DGP is unknown, the best we can do is use the observed data to guess the value of the estimand. An <strong>estimator</strong> <span class="math inline">\(\hat \theta\)</span> is a function of the sample that is intended to provide a guess of the estimand:</p>
 <p><span class="math display">\[
