@@ -5,6 +5,12 @@ date: today
 categories: [Mathematical Statistics]
 ---
 
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+```
+
 ## Recap 
 
 [Recall](statistical-inference.qmd) the basic setup of statistical inference under the random sampling framework. Here, we view the observed data $\boldsymbol x = (x_1, \ldots, x_n)'$ as a realization of the random variables $\boldsymbol X = (X_1, \ldots, X_n)'$ independently drawn from a common, unknown distribution $F$. In other words, the data is a realization of a **random sample** from the **population** $F$. The goal of statistical inference is to use the random sample to make statements about $F$, while quantifying the uncertainty in those statements. 
@@ -91,7 +97,7 @@ $$
 
 One reason why we focus on bounding the probability of Type I errors instead of Type II errors is because the null sampling distribution is typically easier to derive than the distribution of $T$ under the various alternative hypotheses. 
 
-## Critical Values, One-Sided and Two-Sided Tests
+### Critical Values, One-Sided and Two-Sided Tests
 
 For most classical test statistics, the null sampling distribution is unimodal and symmetric, with probability that steadily decreases as we move away from the center. This implies that the least likely realizations of the test statistic under the null lie in the tails of the distribution. In such cases, the critical region can be fully characterized by a single **critical value** $c$. For a **one-sided test**, the critical region is
 $$
@@ -102,22 +108,104 @@ $$
 C = \{t: |t| > c\}.
 $$
 
+The critical value $c$ is chosen so that the size of the test is equal to the significance level $\alpha$. By distributing the critical region across the tails of the null sampling distribution, we maximize the test's power while ensuring that its size is exactly controlled at $\alpha$.
+
 ## Two-Sided Test of the Mean in the Normal Sampling Model
 
-We have now developed all the theory needed to carry out the hypothesis test of the mean under the normal sampling model. 
+We have now developed all the terminology needed to carry out the hypothesis test of the mean under the normal sampling model. 
 
 ### t-Statistic 
 
-Let $\hat\theta$ be an estimator of $\theta$, some parameter of interest determined by the population $F$. The **t-ratio** or **t-statistic** is defined as 
+The first step to any hypothesis test is to choose a test statistic. A common choice is the **t-ratio** or **t-statistic**. For some estimator $\hat\theta$ of the parameter of interest $\theta$, the t-statistic is defined as  
 $$
-t = \frac{\hat\theta(\boldsymbol x) - \theta_0}{\widehat{SE}(\hat\theta)},
+T = \frac{\hat\theta - \theta_0}{SE(\hat\theta)},
 $$
-where $\theta_0$ is a hypothesized value of $\theta$ and $\widehat{SE}(\hat\theta)$ is an estimator of the standard error of $\hat\theta$. In words, this statistic measures how many estimated standard errors the estimate $\hat\theta (\boldsymbol x)$ is away from the hypothesized value $\theta_0$. 
+where $\theta_0$ is a hypothesized value of $\theta$ and $SE(\hat\theta)$ is the standard error of $\hat\theta$ — i.e., an estimator of the standard deviation of $\hat\theta$. In words, the realization of this statistic measures how many standard errors away the estimate $\hat\theta(\boldsymbol x)$ is from the hypothesized value $\theta_0$. Thus, the realization of the t-statistic has an intuitive interpretation: a large magnitude indicates that the estimate is far from the hypothesized value in the realized sample, while small values indicate that the estimate is close to the hypothesized value. 
 
-Recall that in the normal sampling model $X_i \overset{iid}{\sim} \mathcal{N}(\mu, \sigma^2)$, the sample mean $\bar X$ is an estimator of the population mean $\mu$, and has a standard error of $\sigma / \sqrt{n}$. Since $\sigma$ is unknown, we estimate it using the sample standard deviation $s$. Thus, the **t-statistic** for the normal sampling model is given by
+In the context of testing the mean $\mu$ in the normal sampling model, the sample mean $\bar X$ is a natural estimator. [Recall](statistical-modeling.qmd) that the variance of the sample mean $\bar X$ in the normal sampling model is $\sigma^2 / n$. However, since $\sigma^2$ is unknown, we use the **bias-corrected variance estimator** 
 $$
-t = \frac{\bar X - \mu_0}{s / \sqrt{n}}.
+s^2 = \frac{1}{n-1} \sum_{i=1}^n (X_i - \bar X)^2
 $$
+to estimate $\sigma^2$. The standard error of $\bar X$ is then given by the estimator 
+$$
+SE(\bar X) = \frac{s}{\sqrt{n}}.
+$$
+
+Thus, the t-statistic for testing the mean $\mu$ in the normal sampling model is given by
+
+$$
+T = \frac{\bar X - \mu_0}{s / \sqrt{n}}.
+$$
+
+### Null Sampling Distribution 
+
+To construct the critical region, we need to derive the null sampling distribution of the t-statistic. A special property of the t-statistic in the normal sampling model is that it is a **pivotal quantity**, meaning that its null sampling distribution does not depend on unknown parameters. 
+
+If $\sigma^2$ is known, it can be shown that the null sampling distribution of the t-statistic is the standard normal distribution. If $\sigma^2$ is unknown, however, then the null sampling distribution is the Student's t-distribution with $n-1$ degrees of freedom. An important property of the Student's t-distribution is that it converges to the standard normal distribution as the sample size $n$ increases.
+
+```{r}
+#| echo: false
+#| label: fig-tdist
+#| fig-cap: "The t-Distribution versus the Standard Normal Distribution."
+
+# Values of n to show on the slider
+n_vals <- seq(2, 200, by = 1)
+
+# Create data for all n values
+x <- seq(-5, 5, length.out = 400)
+
+all_data <- lapply(n_vals, function(n) {
+  df <- n - 1
+  data.frame(
+    x = x,
+    density_t = dt(x, df = df),
+    density_norm = dnorm(x),
+    n = n
+  )
+}) %>% bind_rows()
+
+# Interactive plot
+p <- plot_ly()
+
+# Add t distribution, animated over n
+p <- add_lines(
+  p,
+  data = all_data,
+  x = ~x,
+  y = ~density_t,
+  frame = ~n,
+  name = "t distribution",
+  line = list(color = "blue")
+)
+
+# Add standard normal distribution
+p <- add_lines(
+  p,
+  data = all_data,
+  x = ~x,
+  y = ~density_norm,
+  name = "Standard Normal",
+  line = list(color = "red", dash = "dash")
+)
+
+p <- layout(
+  p,
+  title = "",
+  xaxis = list(title = "x"),
+  yaxis = list(title = "Density"),
+  legend = list(
+    x = 0.95, y = 0.95,           # position inside plot
+    xanchor = "right",
+    yanchor = "top",
+    bgcolor = "rgba(255,255,255,0.6)" # semi-transparent background
+  )
+)
+
+p
+```
+
+### Choosing the Critical Value
+
 
 [^1]: It is worth emphasizing that while the parameter of interest is often the model parameters, the two are not always the same. 
 [^2]: Technically, the null hypothesis can be a set of values as well. However, in this post, we focus on **point (null) hypotheses**.
