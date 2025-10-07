@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2025-10-07">
-<meta name="description" content="Walking through the Anderson (2008) summary index for multiple inference.">
+<meta name="description" content="I provide a detailed treatment of the summary index used in Anderson (2008) for multiple inference.">
 
 <title>Vignesh Somjit - Summary Index</title>
 <style>
@@ -22,7 +22,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -141,7 +161,7 @@ window.Quarto = {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#notation" id="toc-notation" class="nav-link" data-scroll-target="#notation">Notation</a></li>
+  <li><a href="#notation-and-set-up" id="toc-notation-and-set-up" class="nav-link" data-scroll-target="#notation-and-set-up">Notation and Set Up</a></li>
   <li><a href="#summary-index" id="toc-summary-index" class="nav-link" data-scroll-target="#summary-index">Summary Index</a></li>
   </ul>
 </nav>
@@ -159,7 +179,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    Walking through the Anderson (2008) summary index for multiple inference.
+    I provide a detailed treatment of the summary index used in Anderson (2008) for multiple inference.
   </div>
 </div>
 
@@ -186,47 +206,71 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p><strong>This post is in progress</strong></p>
 </section>
-<section id="notation" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="notation">Notation</h2>
-<p>Let <span class="math inline">\(i = 1, \ldots, n\)</span> index the observations, <span class="math inline">\(j = 1, \ldots, J\)</span> index the domains, and <span class="math inline">\(k = 1, \ldots, K_j\)</span> index the outcomes within domain <span class="math inline">\(j\)</span>. Then, we can standardize each outcome <span class="math inline">\(y_{ijk}\)</span> into effect size units <span id="eq-es"><span class="math display">\[
-\tilde{y}_{ijk} = \frac{y_{ijk} - \bar{y}_{jk}^{control}}{\sigma_{jk}^{control}},
-\tag{1}\]</span></span> where <span class="math inline">\(\bar{y}_{jk}^{control}\)</span> is the sample mean of outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span> among untreated individuals, and <span class="math inline">\(\sigma_{jk}^{control}\)</span> is the sample standard deviation of outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span> among untreated individuals. In words, <a href="#eq-es" class="quarto-xref">Equation&nbsp;1</a> expresses outcome <span class="math inline">\(k\)</span> for individual <span class="math inline">\(i\)</span> in domain <span class="math inline">\(j\)</span> in terms of the number of control group standard deviations that <span class="math inline">\(y_{ijk}\)</span> is above or below the control group mean for outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span>. Since <span class="math inline">\(y_{ijk}\)</span> is positively oriented, <span class="math inline">\(\tilde{y}_{ijk} &gt; 0\)</span> indicates a positive treatment effect on outcome <span class="math inline">\(k\)</span> for individual <span class="math inline">\(i\)</span> in domain <span class="math inline">\(j\)</span>, while <span class="math inline">\(\tilde{y}_{ijk} &lt; 0\)</span> indicates a negative treatment effect.</p>
-<p>We denote the vector of standardized outcomes for individual <span class="math inline">\(i\)</span> in domain <span class="math inline">\(j\)</span> as <span class="math display">\[
-\tilde{\boldsymbol y}_{ij} = \begin{pmatrix}\tilde{y}_{ij1} \\ \vdots\\ \tilde{y}_{ijK_j} \end{pmatrix} \in \mathbb{R}^{K_j},
-\]</span> and the covariance matrix of the standardized outcomes in domain <span class="math inline">\(j\)</span> as <span class="math display">\[
-\boldsymbol \Sigma_j = \begin{pmatrix}
+<section id="notation-and-set-up" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="notation-and-set-up">Notation and Set Up</h2>
+<p>Let <span class="math inline">\(i = 1, \ldots, n\)</span> index the observations, <span class="math inline">\(j = 1, \ldots, J\)</span> index the domains, and <span class="math inline">\(k = 1, \ldots, K_j\)</span> index the outcomes within domain <span class="math inline">\(j\)</span>. We standardize each outcome value <span class="math inline">\(y_{ijk}\)</span> into effect-size units as <span id="eq-es"><span class="math display">\[
+\tilde{y}_{ijk} \equiv \frac{y_{ijk} - \bar{y}_{jk}^{control}}{\sigma_{jk}^{control}},
+\tag{1}\]</span></span> where <span class="math inline">\(\bar{y}_{jk}^{control}\)</span> is the sample mean of outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span> among untreated individuals, and <span class="math inline">\(\sigma_{jk}^{control}\)</span> is the corresponding sample standard deviation. In words, <a href="#eq-es" class="quarto-xref">Equation&nbsp;1</a> represents the value of outcome <span class="math inline">\(k\)</span> for individual <span class="math inline">\(i\)</span> in domain <span class="math inline">\(j\)</span> in terms of the number of control-group standard deviations that <span class="math inline">\(y_{ijk}\)</span> is above or below the control-group mean for that outcome. Since <span class="math inline">\(y_{ijk}\)</span> is positively oriented, <span class="math inline">\(\tilde{y}_{ijk} &gt; 0\)</span> indicates a positive treatment effect on outcome <span class="math inline">\(k\)</span> for individual <span class="math inline">\(i\)</span> in domain <span class="math inline">\(j\)</span>, while <span class="math inline">\(\tilde{y}_{ijk} &lt; 0\)</span> indicates a negative treatment effect.</p>
+<p>We denote the vector of standardized outcome for individual <span class="math inline">\(i\)</span> in domain <span class="math inline">\(j\)</span> as <span class="math display">\[
+\tilde{\boldsymbol y}_{ij} \equiv \begin{pmatrix}\tilde{y}_{ij1} \\ \vdots\\ \tilde{y}_{ijK_j} \end{pmatrix} \in \mathbb{R}^{K_j}.
+\]</span> The covariance matrix of the standardized outcomes in domain <span class="math inline">\(j\)</span> <span class="math display">\[
+\boldsymbol \Sigma_j \equiv \begin{pmatrix}
 \Sigma_{j11} &amp; \ldots &amp; \Sigma_{j1K_j}
 \\
 \vdots &amp; \ddots &amp; \vdots
 \\
 \Sigma_{jK_j1} &amp; \ldots &amp; \Sigma_{jK_jK_j}
-\end{pmatrix} \in \mathbb{R}^{K_j \times K_j}.
-\]</span> Each element <span class="math inline">\(\Sigma_{jkk'}\)</span> of <span class="math inline">\(\boldsymbol \Sigma_j\)</span> is the sample covariance between standardized outcomes <span class="math inline">\(k\)</span> and <span class="math inline">\(k'\)</span> in domain <span class="math inline">\(j\)</span> across individuals in the control group, given by <span class="math display">\[
-\Sigma_{jkk'} = \frac{1}{n_j^{control} - 1} \sum_{i \in control \, group } (\tilde{y}_{ijk})(\tilde{y}_{ijk'}),
-\]</span> where <span class="math inline">\(n_j^{control}\)</span> is the number of untreated individuals in domain <span class="math inline">\(j\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Technically the summand is <span class="math inline">\((\tilde{y}_{ijk} - \bar{\tilde{y}}_{jk}^{control}) (\tilde{y}_{ijk'} - \bar{\tilde{y}}_{jk'}^{control}).\)</span> However, we demean the outcomes by the mean of the control group, so the mean standardized outcomes among untreated individuals is <span class="math inline">\(0\)</span> by construct.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;To show that <span class="math inline">\(\boldsymbol \Omega_j\)</span> captures conditional relationships involves deriving it from <span class="math inline">\(\boldsymbol \Sigma_j\)</span> using the <strong>Schur complement</strong>. Relevant references include <a href="https://eranraviv.com/correlation-correlation-structure-8-precision-matrix/#Pairs_Trading_Issues">this</a>, <a href="https://www.cis.upenn.edu/~jean/schur-comp.pdf?utm_source=chatgpt.com">this</a>, and <a href="https://chrisyeh96.github.io/2021/05/19/schur-complement.html?utm_source=chatgpt.com">this</a>.</p></div></div><p>The inverse of the covariance matrix is denoted as <span class="math display">\[
-\boldsymbol \Sigma_j^{-1} = \boldsymbol \Omega_j = \begin{pmatrix} \Omega_{j11} &amp; \ldots &amp; \Omega_{j1K_j} \\
-\vdots &amp; \ddots &amp; \vdots \\ \Omega_{jK_j1} &amp; \ldots &amp; \Omega_{jK_jK_j} \end{pmatrix} \in \mathbb{R}^{K_j \times K_j},
-\]</span> and is called the <strong>precision matrix</strong>. This matrix plays a key role in the summary index because it captures the conditional relationships between the outcomes in domain <span class="math inline">\(j\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Specifically, the diagonal element <span class="math inline">\(\Omega_{jkk}\)</span> equals the inverse of the conditional variance of outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span> given all other outcomes in domain <span class="math inline">\(j\)</span>, and the off-diagonal element <span class="math inline">\(\Omega_{jkk'}\)</span> is proportional to the negative of the conditional covariance between outcomes <span class="math inline">\(k\)</span> and <span class="math inline">\(k'\)</span> in domain <span class="math inline">\(j\)</span> given all other outcomes in domain <span class="math inline">\(j\)</span>.</p>
-</section>
-<section id="summary-index" class="level2">
-<h2 class="anchored" data-anchor-id="summary-index">Summary Index</h2>
-<p>For every individual <span class="math inline">\(i\)</span>, we want to combine the multiple outcomes <span class="math inline">\(k = 1, \ldots, K_j\)</span> in domain <span class="math inline">\(j\)</span> into a single domain-level summary index <span class="math inline">\(s_{ij}\)</span>. Anderson (2008) proposes the following index:</p>
-<p><span class="math display">\[
-s_{ij} = (\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)^{-1}(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \tilde{\boldsymbol y}_{ij}),
+\end{pmatrix} \in \mathbb{R}^{K_j \times K_j}
+\]</span> captures the <em>unconditional</em> covariance structure between the outcomes in domain <span class="math inline">\(j\)</span> across individuals in the control-group. Specifically, the diagonal elements <span class="math inline">\(\Sigma_{jkk}\)</span> measure the unconditional variance of outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span> <span class="math display">\[
+\Sigma_{jkk} \equiv \operatorname{Var}(\tilde{y}_{ijk}),
+\]</span> and the off-diagonal elements <span class="math inline">\(\Sigma_{jkk'}\)</span> measure the unconditional covariance between outcomes <span class="math inline">\(k\)</span> and <span class="math inline">\(k'\)</span> in domain <span class="math inline">\(j\)</span> <span class="math display">\[
+\Sigma_{jkk'} \equiv \operatorname{Cov}(\tilde{y}_{ijk}, \tilde{y}_{ijk'}).
 \]</span></p>
-<p>where <span class="math inline">\(\boldsymbol 1 \in \mathbb{R}^{K_j}\)</span> is a vector of ones. To understand how the summary index aggregates outcomes in the same domain, it’s useful to interpret each component of the index separately.</p>
-<p>First, the matrix multiplication <span class="math inline">\(\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1}\)</span> results in the following <span class="math inline">\(1 \times K_j\)</span> vector</p>
+<p>The inverse of the covariance matrix is denoted as <span class="math display">\[
+\boldsymbol \Omega_j \equiv \boldsymbol \Sigma_j^{-1} = \begin{pmatrix} \Omega_{j11} &amp; \ldots &amp; \Omega_{j1K_j} \\
+\vdots &amp; \ddots &amp; \vdots \\ \Omega_{jK_j1} &amp; \ldots &amp; \Omega_{jK_jK_j} \end{pmatrix} \in \mathbb{R}^{K_j \times K_j},
+\]</span> and is called the <strong>precision matrix</strong>. This matrix plays a key role in aggregating outcomes within the same domain because it captures the <em>conditional</em> dependence structure between the outcomes in domain <span class="math inline">\(j\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> The diagonal elements <span class="math inline">\(\Omega_{jkk}\)</span> equal the inverse of the conditional variance of outcome <span class="math inline">\(k\)</span> given all other outcomes in domain <span class="math inline">\(j\)</span>: <span class="math display">\[
+\Omega_{jkk} = \frac{1}{\operatorname{Var}(\tilde{y}_{ijk} \mid \tilde{\boldsymbol y}_{ij-k})}.
+\]</span> In other words, <span class="math inline">\(\Omega_{jkk}\)</span> measures how noisy an outcome is conditioned on the other outcomes, with larger values indicating less noise.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The off-diagonal elements <span class="math inline">\(\Omega_{jkk'}\)</span> equal the negative conditional covariance between outcomes <span class="math inline">\(k\)</span> and <span class="math inline">\(k'\)</span>, scaled by the product of their inverse conditional variances: <span class="math display">\[
+\Omega_{jkk'} = \frac{-\operatorname{Cov}(\tilde{y}_{ijk}, \tilde{y}_{ijk'} \mid \tilde{\boldsymbol y}_{ij-\{k,k'\}})}{\operatorname{Var}(\tilde{y}_{ijk} \mid \tilde{\boldsymbol y}_{ij-k}) \operatorname{Var}(\tilde{y}_{ijk'} \mid \tilde{\boldsymbol y}_{ij-k'})}.
+\]</span> Recall that conditional covariance is the covariance between the residuals of the regression of <span class="math inline">\(y_{ijk}\)</span> and <span class="math inline">\(y_{ijk'}\)</span> on all other outcomes in domain <span class="math inline">\(j\)</span>. Thus, <span class="math inline">\(\Omega_{jkk'}\)</span> measures how much overlapping information exists between outcomes <span class="math inline">\(k\)</span> and <span class="math inline">\(k'\)</span> after controlling for the other outcomes in domain <span class="math inline">\(j\)</span>, with larger magnitudes indicating more redundancy. Intuitively, the scaling factor discounts the measured redundancy when the outcomes are noisy, since the shared information is potentially unreliable.</p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;To show how <span class="math inline">\(\boldsymbol \Omega_j\)</span> represents the conditional relationships involves deriving it from <span class="math inline">\(\boldsymbol \Sigma_j\)</span> using the <strong>Schur complement</strong>. Relevant references include <a href="https://eranraviv.com/correlation-correlation-structure-8-precision-matrix/#Pairs_Trading_Issues">this</a>, <a href="https://www.cis.upenn.edu/~jean/schur-comp.pdf?utm_source=chatgpt.com">this</a>, and <a href="https://chrisyeh96.github.io/2021/05/19/schur-complement.html?utm_source=chatgpt.com">this</a>.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;Perhaps it is obvious, but it is worth emphasizing that the diagonal elements are always non-negative because variances are non-negative.</p></div></div></section>
+<section id="summary-index" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="summary-index">Summary Index</h2>
+<p>For every individual <span class="math inline">\(i\)</span>, we want to combine the multiple outcomes <span class="math inline">\(k = 1, \ldots, K_j\)</span> in domain <span class="math inline">\(j\)</span> into a single domain-level summary index <span class="math inline">\(\bar{s}_{ij}\)</span>. <span class="citation" data-cites="anderson2008">Anderson (<a href="#ref-anderson2008" role="doc-biblioref">2008</a>)</span> proposes the following index:</p>
+<p><span class="math display">\[
+\bar{s}_{ij} \equiv
+\underbrace{\color{#FF7F0E}{(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)^{-1}}}_{\color{#FF7F0E}{\text{normalizing scalar}}}
+\;
+\underbrace{\color{#2CA02C}{(\boldsymbol 1' \boldsymbol \Sigma _j^{-1})}}_{\color{#2CA02C}{\text{raw weights}}}
+\;
+\underbrace{\color{#1F77B4}{(\tilde{\boldsymbol y}_{ij})}}_{\color{#1F77B4}{\text{outcome}}}.
+\]</span></p>
+<p>where <span class="math inline">\(\boldsymbol 1 \in \mathbb{R}^{K_j \times 1}\)</span> is a vector of ones. To understand how the summary index aggregates outcomes in the same domain, it’s useful to interpret each component of the index separately.</p>
+<p>First, the matrix multiplication <span class="math inline">\(\color{#2CA02C}{\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1}}\)</span> results in the following <span class="math inline">\(1 \times K_j\)</span> vector</p>
 <p><span class="math display">\[
 \boldsymbol w_j \equiv \begin{pmatrix} 1 &amp; \ldots &amp; 1 \end{pmatrix} \begin{pmatrix} \Omega_{j11} &amp; \ldots &amp; \Omega_{j1K_j} \\
-\vdots &amp; \ddots &amp; \vdots \\ \Omega_{jK_j1} &amp; \ldots &amp; \Omega_{jK_jK_j} \end{pmatrix} = \begin{pmatrix} \sum_{k=1}^{K_j} \Omega_{jk1} \\ \vdots \\ \sum_{k=1}^{K_j} \Omega_{jkK_j} \end{pmatrix} \in \mathbb{R}^{K_j \times 1}.
-\]</span> In other words, each element <span class="math inline">\(\boldsymbol w_{jk}\)</span> is simply the sum of the corresponding <span class="math inline">\(k\)</span>-th column of <span class="math inline">\(\boldsymbol \Omega_j\)</span>. Recall that the positive diagonal elements of <span class="math inline">\(\boldsymbol \Omega_j\)</span> decrease as conditional variance increases and the negative off-diagonal elements of <span class="math inline">\(\boldsymbol \Omega_j\)</span> become more negative as conditional covariance increases. Thus, the sum <span class="math inline">\(\boldsymbol w_{jk}\)</span> decreases as the conditional variance/covariance of outcome <span class="math inline">\(k\)</span> increases. Thus, <span class="math inline">\(\boldsymbol w_j\)</span> can be seen as a vector of weights, where each element <span class="math inline">\(w_{jk}\)</span> reflects the relative importance of outcome <span class="math inline">\(k\)</span> in domain <span class="math inline">\(j\)</span>, with higher weights assigned to outcomes that are less redundant (i.e.&nbsp;not explained by others).</p>
+\vdots &amp; \ddots &amp; \vdots \\ \Omega_{jK_j1} &amp; \ldots &amp; \Omega_{jK_jK_j} \end{pmatrix} = \begin{pmatrix} w_{j1} = \sum_{k=1}^{K_j} \Omega_{jk1} \\ \vdots \\ w_{jK_j}=\sum_{k=1}^{K_j} \Omega_{jkK_j} \end{pmatrix}' \in \mathbb{R}^{1 \times K_j}.
+\]</span></p>
+<p>In other words, each element <span class="math inline">\(w_{jk}\)</span> is simply the sum of the corresponding <span class="math inline">\(k\)</span>-th column of <span class="math inline">\(\boldsymbol \Omega_j\)</span>. To be able to interpret these elements, suppose the conditional covariance between arbitrary outcomes <span class="math inline">\(k\)</span> and <span class="math inline">\(k'\)</span> in domain <span class="math inline">\(j\)</span> is strictly non-negative so that <span class="math inline">\(\Omega_{jkk'}\)</span> is strictly non-positive.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> This is often a reasonable assumption since we positively oriented the outcomes and group them by some shared domain. Under this assumption, the positive diagonal elements <span class="math inline">\(\Omega_{jkk}\)</span> decrease as conditional variance (noise) increases and the negative off-diagonal elements <span class="math inline">\(\Omega_{jkk'}\)</span> become more negative as conditional covariance (redundancy) increases. Thus, the sum <span class="math inline">\(w_{jk}\)</span> can be interpreted as a weight that captures the conditional noise and overall redundancy in outcome <span class="math inline">\(k\)</span>, with higher weights assigned to outcomes that are less noisy and redundant.</p>
+<div class="no-row-height column-margin column-container"><div id="fn3"><p><sup>3</sup>&nbsp;I believe this is what <span class="citation" data-cites="anderson2008">Anderson (<a href="#ref-anderson2008" role="doc-biblioref">2008</a>)</span> was referring to when they state “Summary index tests make sense … when there is an a priori reason to believe that a group of outcomes will be affected in a consistent direction” (p.&nbsp;1488).</p></div></div><p>The matrix multiplication <span class="math inline">\(\color{green}{(\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1})}\color{#1F77B4}{(\tilde{\boldsymbol y}_{ij})}\)</span> results in a scalar that is a weighted sum of all the outcomes in domain <span class="math inline">\(j\)</span> for individual <span class="math inline">\(i\)</span>: <span class="math display">\[
+s_{ij} \equiv \begin{pmatrix} w_{j1} &amp; w_{jK_J} \end{pmatrix} \begin{pmatrix} \tilde{y}_{ij1} \\ \vdots \\ \tilde{y}_{ijK_j} \end{pmatrix} =\sum_{k=1}^{K_j} w_{jk} \tilde{y}_{ijk}.
+\]</span> The quantity <span class="math inline">\((\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)\)</span> is simply the sum of all the weights in <span class="math inline">\(\boldsymbol w_j\)</span>: <span class="math display">\[
+\begin{pmatrix} w_{j1} &amp; \ldots &amp; w_{jK_j}\end{pmatrix} \begin{pmatrix} 1 \\ \vdots \\ 1 \end{pmatrix} = \sum_{k=1}^{K_j} w_{jk}.
+\]</span> Finally, multiplying the weighted sum <span class="math inline">\(\color{green}{(\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1})}\color{#1F77B4}{(\tilde{\boldsymbol y}_{ij})}\)</span> by the inverse <span class="math inline">\(\color{#FF7F0E}{(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)^{-1}}\)</span> results in a weighted average of the outcomes in domain <span class="math inline">\(j\)</span> for individual <span class="math inline">\(i\)</span>: <span class="math display">\[
+\bar{s}_{ij} = \frac{\sum_{k=1}^{K_j} w_{jk} \tilde{y}_{ijk}}{\sum_{k=1}^{K_j} w_{jk}}.
+\]</span> Thus, the summary index <span class="math inline">\(\bar{s}_{ij}\)</span> is a weighted average of all the outcomes in domain <span class="math inline">\(j\)</span> for individual <span class="math inline">\(i\)</span>, where the weights <span class="math inline">\(w_{jk}\)</span> capture the conditional noise and overall redundancy in outcome <span class="math inline">\(k\)</span>. This weighting scheme ensures that outcomes providing stable, unique information about the domain are prioritized in the summary index.</p>
+
 
 
 </section>
 
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-anderson2008" class="csl-entry" role="listitem">
+Anderson, Michael L. 2008. <span>“Multiple Inference and Gender Differences in the Effects of Early Intervention: A Reevaluation of the Abecedarian, Perry Preschool, and Early Training Projects.”</span> <em>Journal of the American Statistical Association</em> 103 (484): 1481–95. <a href="https://doi.org/10.1198/016214508000000841">https://doi.org/10.1198/016214508000000841</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

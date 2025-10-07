@@ -1,64 +1,93 @@
 ---
 title: "Summary Index"
-description: "Walking through the Anderson (2008) summary index for multiple inference."
+description: "I provide a detailed treatment of the summary index used in Anderson (2008) for multiple inference."
 date: today
 categories: [Mathematical Statistics]
 reference-location: margin
+bibliography: summary-index.bib
 ---
 ## Introduction 
 
 **This post is in progress**
 
-## Notation
-Let $i = 1, \ldots, n$ index the observations, $j = 1, \ldots, J$ index the domains, and $k = 1, \ldots, K_j$ index the outcomes within domain $j$. Then, we can standardize each outcome $y_{ijk}$ into effect size units
+## Notation and Set Up
+Let $i = 1, \ldots, n$ index the observations, $j = 1, \ldots, J$ index the domains, and $k = 1, \ldots, K_j$ index the outcomes within domain $j$. We standardize each outcome value $y_{ijk}$ into effect-size units as
 $$
-\tilde{y}_{ijk} = \frac{y_{ijk} - \bar{y}_{jk}^{control}}{\sigma_{jk}^{control}},
+\tilde{y}_{ijk} \equiv \frac{y_{ijk} - \bar{y}_{jk}^{control}}{\sigma_{jk}^{control}},
 $${#eq-es}
- where $\bar{y}_{jk}^{control}$ is the sample mean of outcome $k$ in domain $j$ among untreated individuals, and $\sigma_{jk}^{control}$ is the sample standard deviation of outcome $k$ in domain $j$ among untreated individuals. In words, @eq-es expresses outcome $k$ for individual $i$ in domain $j$ in terms of the number of control group standard deviations that $y_{ijk}$ is above or below the control group mean for outcome $k$ in domain $j$. Since $y_{ijk}$ is positively oriented, $\tilde{y}_{ijk} > 0$ indicates a positive treatment effect on outcome $k$ for individual $i$ in domain $j$, while $\tilde{y}_{ijk} < 0$ indicates a negative treatment effect.
+where $\bar{y}_{jk}^{control}$ is the sample mean of outcome $k$ in domain $j$ among untreated individuals, and $\sigma_{jk}^{control}$ is the corresponding sample standard deviation. In words, @eq-es represents the value of outcome $k$ for individual $i$ in domain $j$ in terms of the number of control-group standard deviations that $y_{ijk}$ is above or below the control-group mean for that outcome. Since $y_{ijk}$ is positively oriented, $\tilde{y}_{ijk} > 0$ indicates a positive treatment effect on outcome $k$ for individual $i$ in domain $j$, while $\tilde{y}_{ijk} < 0$ indicates a negative treatment effect.
 
-We denote the vector of standardized outcomes for individual $i$ in domain $j$ as 
+We denote the vector of standardized outcome for individual $i$ in domain $j$ as 
 $$
-\tilde{\boldsymbol y}_{ij} = \begin{pmatrix}\tilde{y}_{ij1} \\ \vdots\\ \tilde{y}_{ijK_j} \end{pmatrix} \in \mathbb{R}^{K_j},
+\tilde{\boldsymbol y}_{ij} \equiv \begin{pmatrix}\tilde{y}_{ij1} \\ \vdots\\ \tilde{y}_{ijK_j} \end{pmatrix} \in \mathbb{R}^{K_j}.
 $$
-and the covariance matrix of the standardized outcomes in domain $j$ as 
+The covariance matrix of the standardized outcomes in domain $j$
 $$
-\boldsymbol \Sigma_j = \begin{pmatrix} 
+\boldsymbol \Sigma_j \equiv \begin{pmatrix} 
 \Sigma_{j11} & \ldots & \Sigma_{j1K_j} 
 \\ 
 \vdots & \ddots & \vdots
 \\
 \Sigma_{jK_j1} & \ldots & \Sigma_{jK_jK_j} 
-\end{pmatrix} \in \mathbb{R}^{K_j \times K_j}.
+\end{pmatrix} \in \mathbb{R}^{K_j \times K_j}
 $$
-Each element $\Sigma_{jkk'}$ of $\boldsymbol \Sigma_j$ is the sample covariance between standardized outcomes $k$ and $k'$ in domain $j$ across individuals in the control group, given by
+captures the *unconditional* covariance structure between the outcomes in domain $j$ across individuals in the control-group. Specifically, the diagonal elements $\Sigma_{jkk}$ measure the unconditional variance of outcome $k$ in domain $j$ 
 $$
-\Sigma_{jkk'} = \frac{1}{n_j^{control} - 1} \sum_{i \in control \, group } (\tilde{y}_{ijk})(\tilde{y}_{ijk'}),
+\Sigma_{jkk} \equiv \operatorname{Var}(\tilde{y}_{ijk}),
 $$
-where $n_j^{control}$ is the number of untreated individuals in domain $j$.^[Technically the summand is 
-$(\tilde{y}_{ijk} - \bar{\tilde{y}}_{jk}^{control}) (\tilde{y}_{ijk'} - \bar{\tilde{y}}_{jk'}^{control}).$ However, we demean the outcomes by the mean of the control group, so the mean standardized outcomes among untreated individuals is $0$ by construct.] 
+and the off-diagonal elements $\Sigma_{jkk'}$ measure the unconditional covariance between outcomes $k$ and $k'$ in domain $j$ 
+$$
+\Sigma_{jkk'} \equiv \operatorname{Cov}(\tilde{y}_{ijk}, \tilde{y}_{ijk'}).
+$$
 
 The inverse of the covariance matrix is denoted as 
 $$
-\boldsymbol \Sigma_j^{-1} = \boldsymbol \Omega_j = \begin{pmatrix} \Omega_{j11} & \ldots & \Omega_{j1K_j} \\
+\boldsymbol \Omega_j \equiv \boldsymbol \Sigma_j^{-1} = \begin{pmatrix} \Omega_{j11} & \ldots & \Omega_{j1K_j} \\
 \vdots & \ddots & \vdots \\ \Omega_{jK_j1} & \ldots & \Omega_{jK_jK_j} \end{pmatrix} \in \mathbb{R}^{K_j \times K_j},
 $$
-and is called the **precision matrix**. This matrix plays a key role in the summary index because it captures the conditional relationships between the outcomes in domain $j$.^[To show that $\boldsymbol \Omega_j$ captures conditional relationships involves deriving it from $\boldsymbol \Sigma_j$ using the **Schur complement**. Relevant references include [this](https://eranraviv.com/correlation-correlation-structure-8-precision-matrix/#Pairs_Trading_Issues), [this](https://www.cis.upenn.edu/~jean/schur-comp.pdf?utm_source=chatgpt.com), and [this](https://chrisyeh96.github.io/2021/05/19/schur-complement.html?utm_source=chatgpt.com).]  Specifically, the diagonal element $\Omega_{jkk}$ equals the inverse of the conditional variance of outcome $k$ in domain $j$ given all other outcomes in domain $j$, and the off-diagonal element $\Omega_{jkk'}$ is proportional to the negative of the conditional covariance between outcomes $k$ and $k'$ in domain $j$ given all other outcomes in domain $j$. 
+and is called the **precision matrix**. This matrix plays a key role in aggregating outcomes within the same domain because it captures the *conditional* dependence structure between the outcomes in domain $j$.^[To show how $\boldsymbol \Omega_j$ represents the conditional relationships involves deriving it from $\boldsymbol \Sigma_j$ using the **Schur complement**. Relevant references include [this](https://eranraviv.com/correlation-correlation-structure-8-precision-matrix/#Pairs_Trading_Issues), [this](https://www.cis.upenn.edu/~jean/schur-comp.pdf?utm_source=chatgpt.com), and [this](https://chrisyeh96.github.io/2021/05/19/schur-complement.html?utm_source=chatgpt.com).] The diagonal elements $\Omega_{jkk}$ equal the inverse of the conditional variance of outcome $k$ given all other outcomes in domain $j$:
+$$
+\Omega_{jkk} = \frac{1}{\operatorname{Var}(\tilde{y}_{ijk} \mid \tilde{\boldsymbol y}_{ij-k})}.
+$$
+In other words, $\Omega_{jkk}$ measures how noisy an outcome is conditioned on the other outcomes, with larger values indicating less noise.^[Perhaps it is obvious, but it is worth emphasizing that the diagonal elements are always non-negative because variances are non-negative.] The off-diagonal elements $\Omega_{jkk'}$ equal the negative conditional covariance between outcomes $k$ and $k'$, scaled by the product of their inverse conditional variances:
+$$
+\Omega_{jkk'} = \frac{-\operatorname{Cov}(\tilde{y}_{ijk}, \tilde{y}_{ijk'} \mid \tilde{\boldsymbol y}_{ij-\{k,k'\}})}{\operatorname{Var}(\tilde{y}_{ijk} \mid \tilde{\boldsymbol y}_{ij-k}) \operatorname{Var}(\tilde{y}_{ijk'} \mid \tilde{\boldsymbol y}_{ij-k'})}.
+$$
+Recall that conditional covariance is the covariance between the residuals of the regression of $y_{ijk}$ and $y_{ijk'}$ on all other outcomes in domain $j$. Thus, $\Omega_{jkk'}$ measures how much overlapping information exists between outcomes $k$ and $k'$ after controlling for the other outcomes in domain $j$, with larger magnitudes indicating more redundancy. Intuitively, the scaling factor discounts the measured redundancy when the outcomes are noisy, since the shared information is potentially unreliable. 
 
 ## Summary Index
-
-For every individual $i$, we want to combine the multiple outcomes $k = 1, \ldots, K_j$ in domain $j$ into a single domain-level summary index $s_{ij}$. Anderson (2008) proposes the following index: 
+For every individual $i$, we want to combine the multiple outcomes $k = 1, \ldots, K_j$ in domain $j$ into a single domain-level summary index $\bar{s}_{ij}$. @anderson2008 proposes the following index: 
 
 $$
-s_{ij} = (\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)^{-1}(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \tilde{\boldsymbol y}_{ij}),
+\bar{s}_{ij} \equiv
+\underbrace{\color{#FF7F0E}{(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)^{-1}}}_{\color{#FF7F0E}{\text{normalizing scalar}}}
+\;
+\underbrace{\color{#2CA02C}{(\boldsymbol 1' \boldsymbol \Sigma _j^{-1})}}_{\color{#2CA02C}{\text{raw weights}}}
+\;
+\underbrace{\color{#1F77B4}{(\tilde{\boldsymbol y}_{ij})}}_{\color{#1F77B4}{\text{outcome}}}.
 $$
 
-where $\boldsymbol 1 \in \mathbb{R}^{K_j}$ is a vector of ones. To understand how the summary index aggregates outcomes in the same domain, it's useful to interpret each component of the index separately.
+where $\boldsymbol 1 \in \mathbb{R}^{K_j \times 1}$ is a vector of ones. To understand how the summary index aggregates outcomes in the same domain, it's useful to interpret each component of the index separately.
 
-First, the matrix multiplication $\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1}$ results in the following $1 \times K_j$ vector
+First, the matrix multiplication $\color{#2CA02C}{\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1}}$ results in the following $1 \times K_j$ vector
 
 $$
 \boldsymbol w_j \equiv \begin{pmatrix} 1 & \ldots & 1 \end{pmatrix} \begin{pmatrix} \Omega_{j11} & \ldots & \Omega_{j1K_j} \\
-\vdots & \ddots & \vdots \\ \Omega_{jK_j1} & \ldots & \Omega_{jK_jK_j} \end{pmatrix} = \begin{pmatrix} \sum_{k=1}^{K_j} \Omega_{jk1} \\ \vdots \\ \sum_{k=1}^{K_j} \Omega_{jkK_j} \end{pmatrix} \in \mathbb{R}^{K_j \times 1}.
+\vdots & \ddots & \vdots \\ \Omega_{jK_j1} & \ldots & \Omega_{jK_jK_j} \end{pmatrix} = \begin{pmatrix} w_{j1} = \sum_{k=1}^{K_j} \Omega_{jk1} \\ \vdots \\ w_{jK_j}=\sum_{k=1}^{K_j} \Omega_{jkK_j} \end{pmatrix}' \in \mathbb{R}^{1 \times K_j}.
 $$
-In other words, each element $\boldsymbol w_{jk}$ is simply the sum of the corresponding $k$-th column of $\boldsymbol \Omega_j$. Recall that the positive diagonal elements of $\boldsymbol \Omega_j$ decrease as conditional variance increases and the negative off-diagonal elements of $\boldsymbol \Omega_j$ become more negative as conditional covariance increases. Thus, the sum $\boldsymbol w_{jk}$ decreases as the conditional variance/covariance of outcome $k$ increases. Thus, $\boldsymbol w_j$ can be seen as a vector of weights, where each element $w_{jk}$ reflects the relative importance of outcome $k$ in domain $j$, with higher weights assigned to outcomes that are less redundant (i.e. not explained by others).
 
+In other words, each element $w_{jk}$ is simply the sum of the corresponding $k$-th column of $\boldsymbol \Omega_j$. To be able to interpret these elements, suppose the conditional covariance between arbitrary outcomes $k$ and $k'$ in domain $j$ is strictly non-negative so that $\Omega_{jkk'}$ is strictly non-positive.^[I believe this is what @anderson2008 was referring to when they state "Summary index tests make sense ... when there is an a priori reason to believe that a group of outcomes will be affected in a consistent direction" (p. 1488).] This is often a reasonable assumption since we positively oriented the outcomes and group them by some shared domain. Under this assumption, the positive diagonal elements $\Omega_{jkk}$ decrease as conditional variance (noise) increases and the negative off-diagonal elements $\Omega_{jkk'}$ become more negative as conditional covariance (redundancy) increases. Thus, the sum $w_{jk}$ can be interpreted as a weight that captures the conditional noise and overall redundancy in outcome $k$, with higher weights assigned to outcomes that are less noisy and redundant.
+
+The matrix multiplication $\color{green}{(\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1})}\color{#1F77B4}{(\tilde{\boldsymbol y}_{ij})}$ results in a scalar that is a weighted sum of all the outcomes in domain $j$ for individual $i$:
+$$
+s_{ij} \equiv \begin{pmatrix} w_{j1} & w_{jK_J} \end{pmatrix} \begin{pmatrix} \tilde{y}_{ij1} \\ \vdots \\ \tilde{y}_{ijK_j} \end{pmatrix} =\sum_{k=1}^{K_j} w_{jk} \tilde{y}_{ijk}. 
+$$
+The quantity $(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)$ is simply the sum of all the weights in $\boldsymbol w_j$:
+$$
+\begin{pmatrix} w_{j1} & \ldots & w_{jK_j}\end{pmatrix} \begin{pmatrix} 1 \\ \vdots \\ 1 \end{pmatrix} = \sum_{k=1}^{K_j} w_{jk}.
+$$
+Finally, multiplying the weighted sum  $\color{green}{(\boldsymbol 1 ' \boldsymbol \Sigma_j^{-1})}\color{#1F77B4}{(\tilde{\boldsymbol y}_{ij})}$ by the inverse $\color{#FF7F0E}{(\boldsymbol 1' \boldsymbol \Sigma _j^{-1} \boldsymbol 1)^{-1}}$ results in a weighted average of the outcomes in domain $j$ for individual $i$:
+$$
+\bar{s}_{ij} = \frac{\sum_{k=1}^{K_j} w_{jk} \tilde{y}_{ijk}}{\sum_{k=1}^{K_j} w_{jk}}.
+$$
+Thus, the summary index $\bar{s}_{ij}$ is a weighted average of all the outcomes in domain $j$ for individual $i$, where the weights $w_{jk}$ capture the conditional noise and overall redundancy in outcome $k$. This weighting scheme ensures that outcomes providing stable, unique information about the domain are prioritized in the summary index. 
