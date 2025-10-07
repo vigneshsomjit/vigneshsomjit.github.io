@@ -1,7 +1,7 @@
 ---
 title: "Basic Concepts in Linear Algebra"
 description: "Discussion of fundamental concepts in linear algebra, including vector spaces, linear combination and independence, basis vectors, and subspaces."
-date: today
+date: September 20,2025
 categories: [Linear Algebra]
 bibliography: linalg-basics.bib
 nocite: |

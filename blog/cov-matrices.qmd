@@ -38,3 +38,6 @@ $$
 ## Cross-Covariance Matrix 
 
 ## Block Matrix
+
+## Inverse Covariance Matrix
+

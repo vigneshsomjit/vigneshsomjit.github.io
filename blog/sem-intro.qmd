@@ -3,7 +3,7 @@ title: "An Introduction to Structural Equation Modeling"
 description: "I walk through the basics of structural equation modeling, focusing on model specification and estimation."
 date: today
 categories: [Structural Equation Modeling]
-bibliography: [sem.bib]
+bibliography: [sem-intro.bib]
 nocite: |
   @*
 draft: true

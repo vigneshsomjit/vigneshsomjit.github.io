@@ -2,9 +2,11 @@
   {
     "listing": "/blog/blog-index.html",
     "items": [
-      "/blog/hypothesis.testing.html",
-      "/blog/linalg-basics.html",
-      "/blog/statistical-inference.html"
+      "/blog/statistical-inference-2.html",
+      "/blog/statistical-inference-3.html",
+      "/blog/statistical-inference-1.html",
+      "/blog/summary-index.html",
+      "/blog/linalg-basics.html"
     ]
   }
 ]

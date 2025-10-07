@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-01">
+<meta name="dcterms.date" content="2025-10-03">
 <meta name="description" content="Big picture intuition for statistical inference under the random sampling framework.">
 
-<title>Vignesh Somjit - Random Sampling and Model-Based Inference</title>
+<title>Vignesh Somjit - Statistical Inference II: Point Estimation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,40 +21,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 /* CSS for citations */
 div.csl-bib-body { }
@@ -197,14 +163,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-is-statistical-inference" id="toc-what-is-statistical-inference" class="nav-link active" data-scroll-target="#what-is-statistical-inference">What is Statistical Inference?</a></li>
-  <li><a href="#the-random-sampling-framework" id="toc-the-random-sampling-framework" class="nav-link" data-scroll-target="#the-random-sampling-framework">The Random Sampling Framework</a>
-  <ul class="collapse">
-  <li><a href="#mathematical-formalization-of-the-dataset" id="toc-mathematical-formalization-of-the-dataset" class="nav-link" data-scroll-target="#mathematical-formalization-of-the-dataset">Mathematical Formalization of the Dataset</a></li>
-  <li><a href="#random-sampling" id="toc-random-sampling" class="nav-link" data-scroll-target="#random-sampling">Random Sampling</a></li>
-  <li><a href="#notation-and-example" id="toc-notation-and-example" class="nav-link" data-scroll-target="#notation-and-example">Notation and Example</a></li>
-  </ul></li>
-  <li><a href="#point-estimation" id="toc-point-estimation" class="nav-link" data-scroll-target="#point-estimation">Point Estimation</a>
+  <li><a href="#point-estimation" id="toc-point-estimation" class="nav-link active" data-scroll-target="#point-estimation">Point Estimation</a>
   <ul class="collapse">
   <li><a href="#estimator-properties" id="toc-estimator-properties" class="nav-link" data-scroll-target="#estimator-properties">Estimator Properties</a></li>
   </ul></li>
@@ -221,7 +180,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Random Sampling and Model-Based Inference</h1>
+<h1 class="title">Statistical Inference II: Point Estimation</h1>
   <div class="quarto-categories">
     <div class="quarto-category">Mathematical Statistics</div>
   </div>
@@ -240,7 +199,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 1, 2025</p>
+      <p class="date">October 3, 2025</p>
     </div>
   </div>
   
@@ -252,80 +211,6 @@ window.Quarto = {
 </header>
 
 
-<section id="what-is-statistical-inference" class="level2">
-<h2 class="anchored" data-anchor-id="what-is-statistical-inference">What is Statistical Inference?</h2>
-<p>Observational data is inherently random: if we were to measure the same variables repeatedly, we would almost certainly get different values each time. A classical explanation for the source of this randomness is the <strong>model-based</strong> (or <strong>sampling-based</strong>) perspective. In this abstraction, we assume there exists an underlying <strong>superpopulation</strong> or <strong>data generating process</strong> (<strong>DGP</strong>): a fixed but unknown probability distribution <span class="math inline">\(F\)</span> that can, in principle, generate infinitely many observations. Randomness then arises because we only observe finitely many realizations from <span class="math inline">\(F\)</span> — never the entire distribution. Within this framework, we define <strong>statistical inference</strong> as the process of using the observed random data to estimate features of <span class="math inline">\(F\)</span> and quantify the uncertainty in those estimates.</p>
-<p>Notice that the exposition above implicitly assumes that there is a single underlying distribution <span class="math inline">\(F\)</span> from which all observed data are drawn. To make this mathematically precise, we need to introduce the <strong>random sampling</strong> assumption. This provides the framework to connect the observed data to the DGP, and thereby lays the foundation for statistical inference.</p>
-</section>
-<section id="the-random-sampling-framework" class="level2">
-<h2 class="anchored" data-anchor-id="the-random-sampling-framework">The Random Sampling Framework</h2>
-<p>The discussion going forward will primarily focus on <strong>cross-sectional</strong> datasets. These consist of several observations of a collection of variables for a given point in time and can be denoted as</p>
-<p><span class="math display">\[
-\{x_{i1}, x_{i2} \ldots, x_{iK}\}_{i=1}^n,
-\]</span></p>
-<p>where <span class="math inline">\(x_{ik}\)</span> is the value of the <span class="math inline">\(k\)</span>-th variable for the <span class="math inline">\(i\)</span>-th unit. A typical source of cross-sectional data in economics is through surveys like the <a href="https://www.census.gov/programs-surveys/cps.html">Current Population Survey (CPS)</a> or the <a href="https://www.census.gov/programs-surveys/acs">American Community Survey (ACS)</a>.</p>
-<section id="mathematical-formalization-of-the-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="mathematical-formalization-of-the-dataset">Mathematical Formalization of the Dataset</h3>
-<p>Since observational data is random, it is natural to we view the observed data vector <span class="math display">\[
-\boldsymbol{x}_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
-\]</span> as a realization of the random data vector <span class="math display">\[
-\boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n,
-\]</span></p>
-<p>with some associated probability distribution. For example, we can think of the CPS dataset as consisting of random vectors</p>
-<p><span class="math display">\[
-\boldsymbol X_i = (sex_i, age_i, educ_i, wage_i)' \quad \text{for } i = 1, \ldots, n.
-\]</span> For some specific individual <span class="math inline">\(i\)</span> in the CPS dataset, we then observe the vector of realized values<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<p><span class="math display">\[
-\boldsymbol x_i = (1, 25, 16, 25000)'.
-\]</span> Intuitively, the distinction between the random vector <span class="math inline">\(\boldsymbol X_i\)</span> and the realization <span class="math inline">\(\boldsymbol x_i\)</span> is that the former represents the <span class="math inline">\(i\)</span>-th observation <em>before viewing the data</em> (unknown and random) and the latter represents the <span class="math inline">\(i\)</span>-th observation <em>after viewing the data</em> (specific known value).</p>
-</section>
-<section id="random-sampling" class="level3">
-<h3 class="anchored" data-anchor-id="random-sampling">Random Sampling</h3>
-<p>We have now represented the dataset as a collection of random vectors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span>, each with some probability distribution <span class="math inline">\(F_1 \ldots, F_n\)</span>. However, the connection between the underlying DGP and the observed data remains unclear. Specifically, we need a simplifying assumption that will allow us to connect the distributions of each <span class="math inline">\(\boldsymbol X_i\)</span> to the underlying DGP in a straightforward manner. The simplest framework is that of <strong>random sampling</strong>. Here, we assume that the random vectors <span class="math inline">\(\boldsymbol X_1, \ldots , \boldsymbol X_n\)</span> are <strong>independent and identically distributed</strong> (<strong>iid</strong>) with some common but unknown distribution <span class="math inline">\(F\)</span> on <span class="math inline">\(\mathbb{R}^K\)</span>. Thus, under this assumption, the data generating process is precisely the distribution that governs each individual random vector <span class="math inline">\(\boldsymbol X_i\)</span>.</p>
-<section id="alternative-assumptions" class="level4">
-<h4 class="anchored" data-anchor-id="alternative-assumptions">Alternative Assumptions</h4>
-<p>The random sampling assumption is <em>one</em> potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>, and (ii) it is the backbone of several statistical theorems and methods.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. An alternative approach in such cases is to instead assume mutual independence across <strong>clusters</strong> of units. Another example of a violation to the independence assumption is <strong>time-series</strong> data, where the individual unit is indexed by time. Here, consecutive observations are usually correlated and independence is instead formulated in terms of <a href="https://en.wikipedia.org/wiki/Stationary_process"><strong>stationarity</strong></a> and other concepts outside the scope of this post.</p>
-</section>
-</section>
-<section id="notation-and-example" class="level3">
-<h3 class="anchored" data-anchor-id="notation-and-example">Notation and Example</h3>
-<p>The discussion so far has purely been conceptual, and so it is useful to consider a concrete example. Before doing so, however, let’s clarify some notation used in the random sampling framework. We denote the <em>population-level random variables</em> as <span class="math inline">\(X_1, \ldots, X_K\)</span>. The data generating process <span class="math inline">\(F\)</span> is the joint distribution of these random variables. For example, <span class="math inline">\(X_1\)</span> could denote the generic random variable for wage in the entire US population and we are interested in making inferences about its distribution. We denote the <em>sample-level random variables</em> as <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>. These represent the random variables associated with specific units in the sample. Continuing the example, <span class="math inline">\(X_{i1}\)</span> denotes the random variable representing the wage of individual <span class="math inline">\(i\)</span> in the sample. Finally, we denote the <em>realized observations</em> as <span class="math inline">\(X_{i1}=x_{i1}, \ldots, X_{iK}=x_{iK}\)</span>. These are the actual values we observe. So, <span class="math inline">\(X_{i1} = 25,000\)</span> means that the observed wage of individual <span class="math inline">\(i\)</span> is <span class="math inline">\(25,000\)</span>.</p>
-<p>Now suppose our data generating process consists of one random variable with an exponential distribution with scale parameter <span class="math inline">\(\beta = 1\)</span>: <span class="math display">\[
-X \sim \text{Exp}(1) \quad \text{with density } f(x) = e^{-x} \text{ for } x \geq 0.
-\]</span></p>
-<p>If we assume our dataset is a random sample of size 30 from the above DGP, then <span class="math display">\[
-X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} \quad  X_i \perp X_j  \, \, \text{ for } i \neq j.
-\]</span></p>
-<p>The figure below plots the empirical <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation#:~:text=In%20statistics%2C%20kernel%20density%20estimation,based%20on%20kernels%20as%20weights.">kernel density</a> of such a random sample (black line) and the true density of the exponential distribution (red line). In practice, we do not know the true DGP and need to guess its characteristics using the observed data. Randomness in the finite observed data makes this a non-trivial task — as illustrated by the discrepancy between the empirical and true densities in the figure below.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate IID sample of 30 obs from exp(1)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="dv">1</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Empirical Density </span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>dens <span class="ot">&lt;-</span> <span class="fu">density</span>(x)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># True Exponential Density</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>xs <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">200</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ys <span class="ot">&lt;-</span> <span class="fu">dexp</span>(xs, <span class="at">rate =</span> <span class="dv">1</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dens, <span class="at">main =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">"Observed Data"</span>, <span class="at">ylab =</span> <span class="st">"Density"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(<span class="fu">c</span>(dens<span class="sc">$</span>y, ys))))</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dexp</span>(x, <span class="at">rate =</span> <span class="dv">1</span>), <span class="at">from =</span> <span class="fu">min</span>(x), <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="statistical-inference_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
 <section id="point-estimation" class="level2">
 <h2 class="anchored" data-anchor-id="point-estimation">Point Estimation</h2>
 <p><strong>Point estimation</strong> is the first step of statistical inference, and involves constructing a “good guess” for a feature of the unknown data generating process. To be more precise, this feature is called an <strong>estimand</strong> <span class="math inline">\(\theta\)</span> and is defined as a function of the data generating process <span class="math inline">\(F\)</span>:</p>
@@ -340,7 +225,7 @@ X_{i} \sim \text{Exp}(1) \, \, \text{ for } i = 1, \ldots, 30 \quad  \text{and} 
 \hat{\theta} = \hat{\theta}(\boldsymbol X_1, \ldots, \boldsymbol X_n).
 \]</span></p>
 <p>When the estimator is evaluated at a specific realization of the sample, we obtain an <strong>estimate</strong> <span class="math inline">\(\hat\theta(\boldsymbol x_1, \ldots, \boldsymbol x_n)\)</span> of the estimand. It’s worth emphasizing that the estimand is a fixed but unknown number, the estimator is a random variable, and the estimate is a fixed and known number.</p>
-<p>In statistics, there are several <strong>estimation principles</strong> that provide systematic ways (i.e.&nbsp;rules) to construct estimators. One common method is the <strong>analog principle</strong> (or <strong>plug-in principle</strong>). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Thus, the <strong>analog estimator</strong> for the population mean is the sample mean, defined as</p>
+<p>In statistics, there are several <strong>estimation principles</strong> that provide systematic ways (i.e.&nbsp;rules) to construct estimators. One common method is the <strong>analog principle</strong> (or <strong>plug-in principle</strong>). The idea is to construct the estimator by replacing the population quantities in the estimand with their sample analogs.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> Thus, the <strong>analog estimator</strong> for the population mean is the sample mean, defined as</p>
 <p><span class="math display">\[
 \hat{\mu} = \frac{1}{n} \sum_{i=1}^n \boldsymbol X_i.
 \]</span></p>
@@ -353,7 +238,7 @@ e(\boldsymbol x_1, \ldots, \boldsymbol x_n) = \hat\theta(\boldsymbol x_1, \ldots
 \]</span> The <strong>bias</strong> of an estimator is the average error of the estimator across all possible samples of size <span class="math inline">\(n\)</span> from the DGP:</p>
 <p><span class="math display">\[
 B(\hat\theta) = \mathbb{E}_F[\hat{\theta}] - \theta
-\]</span> Intuitively, the bias captures the systematic error of the estimator: if the bias is positive, the estimator tends to overestimate the estimand, and if the bias is negative, the estimator tends to underestimate the estimand. We say an estimator <span class="math inline">\(\hat{\theta}\)</span> is <strong>unbiased</strong> for <span class="math inline">\(\theta\)</span> if its bias is zero:<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+\]</span> Intuitively, the bias captures the systematic error of the estimator: if the bias is positive, the estimator tends to overestimate the estimand, and if the bias is negative, the estimator tends to underestimate the estimand. We say an estimator <span class="math inline">\(\hat{\theta}\)</span> is <strong>unbiased</strong> for <span class="math inline">\(\theta\)</span> if its bias is zero:<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></p>
 <p><span class="math display">\[
 \mathbb{E}_F[\hat{\theta}] - \theta = 0.
 \]</span> Thus, the errors of an unbiased estimator are purely due to randomness in the data. As it turns out, the sample mean is an unbiased estimator of the population mean under the random sampling assumption:</p>
@@ -422,12 +307,8 @@ Hansen, Bruce E. 2022. <em>Probability and Statistics for Economists</em>. Princ
 </div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Here, the value of <span class="math inline">\(1\)</span> refers to the individual being a male and <span class="math inline">\(16\)</span> means <span class="math inline">\(16\)</span> years of education.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>For example, if we collected data on a random subset of individuals from a large common population (e.g.&nbsp;the USA), it is reasonable to assume that the characteristics of one individual are independent of another individual and that they all come from the same population distribution.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Crucial theorems in asymptotic statistical theory, like the Law of Large Numbers and the Central Limit Theorem, require the random sampling assumption to hold.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>Technically, under iid sampling, the empirical distribution converges to the true distribution as the sample size tends to infinity — a result known as the Glivenko–Cantelli theorem. Nevertheless, in any finite sample, uncertainty remains, and with it the need for statistical inference.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>To quote my Mathematical Statistics Professor Daniel Weiner: “Do to the sample to get your estimator, as you would do to your population to get your estimand.”<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>To be more precise, <span class="math inline">\(\hat\theta\)</span> is unbiased for <span class="math inline">\(\theta\)</span> if <span class="math inline">\(\mathbb{E}[\hat\theta]=\theta\)</span> for all <span class="math inline">\(F \in \mathcal{F}\)</span>, where <span class="math inline">\(\mathcal{F}\)</span> is a class of distributions.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>To quote my Mathematical Statistics Professor Daniel Weiner: “Do to the sample to get your estimator, as you would do to your population to get your estimand.”<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>To be more precise, <span class="math inline">\(\hat\theta\)</span> is unbiased for <span class="math inline">\(\theta\)</span> if <span class="math inline">\(\mathbb{E}[\hat\theta]=\theta\)</span> for all <span class="math inline">\(F \in \mathcal{F}\)</span>, where <span class="math inline">\(\mathcal{F}\)</span> is a class of distributions.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -1,0 +1,85 @@
+---
+title: "Statistical Inference I: Random Sampling"
+description: "Introducing frequentist statistical inference under the random sampling framework."
+date: today
+categories: [Mathematical Statistics]
+reference-location: margin
+bibliography: [statistical-inference.bib]
+nocite: |
+  @*
+---
+
+```{r setup, include=FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(here)
+```
+
+## Introduction 
+
+This post is the first in a three-part series on **statistical inference** — which I broadly define for now as the process of deriving conclusions about underlying truths from observed data. In this sense, statistical inference forms the foundation of empirical research, and a clear grasp of its underlying ideas is essential for conducting and critically evaluating empirical work. The goal of this post is to introduce the **frequentist** formalization of statistical inference. The subsequent posts discuss the two major types of inference in the frequentist paradigm: [**point estimation**](statistical-inference-2) and [**hypothesis testing**](statistical-inference-3). 
+
+## Reasoning About Uncertainty  
+
+Uncertainty is inherent in any general conclusion we make from data because we only observe a finite manifestation of a much larger, unobserved process. For example, consider the March 2009 Current Population Survey (CPS) dataset, which surveyed 50,742 individuals in the US and recorded their demographic and labor market characteristics.^[To put this number into perspective, the population of the US was 306.8 million in 2009.] 
+
+```{r}
+#| code-fold: true
+
+cps <- read_excel(
+  here("hasen-econometrics-datasets", "cps09mar", "cps09mar.xlsx"), 
+  col_names = TRUE
+)
+
+head(cps)
+```
+
+```{r}
+round(mean(cps$earnings))
+```
+
+The average earnings of individuals in this dataset is $55,092. However, we recognize that the specific average we find depends on the households we happen to observe in the dataset. We can easily imagine that if we had surveyed a different set of households, we would have obtained a different average. Thus, it is intuitively clear that there is uncertainty in how representative this number is of the average earnings of *all* individuals in the US. 
+
+**Statistical inference** involves quantifying the uncertainty in the (generalized) conclusions we make from observed data. Doing so requires us to formalize the *source* of this uncertainty, which we achieve by combining mathematical abstraction and thought experiments. 
+
+## The Frequentist Thought Experiment 
+
+Let's denote the observed data as the scalar vectors
+$$
+\boldsymbol x_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n
+$$
+where $i$ indexes the observational unit, $x_{ik}$ is the value of the $k$-th variable for the $i$-th unit, $K$ is the number of variables, and $n$ is the number of units. For example, $\boldsymbol x_i$ is the $i$-th row of the CPS dataset above, $x_{11}$ is the age of the first individual, $x_{24}$ is the education of the second individual, and so on.  
+
+As a mathematical abstraction, we will view the observed data $\{\boldsymbol x_i\}_{i=1}^n$ as a realization of the random vectors 
+$$
+\boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n.
+$$
+The **data generating process** (**DGP**) $F$ is then the *joint distribution* of $(\boldsymbol X_1, \ldots, \boldsymbol X_n)$. As things stand, these quantities seem like vacuous mathematical objects. To see their relevance in reasoning about the uncertainty in our observed data, let's consider the following thought experiment. Fix some DGP $F$ and repeatedly draw from it. For each new draw $\{\boldsymbol X_i\}_{i=1}^n$, we would obtain a different realization $\{\boldsymbol x_i\}_{i=1}^n$ based on the probabilistic structure induced by $F$.^[As far as I know, there is no formal definition of **draw** in statistics. Here, I simply mean we collect $n$ random variables whose joint distribution is given by $F$.] The **frequentist** perspective of statistical inference frames uncertainty in terms of how frequently we would observe data similar to $\{\boldsymbol x_i\}_{i=1}^n$ in such (hypothetical) repeated draw.
+
+Let's revisit the CPS dataset and see how the thought experiment helps motivate the notation we have developed. We view each each variable (column) in the CPS — age, sex, race, earnings, etc. — as random vectors. For example, $X_{11}$ denotes the age of the first individual in *any* draw from the DGP. This is in contrast to the realized value $x_{11}$, which denotes the realized age of the first individual in the *specific* draw we observe. More generally, the random variable $X_{i1}$ captures the frequentist idea of variability in the age of the $i$-th observational unit across repeated draws from $F$.^[In this way, the quantities $\{\boldsymbol X_i\}_{i=1}^n$ and $F$ are *theoretical* constructs that formalize the frequentist thought experiment. In contrast, $\{\boldsymbol x_i\}_{i=1}^n$ is the *actual* data we observe.] Intuitively, we can think about the random vectors $\{\boldsymbol X_i\}_{i=1}^n$ as the data *before* viewing the specific draw, and the deterministic realizations $\{\boldsymbol x_i\}_{i=1}^n$ as the data *after* viewing the draw.  
+
+### Alternative Thought Experiments 
+
+It should be noted that the frequentist perspective is a *mental model* that helps us reason about uncertainty. Therefore, we must still consider whether it is a reasonable description of how uncertainty arises in our conclusions from observational data. An alternative explanation for the source of uncertainty is the **Bayesian perspective**. Here, we do not assume that the DGP is a fixed distribution as in the frequentist perspective. Instead, the data is treated as fixed once realized, and uncertainty in our conclusions is formalized by placing a probability distribution over the possible DGPs that could have generated the specific instance of the data. 
+
+There is no universal answer to which perspective is correct. The choice between the two is typically driven by the context of the empirical problem at hand. As far as applied microeconomics is concerned, the frequentist perspective can almost always be justified as a reasonable description of uncertainty in our conclusions.
+
+
+## The Random Sampling Framework 
+
+So far, we have introduced the frequentist thought experiment in a general setting, where uncertainty is formalized in terms of repeated draws from some fixed joint distribution $F$ on $\mathbb{R}^{Kn}$. However, this generality makes it difficult to conceptualize the form of the DGP and what "repeated sampling" from it entails. To make things tractable, we impose simplifying assumptions on the dependence structure across $\boldsymbol X_1, \ldots, \boldsymbol X_n$. 
+
+The most common approach is to assume that the random vectors $\boldsymbol X_1, \ldots, \boldsymbol X_n$ are **independent** and **identically distributed** (**iid**) with some common but unknown marginal distribution $G$ on $\mathbb{R}^K$. Statisticians refer to $\boldsymbol X_1, \ldots , \boldsymbol X_n$ as a **random sample** from $G$ if they satisfy these two properties. Under this assumption, the DGP simplifies considerably. Because of independence, the joint distribution can be written as the product of the marginals:
+$$
+F(\boldsymbol X_1, \ldots, \boldsymbol X_n) = G(\boldsymbol X_1) \times \ldots \times G(\boldsymbol X_n) = \prod _{i=1}^n G(\boldsymbol X_i).
+$${#eq-dgp}
+The factorization in @eq-dgp shows us that the DGP $F$ is fully characterized by the single marginal distribution $G$. In other words, under random sampling, drawing once from $F$ is equivalent to independently drawing $n$ random variables from $G$. Since $G$ now fully specifies the DGP, we will henceforth refer to it as the DGP and denote it as $F$.^[That is, the random sampling assumption allows us to simplify the DGP from a joint distribution over $R^{Kn}$ to a single marginal distribution over $R^K$.] 
+
+### Evaluating the Random Sampling Assumption
+
+The random sampling assumption is *one* potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets^[For example, if we collected data on a random subset of individuals from a large common population, it is reasonable to assume that the characteristics of one individual are independent of another individual and that all individuals' characteristics follow the same distribution.], and (ii) it is the backbone of several statistical theorems and methods.^[Crucial theorems in asymptotic statistical theory, like the Law of Large Numbers and the Central Limit Theorem, require the random sampling assumption to hold.] However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. An alternative approach in such cases is to instead assume mutual independence across **clusters** of units. Another example of a violation to the independence assumption is **time-series** data, where the individual unit is indexed by time. Here, consecutive observations are usually correlated and independence is instead formulated in terms of [**stationarity**](https://en.wikipedia.org/wiki/Stationary_process) and other concepts outside the scope of this post.  
+
+# Acknowledgements {.appendix}
+
+The structure of my exposition here was inspired by Alexander Torgovitsky's  lecture notes for Empirical Analysis I at The University of Chicago.  
