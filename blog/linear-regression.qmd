@@ -1,0 +1,263 @@
+---
+title: "Linear Regression"
+description: "I motivate linear regression broadly as a way to estimate the conditional expectation function, describe the three perspectives on linear regression, and introduce the OLS estimator."
+date: today
+categories: [Linear Regression]
+draft: true
+reference-location: margin
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+```
+
+## The Conditional Expectation Function 
+
+Much of modern empirical economics research can be understood as an organized attempt to answer variants of the *causal* question: "How does $X$ affect $Y$?" For example, [Eissa and Liebmann (1996)](https://academic.oup.com/qje/article/111/2/605/1938452) ask how taxes affect labor supply; [Donaldson and Hornbeck (2016)](https://academic.oup.com/qje/article/131/2/799/2606976) ask how railroads affect economic growth; [Angrist and Krueger (1991)](https://academic.oup.com/qje/article-abstract/106/4/979/1873496) ask how the education affects earnings, and so on. 
+
+Formally, we view $X$ and $Y$ as random variables jointly distributed according to some fixed, unknown distribution $F$, called the **data generating process** (**DGP**).^[Also called the **population**.] To study questions like the ones posed above, we are especially interested in a particular feature of the DGP: the **conditional expectation function** (**CEF**),
+$$
+\mu(x) \equiv \mathbb{E}[Y \mid X = x].
+$$
+The CEF summarizes the *average association* between $X$ and $Y$ implied by the DGP. Since the DGP is unknown and typically high-dimensional, the CEF is also unknown and potentially complicated.^[High-dimensional here refers to the fact that $X$ can be a vector of many random variables.] ^[Also, since the DGP is fixed, the CEF is a deterministic function as well.]
+
+To be clear, the CEF by itself is purely a *descriptive* object: it captures statistical associations, not causal effects. Under additional assumptions, however, the CEF can be given a causal interpretation. For now, we defer any discussion of causality and instead focus on **estimating** $\mu(x)$.^[See [this](statistical-inference-1.qmd) for a review of frequentist statistical inference and [this](statistical-inference-2.qmd) for a review of point estimation.] Understanding how to estimate the CEF well is nevertheless an essential step towards answering the bigger question of causality.  
+
+### Best Predictor 
+
+Motivating the CEF purely through its *potential* causal interpretation might be unsatisfying. As it turns out, the CEF also has a fundamental statistical property in its own right: $\mu(x)$ is the *best* predictor of $Y$ given $X$.
+
+There are different ways to define the notion of "best". Here, we specifically mean that the CEF minimizes the **mean squared error** (**MSE**) function:
+$$
+\mu(x) = \arg\min_{g(x)} \mathbb{E}[(Y - g(x))^2],
+$$
+where $g(x)$ is any arbitrary function evaluated at $X = x$. To see this, let's start by defining the **CEF error** 
+$$
+e \equiv Y - \mu(x).
+$${#eq-cef-err}
+By *definition*, we have that $e$ is **mean-independent** of $X$:
+$$
+\begin{align}
+\mathbb{E}[e \mid X] &= \mathbb{E}[(Y-\mu(x)) \mid X] \\ 
+&= \mathbb{E}[Y \mid X] - \mathbb{E}[\,\mu(x) \mid X] \\ 
+&= \mu(x) - \mu(x) = 0.
+\end{align}
+$${#eq-mean-ind}
+
+It immediately follows that $e$ has **mean-zero**
+$$
+\mathbb{E}[e] = \mathbb{E}[\mathbb{E}[e \mid X]] = 0,
+$${#eq-mean-zero}
+and $e$ is **uncorrelated** (orthogonal) with any function of $X$:^[Recall that $\operatorname{Cov}(e,h(X))=\mathbb{E}\,[h(X)\, e]$ because $\mathbb{E}[e]=0$.]
+$$
+\begin{align}
+\mathbb{E}[h(x)e] &= \mathbb{E} [\mathbb{E}[h(x) \, e\mid X]] \\ &= \mathbb{E}[h(x)\,  \mathbb{E}[e \mid X]] = 0.
+\end{align}
+$${#eq-ortho}
+Now, consider the MSE of any *arbitrary* predictor $g(x)$:
+
+$$
+\begin{align}
+\mathbb{E}[(Y - g(x))^2] &= \mathbb{E}[(e + \mu(x) - g(x))^2] \\
+&= \mathbb{E}[e^2] + 2\,\mathbb{E}[(\mu(x) - g(x))\, e] + \mathbb{E}[(\mu(x) - g(x))^2] \\
+&=\mathbb{E}[e^2] + \mathbb{E}[(\mu(x) - g(x))^2]  \\
+&\geq \mathbb{E}[e^2] \\ 
+&= \mathbb{E}[(Y - \mu(x))^2].
+\end{align}
+$$
+Thus, the MSE for any predictor $g(x)$ is at least as large as that for the CEF $\mu(x)$, proving that the CEF is indeed the best predictor of $Y$ given $X$ (in the MSE sense).
+
+
+## The Curse of Dimensionality
+
+Let's return to the problem of estimating the CEF, wherein we want to make a good guess of $\mu(x)$ using the finite random sample $\{X_i,Y_i\}_{i=1}^n$ drawn from the DGP $F$. Recall that a natural method of estimation is the **plug-in** principle, where we construct the estimator by replacing population quantities with their sample analogues. In this case, the plug-in estimator is the sample conditional mean
+$$
+B(x) = \frac{\sum_{i=1}^n Y_i \, \mathbf{1}(X_i=x)}{\sum_{i=1}^n \mathbf{1}(X_i=x)}.
+$$
+We refer to $B(x)$ as the **binning estimator** because it groups ("bins") the sample by the values of $X_i$ and takes the simple average of $Y_i$ within each bin. The binning estimator is random since it is a function of the random sample.^[A different draw from $F$ could have resulted in a different realization of $X_i$.] When evaluated for a specific realized sample — that is, for the data $\{x_i,y_i\}_{i=1}^n$ that we actually observe — the **binning estimate** is the fixed scalar
+$$
+{b}(x) = \frac{\sum_{i=1}^n y_i \, \mathbf{1}(x_i=x)}{\sum_{i=1}^n \mathbf{1}(x_i=x)}.
+$$
+
+The binning estimator suffers from what is called the **curse of dimensionality**: as the dimension of $X_i$ increases, the **effective sample size** of each bin
+$$
+\begin{align}
+\mathbb{E}\left[\sum_{i=1}^n \boldsymbol 1 (X_i = x)\right] &\equiv n \times \mathbb{P}(X_i=x) \\ &= n \prod_{j=1}^d \mathbb{P}(X_{ij} = x_j)
+\end{align}
+$$
+decreases.^[The notation here implicitly assumes $X_i$ is discrete. To extend it to the continuous case, we would simply replace the equality with a set membership condition.] As a result, most bins contain very few — or even zero — observations, making the binning estimator very noisy or undefined. To illustrate this idea, consider the following simulation. Draw a random sample of size $n=2000$ from the following DGP:
+$$
+\begin{align}
+X_i &\overset{iid}{\sim} (Bernoulli(0.5))^K, \quad i=1,\ldots,n, \\
+\\
+Y_i = \mu(x) &+ e_i, \quad \mu(x) = \sum_{j=1}^K (X_{ij} = x_j), \quad e_i \overset{iid}{\sim} N(0,1).
+\end{align}
+$$
+To assess the performance of the binning estimator as the dimension $K$ of $X_i$ increases, we can examine the empirical bias and variance of $B(x)$ evaluated at the bin $x=(1,1,\ldots,1)$ across $10000$ repeated samples. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+
+## Discrete simulation: faceted line plots for p(bin), bias, variance
+## ------------------------------------------------------------------
+# set.seed(123)
+
+# n       <- 2000   # sample size per replication
+# R       <- 10000   # number of replications
+# sigma2  <- 1      # noise variance
+# d_grid  <- 1:6    # dimensions
+# p       <- 0.5    # P(X_ij = 1)
+
+# # Bin: X = (1,1,...,1)
+# p_bin_num <- p ^ d_grid
+# true_mean <- d_grid * 1  # since m(x)=sum(x) and bin is all ones
+#
+# emp_mean <- numeric(length(d_grid))
+# emp_var  <- numeric(length(d_grid))
+#
+# for (j in seq_along(d_grid)) {
+#   d <- d_grid[j]
+#   est <- rep(NA_real_, R)
+#   for (r in 1:R) {
+#     X  <- matrix(rbinom(n * d, size = 1, prob = p), nrow = n, ncol = d)
+#     mX <- rowSums(X)
+#     eps <- rnorm(n, sd = sqrt(sigma2))
+#     Y <- mX + eps
+#
+#     in_bin <- rowSums(X == 1) == d
+#     Nb <- sum(in_bin)
+#
+#     est[r] <- if (Nb > 0) mean(Y[in_bin]) else NA_real_
+#   }
+#   est <- est[!is.na(est)]
+#   emp_mean[j] <- mean(est)
+#   emp_var[j]  <- var(est)
+# }
+#
+# # Assemble results (numeric for plotting)
+# results <- data.frame(
+#   d = d_grid,
+#   `Bin Probability` = p_bin_num,
+#   `Bias` = emp_mean - true_mean,
+#   `Variance` = emp_var
+# )
+# 
+# # Long format for faceting
+# # (uses base R reshape if tidyr isn't available)
+# results_long <- reshape(
+#   results,
+#   varying = names(results)[-1],
+#   v.names = "value",
+#   timevar = "metric",
+#   times = names(results)[-1],
+#   direction = "long"
+# )
+# row.names(results_long) <- NULL
+# 
+# # Plot
+# # choose a wide, fixed scale for the Bias facet
+# bias_range <- c(-0.02, 0.02)
+# bias_limits_df <- data.frame(
+#   d = range(results_long$d),
+#   value = bias_range,
+#   metric = "Bias"
+# )
+
+# ggplot(results_long, aes(x = d, y = value, color = metric)) +
+  # geom_line(linewidth = 1.1) +
+  # geom_point(size = 2.2) +
+  # # force the Bias facet to use the chosen y-range
+  # geom_blank(data = bias_limits_df) +
+  # facet_wrap(~ metric, scales = "free_y", ncol = 3) +
+  # labs(x = "Dimension (d)", y = NULL) +
+  # scale_color_manual(values = c(
+  #   "Bin Probability" = "#2E86AB",
+  #   "Bias" = "#D1495B",
+  #   "Variance" = "#007F5F"
+  # )) +
+  # theme_bw(base_size = 14) +
+  # theme(
+  #   panel.border = element_rect(color = "black", fill = NA, linewidth = 0.6),
+  #   strip.background = element_rect(fill = "#f0f0f0", color = NA),
+  #   strip.text = element_text(face = "bold", size = 12),
+  #   axis.title.x = element_text(margin = margin(t = 10)),
+  #   panel.grid.minor = element_blank(),
+  #   legend.position = "none",
+  #   plot.title = element_blank()
+  # ) +
+  # a subtle zero-line helps show "near 0" without adding labels
+  # geom_hline(
+  #   data = data.frame(metric = "Bias"),
+  #   yintercept = 0,
+  #   linewidth = 0.4,      # or use size = 0.4 if your ggplot2 is older
+  #   linetype = "dashed",
+  #   color = "grey50"
+# )
+```
+
+As the figure above shows, the binned estimator remains **unbiased** regardless of the dimension $K$, but its variance increases exponentially with $K$. This occurs because the probability of being in the bin, $\mathbb{P}(X_i = x)$, decreases exponentially towards $0$ as $K$ increases, causing the effective sample size used to compute $b(x)$ to shrink rapidly. Thus, the more variables we condition on, the less data we have to estimate each conditional mean, regardless of how large the overall sample size is.   
+
+The curse of dimensionality arises because $B(x)$ requires observing the specific value $X_i = x$ to say anything about $\mu(x)$. A natural solution, then, is to relax this requirement and use $X_i \neq x$ to inform our estimate of $\mu(x)$. **Non-parametric** approaches consider "near-by" values of $X_i$ to $x$, and use a *weighted* average of the corresponding $Y_i$ to estimate $\mu(x)$. **Parametric** approaches instead impose a functional form on $\mu(x)$ and use *all* values of $X_i$ to estimate $\mu(x)$. In what follows, we focus on the simplest and most widely used parametric specification — one where $\mu(x)$ is a linear function of $x$. 
+
+## Linear Regression: As a Statistical Model 
+
+We are interested in estimating the CEF $\mu(x)$. Recall that performing point estimation within a **statistical model** — that is, a set of assumptions about the DGP — is often more informative than proceeding with no assumptions at all, because it allows us to characterize the **sampling distribution** of the estimator.^[Of course, working within a model is "more informative" only if the model is a good approximation of reality.] In this section, we will develop the **linear regression model**: a statistical model that assumes $\mu(x)$ is a linear function of $x$ and results in an estimator with appealing **asymptotic** properties. 
+
+Before proceeding, it's useful to clarify the notation we will use going forward. For unit $i$ in the random sample, the **regressand** $Y_i$ denotes the outcome of interest and the vector of **regressors** $X_i \equiv [X_{i1}, \ldots, X_{iK}]'$ denotes the set of variables that we condition on. The corresponding **realizations** of the random sample is denoted by the scalar $y_i$ and vector $x_i \equiv [x_{i1}, \ldots, x_{iK}]'$. The vector $x \equiv [x_1, \ldots, x_K]'$ denotes the specific regressor values at which we want to evaluate the CEF $\mu(x) \equiv \mathbb{E}[Y_i \mid X_i = x]$. 
+
+### Defining the Model 
+
+At its core, the linear regression model consists of the following two assumptions.^[I say "core" because I omit (i) technical assumptions needed to ensure the estimator of the model parameters are well-defined, and (ii) additional "classical" assumptions about the error term that are needed to derive finite-sample properties of the estimator. These assumptions are introduced later in the post as necessary.]
+
+:::{.assumption-box #assump-linreg}
+**Assumption 1. The Linear Regression Model**
+
+**(A)** **(Linearity)** The regressand $Y_i$ is a linear combination of the regressors $X_{i1}, \ldots, X_{iK}$, plus some random variable $e_i$ called the **error**:
+$$
+Y_i = \beta_1X_{i1} + \ldots + \beta_KX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
+$${#eq-linearity}
+
+**(B)** **(Strict Exogeneity)** The error $e_i$ has a conditional mean of zero given the regressors of all observations 
+$$
+\mathbb{E}[e_i \mid {X}_1 \ldots , {X}_n] = 0 \quad \forall \, i = 1, \ldots, n.
+$${#eq-strict-exogeneity}
+:::
+
+For notational compactness, it is useful to recast the model in matrix notation. First note that we can stack @eq-linearity as a system of $n$ equations 
+
+$$
+\begin{aligned}
+Y_1 &= \beta_1 X_{11} + \ldots + \beta_k X_{1K} + e_1 = {X}_1'{\beta} + e_1\\\ 
+Y_2 &= \beta_1 X_{21}+ \ldots + \beta_k X_{2K} + e_2 = {X}_2'{\beta} + e_2 \\
+&\;\;\vdots \\
+Y_n &= \beta_1X_{n1} + \ldots + \beta_k X_{nK} + e_n= {X}_n'{\beta} + e_n,
+\end{aligned}
+$$
+where $\beta \equiv [\beta_1, \ldots, \beta_K]'$ denotes the vector of **coefficients**. 
+
+Now, we can collapse this system of equations into a single matrix equation
+$$
+{Y} = \mathbf{X}\beta + e,
+$${#eq-linreg-matrix}
+where the $n \times K$ **design matrix** (or **data matrix**) stacks the regressors $X_i'$ of all units:
+$$
+\mathbf{X} = \begin{bmatrix} {X}_1' \\ \vdots \\ {X}_n' \end{bmatrix} = \begin{bmatrix} X_{11} & \ldots & X_{1K} \\ \vdots & \ddots & \vdots \\ X_{n1} & \ldots & X_{nK} \end{bmatrix}.
+$$
+
+#### Interpreting the Assumptions
+
+
+### Solving for the (Population) Coefficients 
+
+
+### Deriving the Analog Estimator of the Coefficients 
+
+
+
+## Linear Regression: As the Best Linear Predictor
+
+## Linear Regression: As the Best Linear Approximation
+
+## Synthesizing the Three Perspectives

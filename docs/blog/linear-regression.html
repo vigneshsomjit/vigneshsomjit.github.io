@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-09">
-<meta name="description" content="The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.">
+<meta name="dcterms.date" content="2025-10-12">
+<meta name="description" content="I motivate linear regression broadly as a way to estimate the conditional expectation function, describe the three perspectives on linear regression, and introduce the OLS estimator.">
 
-<title>Vignesh Somjit - Covariance Matrix</title>
+<title>Vignesh Somjit - Linear Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,28 +140,37 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#covariance-matrix" id="toc-covariance-matrix" class="nav-link active" data-scroll-target="#covariance-matrix">Covariance Matrix</a></li>
-  <li><a href="#covariance-matrix-1" id="toc-covariance-matrix-1" class="nav-link" data-scroll-target="#covariance-matrix-1">Covariance Matrix</a></li>
-  <li><a href="#cross-covariance-matrix" id="toc-cross-covariance-matrix" class="nav-link" data-scroll-target="#cross-covariance-matrix">Cross-Covariance Matrix</a></li>
-  <li><a href="#block-matrix" id="toc-block-matrix" class="nav-link" data-scroll-target="#block-matrix">Block Matrix</a></li>
-  <li><a href="#inverse-covariance-matrix" id="toc-inverse-covariance-matrix" class="nav-link" data-scroll-target="#inverse-covariance-matrix">Inverse Covariance Matrix</a></li>
+  <li><a href="#the-conditional-expectation-function" id="toc-the-conditional-expectation-function" class="nav-link active" data-scroll-target="#the-conditional-expectation-function">The Conditional Expectation Function</a>
+  <ul class="collapse">
+  <li><a href="#best-predictor" id="toc-best-predictor" class="nav-link" data-scroll-target="#best-predictor">Best Predictor</a></li>
+  </ul></li>
+  <li><a href="#the-curse-of-dimensionality" id="toc-the-curse-of-dimensionality" class="nav-link" data-scroll-target="#the-curse-of-dimensionality">The Curse of Dimensionality</a></li>
+  <li><a href="#linear-regression-as-a-statistical-model" id="toc-linear-regression-as-a-statistical-model" class="nav-link" data-scroll-target="#linear-regression-as-a-statistical-model">Linear Regression: As a Statistical Model</a>
+  <ul class="collapse">
+  <li><a href="#defining-the-model" id="toc-defining-the-model" class="nav-link" data-scroll-target="#defining-the-model">Defining the Model</a></li>
+  <li><a href="#solving-for-the-population-coefficients" id="toc-solving-for-the-population-coefficients" class="nav-link" data-scroll-target="#solving-for-the-population-coefficients">Solving for the (Population) Coefficients</a></li>
+  <li><a href="#deriving-the-analog-estimator-of-the-coefficients" id="toc-deriving-the-analog-estimator-of-the-coefficients" class="nav-link" data-scroll-target="#deriving-the-analog-estimator-of-the-coefficients">Deriving the Analog Estimator of the Coefficients</a></li>
+  </ul></li>
+  <li><a href="#linear-regression-as-the-best-linear-predictor" id="toc-linear-regression-as-the-best-linear-predictor" class="nav-link" data-scroll-target="#linear-regression-as-the-best-linear-predictor">Linear Regression: As the Best Linear Predictor</a></li>
+  <li><a href="#linear-regression-as-the-best-linear-approximation" id="toc-linear-regression-as-the-best-linear-approximation" class="nav-link" data-scroll-target="#linear-regression-as-the-best-linear-approximation">Linear Regression: As the Best Linear Approximation</a></li>
+  <li><a href="#synthesizing-the-three-perspectives" id="toc-synthesizing-the-three-perspectives" class="nav-link" data-scroll-target="#synthesizing-the-three-perspectives">Synthesizing the Three Perspectives</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Covariance Matrix</h1>
+<h1 class="title">Linear Regression</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Probability</div>
+    <div class="quarto-category">Linear Regression</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.
+    I motivate linear regression broadly as a way to estimate the conditional expectation function, describe the three perspectives on linear regression, and introduce the OLS estimator.
   </div>
 </div>
 
@@ -172,7 +181,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 9, 2025</p>
+      <p class="date">October 12, 2025</p>
     </div>
   </div>
   
@@ -184,43 +193,119 @@ window.Quarto = {
 </header>
 
 
-<section id="covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="covariance-matrix">Covariance Matrix</h2>
+<section id="the-conditional-expectation-function" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-conditional-expectation-function">The Conditional Expectation Function</h2>
+<p>Much of modern empirical economics research can be understood as an organized attempt to answer variants of the <em>causal</em> question: “How does <span class="math inline">\(X\)</span> affect <span class="math inline">\(Y\)</span>?” For example, <a href="https://academic.oup.com/qje/article/111/2/605/1938452">Eissa and Liebmann (1996)</a> ask how taxes affect labor supply; <a href="https://academic.oup.com/qje/article/131/2/799/2606976">Donaldson and Hornbeck (2016)</a> ask how railroads affect economic growth; <a href="https://academic.oup.com/qje/article-abstract/106/4/979/1873496">Angrist and Krueger (1991)</a> ask how the education affects earnings, and so on.</p>
+<p>Formally, we view <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> as random variables jointly distributed according to some fixed, unknown distribution <span class="math inline">\(F\)</span>, called the <strong>data generating process</strong> (<strong>DGP</strong>).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> To study questions like the ones posed above, we are especially interested in a particular feature of the DGP: the <strong>conditional expectation function</strong> (<strong>CEF</strong>), <span class="math display">\[
+\mu(x) \equiv \mathbb{E}[Y \mid X = x].
+\]</span> The CEF summarizes the <em>average association</em> between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> implied by the DGP. Since the DGP is unknown and typically high-dimensional, the CEF is also unknown and potentially complicated.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> <a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;Also called the <strong>population</strong>.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;High-dimensional here refers to the fact that <span class="math inline">\(X\)</span> can be a vector of many random variables.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;Also, since the DGP is fixed, the CEF is a deterministic function as well.</p></div><div id="fn4"><p><sup>4</sup>&nbsp;See <a href="../blog/statistical-inference-1.html">this</a> for a review of frequentist statistical inference and <a href="../blog/statistical-inference-2.html">this</a> for a review of point estimation.</p></div></div><p>To be clear, the CEF by itself is purely a <em>descriptive</em> object: it captures statistical associations, not causal effects. Under additional assumptions, however, the CEF can be given a causal interpretation. For now, we defer any discussion of causality and instead focus on <strong>estimating</strong> <span class="math inline">\(\mu(x)\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> Understanding how to estimate the CEF well is nevertheless an essential step towards answering the bigger question of causality.</p>
+<section id="best-predictor" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="best-predictor">Best Predictor</h3>
+<p>Motivating the CEF purely through its <em>potential</em> causal interpretation might be unsatisfying. As it turns out, the CEF also has a fundamental statistical property in its own right: <span class="math inline">\(\mu(x)\)</span> is the <em>best</em> predictor of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>.</p>
+<p>There are different ways to define the notion of “best”. Here, we specifically mean that the CEF minimizes the <strong>mean squared error</strong> (<strong>MSE</strong>) function: <span class="math display">\[
+\mu(x) = \arg\min_{g(x)} \mathbb{E}[(Y - g(x))^2],
+\]</span> where <span class="math inline">\(g(x)\)</span> is any arbitrary function evaluated at <span class="math inline">\(X = x\)</span>. To see this, let’s start by defining the <strong>CEF error</strong> <span id="eq-cef-err"><span class="math display">\[
+e \equiv Y - \mu(x).
+\tag{1}\]</span></span> By <em>definition</em>, we have that <span class="math inline">\(e\)</span> is <strong>mean-independent</strong> of <span class="math inline">\(X\)</span>: <span id="eq-mean-ind"><span class="math display">\[
+\begin{align}
+\mathbb{E}[e \mid X] &amp;= \mathbb{E}[(Y-\mu(x)) \mid X] \\
+&amp;= \mathbb{E}[Y \mid X] - \mathbb{E}[\,\mu(x) \mid X] \\
+&amp;= \mu(x) - \mu(x) = 0.
+\end{align}
+\tag{2}\]</span></span></p>
+<p>It immediately follows that <span class="math inline">\(e\)</span> has <strong>mean-zero</strong> <span id="eq-mean-zero"><span class="math display">\[
+\mathbb{E}[e] = \mathbb{E}[\mathbb{E}[e \mid X]] = 0,
+\tag{3}\]</span></span> and <span class="math inline">\(e\)</span> is <strong>uncorrelated</strong> (orthogonal) with any function of <span class="math inline">\(X\)</span>:<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> <span id="eq-ortho"><span class="math display">\[
+\begin{align}
+\mathbb{E}[h(x)e] &amp;= \mathbb{E} [\mathbb{E}[h(x) \, e\mid X]] \\ &amp;= \mathbb{E}[h(x)\,  \mathbb{E}[e \mid X]] = 0.
+\end{align}
+\tag{4}\]</span></span> Now, consider the MSE of any <em>arbitrary</em> predictor <span class="math inline">\(g(x)\)</span>:</p>
+<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;Recall that <span class="math inline">\(\operatorname{Cov}(e,h(X))=\mathbb{E}\,[h(X)\, e]\)</span> because <span class="math inline">\(\mathbb{E}[e]=0\)</span>.</p></div></div><p><span class="math display">\[
+\begin{align}
+\mathbb{E}[(Y - g(x))^2] &amp;= \mathbb{E}[(e + \mu(x) - g(x))^2] \\
+&amp;= \mathbb{E}[e^2] + 2\,\mathbb{E}[(\mu(x) - g(x))\, e] + \mathbb{E}[(\mu(x) - g(x))^2] \\
+&amp;=\mathbb{E}[e^2] + \mathbb{E}[(\mu(x) - g(x))^2]  \\
+&amp;\geq \mathbb{E}[e^2] \\
+&amp;= \mathbb{E}[(Y - \mu(x))^2].
+\end{align}
+\]</span> Thus, the MSE for any predictor <span class="math inline">\(g(x)\)</span> is at least as large as that for the CEF <span class="math inline">\(\mu(x)\)</span>, proving that the CEF is indeed the best predictor of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> (in the MSE sense).</p>
 </section>
-<section id="covariance-matrix-1" class="level2">
-<h2 class="anchored" data-anchor-id="covariance-matrix-1">Covariance Matrix</h2>
-<p>For a random vector <span class="math inline">\(X \in \mathbb{R}^m\)</span>, the <strong>covariance matrix</strong> <span class="math inline">\(\Sigma \in \mathbb{R}^{m \times m}\)</span> is defined as</p>
-<p><span id="eq-cov-matrix"><span class="math display">\[
-\Sigma = \text{var}(X) = \mathbb{E}\big[\big(X - \mathbb{E}[X]\big)\big(X - \mathbb{E}[X]\big)'\big].
-\tag{1}\]</span></span></p>
-<p>Observe that <a href="#eq-cov-matrix" class="quarto-xref">Equation&nbsp;1</a> is the expectation of the <strong>outer product</strong> of the vector <span class="math inline">\(X - \mathbb{E}[X]\)</span> with itself. Thus, the covariance matrix is given by</p>
-<p><span class="math display">\[
-\Sigma = \begin{pmatrix} \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]\\
-\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp;
-\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big] \\
-\vdots &amp; \ddots &amp; \vdots \\
-\mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]
-\end{pmatrix}.
-\]</span> Observing that the diagonal elements of <span class="math inline">\(\Sigma\)</span> are the variances of the individual random variables and the off-diagonal elements are the covariances between pairs of random variables, we get</p>
-<p><span class="math display">\[
-\Sigma = \begin{pmatrix} \text{var}(X_1) &amp; \text{cov}(X_1, X_2) &amp; \ldots &amp; \text{cov}(X_1, X_m)\\
-\text{cov}(X_2, X_1) &amp; \text{var}(X_2) &amp; \ldots &amp; \text{cov}(X_2, X_m) \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-\text{cov}(X_m, X_1) &amp; \text{cov}(X_m, X_2) &amp; \ldots &amp; \text{var}(X_m)
-\end{pmatrix}.
+</section>
+<section id="the-curse-of-dimensionality" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-curse-of-dimensionality">The Curse of Dimensionality</h2>
+<p>Let’s return to the problem of estimating the CEF, wherein we want to make a good guess of <span class="math inline">\(\mu(x)\)</span> using the finite random sample <span class="math inline">\(\{X_i,Y_i\}_{i=1}^n\)</span> drawn from the DGP <span class="math inline">\(F\)</span>. Recall that a natural method of estimation is the <strong>plug-in</strong> principle, where we construct the estimator by replacing population quantities with their sample analogues. In this case, the plug-in estimator is the sample conditional mean <span class="math display">\[
+B(x) = \frac{\sum_{i=1}^n Y_i \, \mathbf{1}(X_i=x)}{\sum_{i=1}^n \mathbf{1}(X_i=x)}.
+\]</span> We refer to <span class="math inline">\(B(x)\)</span> as the <strong>binning estimator</strong> because it groups (“bins”) the sample by the values of <span class="math inline">\(X_i\)</span> and takes the simple average of <span class="math inline">\(Y_i\)</span> within each bin. The binning estimator is random since it is a function of the random sample.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> When evaluated for a specific realized sample — that is, for the data <span class="math inline">\(\{x_i,y_i\}_{i=1}^n\)</span> that we actually observe — the <strong>binning estimate</strong> is the fixed scalar <span class="math display">\[
+{b}(x) = \frac{\sum_{i=1}^n y_i \, \mathbf{1}(x_i=x)}{\sum_{i=1}^n \mathbf{1}(x_i=x)}.
 \]</span></p>
+<div class="no-row-height column-margin column-container"><div id="fn6"><p><sup>6</sup>&nbsp;A different draw from <span class="math inline">\(F\)</span> could have resulted in a different realization of <span class="math inline">\(X_i\)</span>.</p></div><div id="fn7"><p><sup>7</sup>&nbsp;The notation here implicitly assumes <span class="math inline">\(X_i\)</span> is discrete. To extend it to the continuous case, we would simply replace the equality with a set membership condition.</p></div></div><p>The binning estimator suffers from what is called the <strong>curse of dimensionality</strong>: as the dimension of <span class="math inline">\(X_i\)</span> increases, the <strong>effective sample size</strong> of each bin <span class="math display">\[
+\begin{align}
+\mathbb{E}\left[\sum_{i=1}^n \boldsymbol 1 (X_i = x)\right] &amp;\equiv n \times \mathbb{P}(X_i=x) \\ &amp;= n \prod_{j=1}^d \mathbb{P}(X_{ij} = x_j)
+\end{align}
+\]</span> decreases.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> As a result, most bins contain very few — or even zero — observations, making the binning estimator very noisy or undefined. To illustrate this idea, consider the following simulation. Draw a random sample of size <span class="math inline">\(n=2000\)</span> from the following DGP: <span class="math display">\[
+\begin{align}
+X_i &amp;\overset{iid}{\sim} (Bernoulli(0.5))^K, \quad i=1,\ldots,n, \\
+\\
+Y_i = \mu(x) &amp;+ e_i, \quad \mu(x) = \sum_{j=1}^K (X_{ij} = x_j), \quad e_i \overset{iid}{\sim} N(0,1).
+\end{align}
+\]</span> To assess the performance of the binning estimator as the dimension <span class="math inline">\(K\)</span> of <span class="math inline">\(X_i\)</span> increases, we can examine the empirical bias and variance of <span class="math inline">\(B(x)\)</span> evaluated at the bin <span class="math inline">\(x=(1,1,\ldots,1)\)</span> across <span class="math inline">\(10000\)</span> repeated samples.</p>
+<p>As the figure above shows, the binned estimator remains <strong>unbiased</strong> regardless of the dimension <span class="math inline">\(K\)</span>, but its variance increases exponentially with <span class="math inline">\(K\)</span>. This occurs because the probability of being in the bin, <span class="math inline">\(\mathbb{P}(X_i = x)\)</span>, decreases exponentially towards <span class="math inline">\(0\)</span> as <span class="math inline">\(K\)</span> increases, causing the effective sample size used to compute <span class="math inline">\(b(x)\)</span> to shrink rapidly. Thus, the more variables we condition on, the less data we have to estimate each conditional mean, regardless of how large the overall sample size is.</p>
+<p>The curse of dimensionality arises because <span class="math inline">\(B(x)\)</span> requires observing the specific value <span class="math inline">\(X_i = x\)</span> to say anything about <span class="math inline">\(\mu(x)\)</span>. A natural solution, then, is to relax this requirement and use <span class="math inline">\(X_i \neq x\)</span> to inform our estimate of <span class="math inline">\(\mu(x)\)</span>. <strong>Non-parametric</strong> approaches consider “near-by” values of <span class="math inline">\(X_i\)</span> to <span class="math inline">\(x\)</span>, and use a <em>weighted</em> average of the corresponding <span class="math inline">\(Y_i\)</span> to estimate <span class="math inline">\(\mu(x)\)</span>. <strong>Parametric</strong> approaches instead impose a functional form on <span class="math inline">\(\mu(x)\)</span> and use <em>all</em> values of <span class="math inline">\(X_i\)</span> to estimate <span class="math inline">\(\mu(x)\)</span>. In what follows, we focus on the simplest and most widely used parametric specification — one where <span class="math inline">\(\mu(x)\)</span> is a linear function of <span class="math inline">\(x\)</span>.</p>
 </section>
-<section id="cross-covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="cross-covariance-matrix">Cross-Covariance Matrix</h2>
+<section id="linear-regression-as-a-statistical-model" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="linear-regression-as-a-statistical-model">Linear Regression: As a Statistical Model</h2>
+<p>We are interested in estimating the CEF <span class="math inline">\(\mu(x)\)</span>. Recall that performing point estimation within a <strong>statistical model</strong> — that is, a set of assumptions about the DGP — is often more informative than proceeding with no assumptions at all, because it allows us to characterize the <strong>sampling distribution</strong> of the estimator.<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> In this section, we will develop the <strong>linear regression model</strong>: a statistical model that assumes <span class="math inline">\(\mu(x)\)</span> is a linear function of <span class="math inline">\(x\)</span> and results in an estimator with appealing <strong>asymptotic</strong> properties.</p>
+<div class="no-row-height column-margin column-container"><div id="fn8"><p><sup>8</sup>&nbsp;Of course, working within a model is “more informative” only if the model is a good approximation of reality.</p></div></div><p>Before proceeding, it’s useful to clarify the notation we will use going forward. For unit <span class="math inline">\(i\)</span> in the random sample, the <strong>regressand</strong> <span class="math inline">\(Y_i\)</span> denotes the outcome of interest and the vector of <strong>regressors</strong> <span class="math inline">\(X_i \equiv [X_{i1}, \ldots, X_{iK}]'\)</span> denotes the set of variables that we condition on. The corresponding <strong>realizations</strong> of the random sample is denoted by the scalar <span class="math inline">\(y_i\)</span> and vector <span class="math inline">\(x_i \equiv [x_{i1}, \ldots, x_{iK}]'\)</span>. The vector <span class="math inline">\(x \equiv [x_1, \ldots, x_K]'\)</span> denotes the specific regressor values at which we want to evaluate the CEF <span class="math inline">\(\mu(x) \equiv \mathbb{E}[Y_i \mid X_i = x]\)</span>.</p>
+<section id="defining-the-model" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="defining-the-model">Defining the Model</h3>
+<p>At its core, the linear regression model consists of the following two assumptions.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p>
+<div class="no-row-height column-margin column-container"><div id="fn9"><p><sup>9</sup>&nbsp;I say “core” because I omit (i) technical assumptions needed to ensure the estimator of the model parameters are well-defined, and (ii) additional “classical” assumptions about the error term that are needed to derive finite-sample properties of the estimator. These assumptions are introduced later in the post as necessary.</p></div></div><div id="assump-linreg" class="assumption-box">
+<p><strong>Assumption 1. The Linear Regression Model</strong></p>
+<p><strong>(A)</strong> <strong>(Linearity)</strong> The regressand <span class="math inline">\(Y_i\)</span> is a linear combination of the regressors <span class="math inline">\(X_{i1}, \ldots, X_{iK}\)</span>, plus some random variable <span class="math inline">\(e_i\)</span> called the <strong>error</strong>: <span id="eq-linearity"><span class="math display">\[
+Y_i = \beta_1X_{i1} + \ldots + \beta_KX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
+\tag{5}\]</span></span></p>
+<p><strong>(B)</strong> <strong>(Strict Exogeneity)</strong> The error <span class="math inline">\(e_i\)</span> has a conditional mean of zero given the regressors of all observations <span id="eq-strict-exogeneity"><span class="math display">\[
+\mathbb{E}[e_i \mid {X}_1 \ldots , {X}_n] = 0 \quad \forall \, i = 1, \ldots, n.
+\tag{6}\]</span></span></p>
+</div>
+<p>For notational compactness, it is useful to recast the model in matrix notation. First note that we can stack <a href="#eq-linearity" class="quarto-xref">Equation&nbsp;5</a> as a system of <span class="math inline">\(n\)</span> equations</p>
+<p><span class="math display">\[
+\begin{aligned}
+Y_1 &amp;= \beta_1 X_{11} + \ldots + \beta_k X_{1K} + e_1 = {X}_1'{\beta} + e_1\\\
+Y_2 &amp;= \beta_1 X_{21}+ \ldots + \beta_k X_{2K} + e_2 = {X}_2'{\beta} + e_2 \\
+&amp;\;\;\vdots \\
+Y_n &amp;= \beta_1X_{n1} + \ldots + \beta_k X_{nK} + e_n= {X}_n'{\beta} + e_n,
+\end{aligned}
+\]</span> where <span class="math inline">\(\beta \equiv [\beta_1, \ldots, \beta_K]'\)</span> denotes the vector of <strong>coefficients</strong>.</p>
+<p>Now, we can collapse this system of equations into a single matrix equation <span id="eq-linreg-matrix"><span class="math display">\[
+{Y} = \mathbf{X}\beta + e,
+\tag{7}\]</span></span> where the <span class="math inline">\(n \times K\)</span> <strong>design matrix</strong> (or <strong>data matrix</strong>) stacks the regressors <span class="math inline">\(X_i'\)</span> of all units: <span class="math display">\[
+\mathbf{X} = \begin{bmatrix} {X}_1' \\ \vdots \\ {X}_n' \end{bmatrix} = \begin{bmatrix} X_{11} &amp; \ldots &amp; X_{1K} \\ \vdots &amp; \ddots &amp; \vdots \\ X_{n1} &amp; \ldots &amp; X_{nK} \end{bmatrix}.
+\]</span></p>
+<section id="interpreting-the-assumptions" class="level4">
+<h4 class="anchored" data-anchor-id="interpreting-the-assumptions">Interpreting the Assumptions</h4>
 </section>
-<section id="block-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="block-matrix">Block Matrix</h2>
 </section>
-<section id="inverse-covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="inverse-covariance-matrix">Inverse Covariance Matrix</h2>
+<section id="solving-for-the-population-coefficients" class="level3">
+<h3 class="anchored" data-anchor-id="solving-for-the-population-coefficients">Solving for the (Population) Coefficients</h3>
+</section>
+<section id="deriving-the-analog-estimator-of-the-coefficients" class="level3">
+<h3 class="anchored" data-anchor-id="deriving-the-analog-estimator-of-the-coefficients">Deriving the Analog Estimator of the Coefficients</h3>
+</section>
+</section>
+<section id="linear-regression-as-the-best-linear-predictor" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regression-as-the-best-linear-predictor">Linear Regression: As the Best Linear Predictor</h2>
+</section>
+<section id="linear-regression-as-the-best-linear-approximation" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regression-as-the-best-linear-approximation">Linear Regression: As the Best Linear Approximation</h2>
+</section>
+<section id="synthesizing-the-three-perspectives" class="level2">
+<h2 class="anchored" data-anchor-id="synthesizing-the-three-perspectives">Synthesizing the Three Perspectives</h2>
 
 
 </section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

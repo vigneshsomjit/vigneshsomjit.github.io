@@ -1,0 +1,95 @@
+---
+title: "Inverse Covariance Matrix"
+description: "I derive the inverse covariance matrix and interpreting its elements."
+date: today
+categories: [Mathematical Statistics, Linear Algebra]
+reference-location: margin
+draft: true
+---
+
+## Introduction 
+
+Let $Y = (Y_1, \ldots, Y_K)'$ be a mean-zero random vector. The **covariance matrix** $\boldsymbol \Sigma$ of $Y$ is defined as
+$$
+\boldsymbol \Sigma \equiv \begin{pmatrix} \sigma_1^2 & \sigma_{12} & \ldots & \sigma_{1m} \\ \sigma_{21} & \sigma_{2}^2 & \ldots & \sigma_{2m} \\ 
+\vdots  & \vdots & \ddots & \vdots \\
+\sigma_{K1} & \sigma_{K2} & \ldots & \sigma^2_K \end{pmatrix} \in \mathbb{R}^{K \times K},
+$$
+where $\sigma_k^2 \equiv \mathrm{Var}(Y_k)$ and $\sigma_{k\ell} \equiv \mathrm{Cov}(Y_k, Y_\ell)$ for $k, \ell = 1, \ldots, K$. 
+
+## Matrix Inverse via Schur Complement 
+
+Let $M$ be a $(p+q) \times (p+q)$ square matrix partitioned into four blocks
+$$
+M = \begin{pmatrix} A & B \\ C & D \end{pmatrix},
+$$
+where $A$ is a $p \times p$ matrix, $B$ is a $p \times q$ matrix, $C$ is a $q \times p$ matrix, and $D$ is a $q \times q$ matrix. If $A$ is invertible, the **Schur complement of A in M** is defined as the $q \times q$ matrix
+$$
+S_A  \equiv D - C A^{-1} B.
+$$
+If $D$ is invertible, the **Schur complement of D in M** is defined as the $p \times p$ matrix 
+$$
+S_D \equiv A - B D^{-1} C.
+$$
+
+Schur complements are useful for characterizing the inverse of the block matrix $M$. The theorem below provides two equivalent formulas for the inverse of $M$ in terms of the Schur complements $S_A$ and $S_D$.
+
+::: {.lemma #thm-schur-complement}
+**Theorem 1 (Schur Complement Characterization of Matrix Inverse).** Let $A$ be an invertible matrix. The matrix $M$ is invertible if and only if $S_A$ is invertible. In this case, the inverse of $M$ is given by 
+$$
+M^{-1} = \begin{pmatrix} A^{-1} + A^{-1} B S_A^{-1} C A^{-1} & -A^{-1} B S_A^{-1} \\ -S_A^{-1} C A^{-1} & S_A^{-1} \end{pmatrix}.
+$${#eq-invM1}
+
+Let $D$ be an invertible matrix. The matrix $M$ is invertible if and only if $S_D$ is invertible. In this case, the inverse of $M$ is given by
+$$
+M^{-1} = \begin{pmatrix} S_D^{-1} & -S_D^{-1} B D^{-1} \\ -D^{-1} C S_D^{-1} & D^{-1} + D^{-1} C S_D^{-1} B D^{-1} \end{pmatrix}.
+$${#eq-invM2}
+:::
+
+
+## Inverse Covariance Matrix
+
+### Diagonal Elements
+
+We want to derive an expression for the diagonal elements of the inverse covariance matrix, $\Omega_{kk}$. The main idea is to permute $\boldsymbol \Sigma$ so that it can be expressed as a block matrix where the first block is $\Sigma_{kk}$, and then apply @thm-schur-complement to get an expression for $\Omega_{kk}$. Let's do this step by step. 
+
+For any $k$ in $\{1, \ldots, K\}$, consider the permutation matrix given by moving the $k$-th column of the identity matrix $\mathbf I_{K \times K}$ to the first column:
+$$
+\mathbf{P} = \begin{pmatrix} 0 & 1 & 0 & \cdots & 0 & 0 \\
+0 & 0 &  1 & \cdots & 0 & 0 \\
+\vdots & \vdots & \vdots & \cdots & 0 & 0  \\
+1 & 0 & 0 & \cdots & 0 & 0  \\
+\vdots & \vdots & \vdots & \cdots & 1 & 0  \\
+0 & 0 & 0 & \cdots & 0 & 1
+\end{pmatrix}.
+$$
+We can use $P$ to reshuffle $\boldsymbol \Sigma$ so that the $k$-th row and column come first. The resulting reshuffled covariance matrix is given by
+$$
+\tilde{\boldsymbol \Sigma} \equiv \mathbf{P} \boldsymbol \Sigma \mathbf{P}' = \begin{pmatrix} \Sigma_{kk} & \Sigma_{k1} & \Sigma_{k2} & \cdots &  \Sigma_{kK} \\
+\Sigma_{1k} & \Sigma_{11} & \Sigma_{12} & \cdots & \Sigma_{1K} \\
+\Sigma_{2k} & \sigma_{21} & \sigma_2^2 & \cdots & \Sigma_{2K} \\
+\vdots & \vdots & \vdots & \ddots & \vdots \\
+\Sigma_{Kk} & \Sigma_{K1} & \Sigma_{K2} & \cdots & \Sigma_{KK}
+\end{pmatrix}.
+$$
+
+Since the operations of matrix inverse and permutation commute,
+$$
+(\mathbf{P} \boldsymbol \Sigma \mathbf{P}')^{-1} = \mathbf{P} \boldsymbol \Sigma^{-1} \mathbf{P}',
+$$
+we can find $\Omega_{kk}$ by taking the inverse of the reshuffled covariance matrix $\tilde{\boldsymbol \Sigma}$ and looking at the $(1,1)$ entry of the resulting matrix.^[In other words, this is equivalent to taking the inverse of $\boldsymbol \Sigma$, reshuffling it so that the $k$-th column is first, and then looking at the $(1,1)$ element.] To get the inverse of $\tilde{\boldsymbol \Sigma}$, it's useful to partition it as the following block matrix
+$$
+\tilde{\boldsymbol \Sigma} = \begin{pmatrix} \Sigma_{kk} & \boldsymbol \Sigma_{k,-k} \\ \boldsymbol \Sigma_{-k, k} & \boldsymbol \Sigma_{-k,-k} \end{pmatrix},
+$$
+where $\Sigma_{kk} \in \mathbb{R}^{1 \times 1},\boldsymbol \Sigma_{k,-k} \in \mathbb{R}^{1 \times (K-1)}, \boldsymbol \Sigma_{-k,k} \in \mathbb{R}^{(K-1) \times 1}$ and $\boldsymbol \Sigma_{-k,-k} \in \mathbb{R}^{(K-1)\times (K-1)}$.^[It's worth emphasizing that the block matrix is simply a different representation of the *same* matrix.] Now, it directly follows from @eq-invM2 that the $(1,1)$ element of $\tilde{\boldsymbol \Sigma}^{-1}$ is given by 
+the Schur complement of $\boldsymbol \Sigma_{-k,-k}$ in $\tilde{\boldsymbol \Sigma}$:
+$$
+\Omega_{kk} = (\Sigma_{kk} - \boldsymbol \Sigma_{k,-k} \boldsymbol \Sigma_{-k,-k}^{-1}\boldsymbol \Sigma_{-k,k})^{-1} \in \mathbb{R}^{1 \times 1}.
+$${#eq-omega-kk}
+
+### Off Diagonal Elements
+
+
+### Interpretation of the Inverse Covariance Matrix
+
+

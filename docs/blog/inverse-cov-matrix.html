@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-09">
-<meta name="description" content="The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.">
+<meta name="dcterms.date" content="2025-10-13">
+<meta name="description" content="I derive the inverse covariance matrix and interpreting its elements.">
 
-<title>Vignesh Somjit - Covariance Matrix</title>
+<title>Vignesh Somjit - Inverse Covariance Matrix</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -140,28 +140,32 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#covariance-matrix" id="toc-covariance-matrix" class="nav-link active" data-scroll-target="#covariance-matrix">Covariance Matrix</a></li>
-  <li><a href="#covariance-matrix-1" id="toc-covariance-matrix-1" class="nav-link" data-scroll-target="#covariance-matrix-1">Covariance Matrix</a></li>
-  <li><a href="#cross-covariance-matrix" id="toc-cross-covariance-matrix" class="nav-link" data-scroll-target="#cross-covariance-matrix">Cross-Covariance Matrix</a></li>
-  <li><a href="#block-matrix" id="toc-block-matrix" class="nav-link" data-scroll-target="#block-matrix">Block Matrix</a></li>
-  <li><a href="#inverse-covariance-matrix" id="toc-inverse-covariance-matrix" class="nav-link" data-scroll-target="#inverse-covariance-matrix">Inverse Covariance Matrix</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#matrix-inverse-via-schur-complement" id="toc-matrix-inverse-via-schur-complement" class="nav-link" data-scroll-target="#matrix-inverse-via-schur-complement">Matrix Inverse via Schur Complement</a></li>
+  <li><a href="#inverse-covariance-matrix" id="toc-inverse-covariance-matrix" class="nav-link" data-scroll-target="#inverse-covariance-matrix">Inverse Covariance Matrix</a>
+  <ul class="collapse">
+  <li><a href="#diagonal-elements" id="toc-diagonal-elements" class="nav-link" data-scroll-target="#diagonal-elements">Diagonal Elements</a></li>
+  <li><a href="#off-diagonal-elements" id="toc-off-diagonal-elements" class="nav-link" data-scroll-target="#off-diagonal-elements">Off Diagonal Elements</a></li>
+  <li><a href="#interpretation-of-the-inverse-covariance-matrix" id="toc-interpretation-of-the-inverse-covariance-matrix" class="nav-link" data-scroll-target="#interpretation-of-the-inverse-covariance-matrix">Interpretation of the Inverse Covariance Matrix</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content page-columns page-full" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Covariance Matrix</h1>
+<h1 class="title">Inverse Covariance Matrix</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Probability</div>
+    <div class="quarto-category">Mathematical Statistics</div>
+    <div class="quarto-category">Linear Algebra</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.
+    I derive the inverse covariance matrix and interpreting its elements.
   </div>
 </div>
 
@@ -172,7 +176,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 9, 2025</p>
+      <p class="date">October 13, 2025</p>
     </div>
   </div>
   
@@ -184,43 +188,72 @@ window.Quarto = {
 </header>
 
 
-<section id="covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="covariance-matrix">Covariance Matrix</h2>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Let <span class="math inline">\(Y = (Y_1, \ldots, Y_K)'\)</span> be a mean-zero random vector. The <strong>covariance matrix</strong> <span class="math inline">\(\boldsymbol \Sigma\)</span> of <span class="math inline">\(Y\)</span> is defined as <span class="math display">\[
+\boldsymbol \Sigma \equiv \begin{pmatrix} \sigma_1^2 &amp; \sigma_{12} &amp; \ldots &amp; \sigma_{1m} \\ \sigma_{21} &amp; \sigma_{2}^2 &amp; \ldots &amp; \sigma_{2m} \\
+\vdots  &amp; \vdots &amp; \ddots &amp; \vdots \\
+\sigma_{K1} &amp; \sigma_{K2} &amp; \ldots &amp; \sigma^2_K \end{pmatrix} \in \mathbb{R}^{K \times K},
+\]</span> where <span class="math inline">\(\sigma_k^2 \equiv \mathrm{Var}(Y_k)\)</span> and <span class="math inline">\(\sigma_{k\ell} \equiv \mathrm{Cov}(Y_k, Y_\ell)\)</span> for <span class="math inline">\(k, \ell = 1, \ldots, K\)</span>.</p>
 </section>
-<section id="covariance-matrix-1" class="level2">
-<h2 class="anchored" data-anchor-id="covariance-matrix-1">Covariance Matrix</h2>
-<p>For a random vector <span class="math inline">\(X \in \mathbb{R}^m\)</span>, the <strong>covariance matrix</strong> <span class="math inline">\(\Sigma \in \mathbb{R}^{m \times m}\)</span> is defined as</p>
-<p><span id="eq-cov-matrix"><span class="math display">\[
-\Sigma = \text{var}(X) = \mathbb{E}\big[\big(X - \mathbb{E}[X]\big)\big(X - \mathbb{E}[X]\big)'\big].
+<section id="matrix-inverse-via-schur-complement" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-inverse-via-schur-complement">Matrix Inverse via Schur Complement</h2>
+<p>Let <span class="math inline">\(M\)</span> be a <span class="math inline">\((p+q) \times (p+q)\)</span> square matrix partitioned into four blocks <span class="math display">\[
+M = \begin{pmatrix} A &amp; B \\ C &amp; D \end{pmatrix},
+\]</span> where <span class="math inline">\(A\)</span> is a <span class="math inline">\(p \times p\)</span> matrix, <span class="math inline">\(B\)</span> is a <span class="math inline">\(p \times q\)</span> matrix, <span class="math inline">\(C\)</span> is a <span class="math inline">\(q \times p\)</span> matrix, and <span class="math inline">\(D\)</span> is a <span class="math inline">\(q \times q\)</span> matrix. If <span class="math inline">\(A\)</span> is invertible, the <strong>Schur complement of A in M</strong> is defined as the <span class="math inline">\(q \times q\)</span> matrix <span class="math display">\[
+S_A  \equiv D - C A^{-1} B.
+\]</span> If <span class="math inline">\(D\)</span> is invertible, the <strong>Schur complement of D in M</strong> is defined as the <span class="math inline">\(p \times p\)</span> matrix <span class="math display">\[
+S_D \equiv A - B D^{-1} C.
+\]</span></p>
+<p>Schur complements are useful for characterizing the inverse of the block matrix <span class="math inline">\(M\)</span>. The theorem below provides two equivalent formulas for the inverse of <span class="math inline">\(M\)</span> in terms of the Schur complements <span class="math inline">\(S_A\)</span> and <span class="math inline">\(S_D\)</span>.</p>
+<div id="thm-schur-complement" class="lemma theorem">
+<p><span class="theorem-title"><strong>Theorem 1</strong></span> <strong>Theorem 1 (Schur Complement Characterization of Matrix Inverse).</strong> Let <span class="math inline">\(A\)</span> be an invertible matrix. The matrix <span class="math inline">\(M\)</span> is invertible if and only if <span class="math inline">\(S_A\)</span> is invertible. In this case, the inverse of <span class="math inline">\(M\)</span> is given by <span id="eq-invM1"><span class="math display">\[
+M^{-1} = \begin{pmatrix} A^{-1} + A^{-1} B S_A^{-1} C A^{-1} &amp; -A^{-1} B S_A^{-1} \\ -S_A^{-1} C A^{-1} &amp; S_A^{-1} \end{pmatrix}.
 \tag{1}\]</span></span></p>
-<p>Observe that <a href="#eq-cov-matrix" class="quarto-xref">Equation&nbsp;1</a> is the expectation of the <strong>outer product</strong> of the vector <span class="math inline">\(X - \mathbb{E}[X]\)</span> with itself. Thus, the covariance matrix is given by</p>
-<p><span class="math display">\[
-\Sigma = \begin{pmatrix} \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_1 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]\\
-\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp;
-\mathbb{E}\big[\big(X_2 - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big] \\
-\vdots &amp; \ddots &amp; \vdots \\
-\mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_1 - \mathbb{E}[X]\big)\big] &amp; \ldots &amp; \mathbb{E}\big[\big(X_m - \mathbb{E}[X]\big)\big(X_m - \mathbb{E}[X]\big)\big]
+<p>Let <span class="math inline">\(D\)</span> be an invertible matrix. The matrix <span class="math inline">\(M\)</span> is invertible if and only if <span class="math inline">\(S_D\)</span> is invertible. In this case, the inverse of <span class="math inline">\(M\)</span> is given by <span id="eq-invM2"><span class="math display">\[
+M^{-1} = \begin{pmatrix} S_D^{-1} &amp; -S_D^{-1} B D^{-1} \\ -D^{-1} C S_D^{-1} &amp; D^{-1} + D^{-1} C S_D^{-1} B D^{-1} \end{pmatrix}.
+\tag{2}\]</span></span></p>
+</div>
+</section>
+<section id="inverse-covariance-matrix" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="inverse-covariance-matrix">Inverse Covariance Matrix</h2>
+<section id="diagonal-elements" class="level3 page-columns page-full">
+<h3 class="anchored" data-anchor-id="diagonal-elements">Diagonal Elements</h3>
+<p>We want to derive an expression for the diagonal elements of the inverse covariance matrix, <span class="math inline">\(\Omega_{kk}\)</span>. The main idea is to permute <span class="math inline">\(\boldsymbol \Sigma\)</span> so that it can be expressed as a block matrix where the first block is <span class="math inline">\(\Sigma_{kk}\)</span>, and then apply <a href="#thm-schur-complement" class="quarto-xref">Theorem&nbsp;1</a> to get an expression for <span class="math inline">\(\Omega_{kk}\)</span>. Let’s do this step by step.</p>
+<p>For any <span class="math inline">\(k\)</span> in <span class="math inline">\(\{1, \ldots, K\}\)</span>, consider the permutation matrix given by moving the <span class="math inline">\(k\)</span>-th column of the identity matrix <span class="math inline">\(\mathbf I_{K \times K}\)</span> to the first column: <span class="math display">\[
+\mathbf{P} = \begin{pmatrix} 0 &amp; 1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp;  1 &amp; \cdots &amp; 0 &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; 0 &amp; 0  \\
+1 &amp; 0 &amp; 0 &amp; \cdots &amp; 0 &amp; 0  \\
+\vdots &amp; \vdots &amp; \vdots &amp; \cdots &amp; 1 &amp; 0  \\
+0 &amp; 0 &amp; 0 &amp; \cdots &amp; 0 &amp; 1
 \end{pmatrix}.
-\]</span> Observing that the diagonal elements of <span class="math inline">\(\Sigma\)</span> are the variances of the individual random variables and the off-diagonal elements are the covariances between pairs of random variables, we get</p>
-<p><span class="math display">\[
-\Sigma = \begin{pmatrix} \text{var}(X_1) &amp; \text{cov}(X_1, X_2) &amp; \ldots &amp; \text{cov}(X_1, X_m)\\
-\text{cov}(X_2, X_1) &amp; \text{var}(X_2) &amp; \ldots &amp; \text{cov}(X_2, X_m) \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-\text{cov}(X_m, X_1) &amp; \text{cov}(X_m, X_2) &amp; \ldots &amp; \text{var}(X_m)
+\]</span> We can use <span class="math inline">\(P\)</span> to reshuffle <span class="math inline">\(\boldsymbol \Sigma\)</span> so that the <span class="math inline">\(k\)</span>-th row and column come first. The resulting reshuffled covariance matrix is given by <span class="math display">\[
+\tilde{\boldsymbol \Sigma} \equiv \mathbf{P} \boldsymbol \Sigma \mathbf{P}' = \begin{pmatrix} \Sigma_{kk} &amp; \Sigma_{k1} &amp; \Sigma_{k2} &amp; \cdots &amp;  \Sigma_{kK} \\
+\Sigma_{1k} &amp; \Sigma_{11} &amp; \Sigma_{12} &amp; \cdots &amp; \Sigma_{1K} \\
+\Sigma_{2k} &amp; \sigma_{21} &amp; \sigma_2^2 &amp; \cdots &amp; \Sigma_{2K} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\Sigma_{Kk} &amp; \Sigma_{K1} &amp; \Sigma_{K2} &amp; \cdots &amp; \Sigma_{KK}
 \end{pmatrix}.
 \]</span></p>
+<p>Since the operations of matrix inverse and permutation commute, <span class="math display">\[
+(\mathbf{P} \boldsymbol \Sigma \mathbf{P}')^{-1} = \mathbf{P} \boldsymbol \Sigma^{-1} \mathbf{P}',
+\]</span> we can find <span class="math inline">\(\Omega_{kk}\)</span> by taking the inverse of the reshuffled covariance matrix <span class="math inline">\(\tilde{\boldsymbol \Sigma}\)</span> and looking at the <span class="math inline">\((1,1)\)</span> entry of the resulting matrix.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> To get the inverse of <span class="math inline">\(\tilde{\boldsymbol \Sigma}\)</span>, it’s useful to partition it as the following block matrix <span class="math display">\[
+\tilde{\boldsymbol \Sigma} = \begin{pmatrix} \Sigma_{kk} &amp; \boldsymbol \Sigma_{k,-k} \\ \boldsymbol \Sigma_{-k, k} &amp; \boldsymbol \Sigma_{-k,-k} \end{pmatrix},
+\]</span> where <span class="math inline">\(\Sigma_{kk} \in \mathbb{R}^{1 \times 1},\boldsymbol \Sigma_{k,-k} \in \mathbb{R}^{1 \times (K-1)}, \boldsymbol \Sigma_{-k,k} \in \mathbb{R}^{(K-1) \times 1}\)</span> and <span class="math inline">\(\boldsymbol \Sigma_{-k,-k} \in \mathbb{R}^{(K-1)\times (K-1)}\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Now, it directly follows from <a href="#eq-invM2" class="quarto-xref">Equation&nbsp;2</a> that the <span class="math inline">\((1,1)\)</span> element of <span class="math inline">\(\tilde{\boldsymbol \Sigma}^{-1}\)</span> is given by the Schur complement of <span class="math inline">\(\boldsymbol \Sigma_{-k,-k}\)</span> in <span class="math inline">\(\tilde{\boldsymbol \Sigma}\)</span>: <span id="eq-omega-kk"><span class="math display">\[
+\Omega_{kk} = (\Sigma_{kk} - \boldsymbol \Sigma_{k,-k} \boldsymbol \Sigma_{-k,-k}^{-1}\boldsymbol \Sigma_{-k,k})^{-1} \in \mathbb{R}^{1 \times 1}.
+\tag{3}\]</span></span></p>
+<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;In other words, this is equivalent to taking the inverse of <span class="math inline">\(\boldsymbol \Sigma\)</span>, reshuffling it so that the <span class="math inline">\(k\)</span>-th column is first, and then looking at the <span class="math inline">\((1,1)\)</span> element.</p></div><div id="fn2"><p><sup>2</sup>&nbsp;It’s worth emphasizing that the block matrix is simply a different representation of the <em>same</em> matrix.</p></div></div></section>
+<section id="off-diagonal-elements" class="level3">
+<h3 class="anchored" data-anchor-id="off-diagonal-elements">Off Diagonal Elements</h3>
 </section>
-<section id="cross-covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="cross-covariance-matrix">Cross-Covariance Matrix</h2>
-</section>
-<section id="block-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="block-matrix">Block Matrix</h2>
-</section>
-<section id="inverse-covariance-matrix" class="level2">
-<h2 class="anchored" data-anchor-id="inverse-covariance-matrix">Inverse Covariance Matrix</h2>
+<section id="interpretation-of-the-inverse-covariance-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="interpretation-of-the-inverse-covariance-matrix">Interpretation of the Inverse Covariance Matrix</h3>
 
 
 </section>
+</section>
+
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

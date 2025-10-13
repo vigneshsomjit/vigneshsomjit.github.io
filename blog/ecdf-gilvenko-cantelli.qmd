@@ -1,7 +1,0 @@
----
-title: "The Empirical Distribution and Gilvenko-Cantelli Theorem"
-description: "I prove the Gilvenk-Cantelli Theorem, what's often called the Fundamental Theorem of Statistics."
-date: 13 August 2025
-categories: [Mathematical Statistics]
-draft: true
----

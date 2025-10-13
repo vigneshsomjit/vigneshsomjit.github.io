@@ -6,7 +6,10 @@ categories: [Probability]
 draft: true
 ---
 
-## Variance and Covariance of Random Variables 
+## Covariance Matrix 
+
+
+
 
 ## Covariance Matrix
 For a random vector $X \in \mathbb{R}^m$, the **covariance matrix** $\Sigma \in \mathbb{R}^{m \times m}$ is defined as  
