@@ -3,12 +3,13 @@ title: "Linear Regression"
 description: "I motivate linear regression broadly as a way to estimate the conditional expectation function, describe the three perspectives on linear regression, and introduce the OLS estimator."
 date: today
 categories: [Linear Regression]
-draft: true
 reference-location: margin
 ---
 
 ```{r setup, include=FALSE}
 library(ggplot2)
+library(tidyr)
+library(dplyr)
 ```
 
 ## The Conditional Expectation Function 
@@ -48,12 +49,17 @@ It immediately follows that $e$ has **mean-zero**
 $$
 \mathbb{E}[e] = \mathbb{E}[\mathbb{E}[e \mid X]] = 0,
 $${#eq-mean-zero}
-and $e$ is **uncorrelated** (orthogonal) with any function of $X$:^[Recall that $\operatorname{Cov}(e,h(X))=\mathbb{E}\,[h(X)\, e]$ because $\mathbb{E}[e]=0$.]
+is **orthogonal** with any function of $X$
 $$
 \begin{align}
-\mathbb{E}[h(x)e] &= \mathbb{E} [\mathbb{E}[h(x) \, e\mid X]] \\ &= \mathbb{E}[h(x)\,  \mathbb{E}[e \mid X]] = 0.
+\mathbb{E}[h(X)e] &= \mathbb{E} [\mathbb{E}[h(X) \, e\mid X]] \\ &= \mathbb{E}[h(X)\,  \mathbb{E}[e \mid X]] = 0,
 \end{align}
 $${#eq-ortho}
+and is **uncorrelated** with any function of $X$
+$$
+\operatorname{Cov}(e,h(X))=\mathbb{E}\,[h(X)\, e] - \mathbb{E}[h(X)]\mathbb{E}[e] = 0.
+$${#eq-uncorr}
+
 Now, consider the MSE of any *arbitrary* predictor $g(x)$:
 
 $$
@@ -209,7 +215,7 @@ Before proceeding, it's useful to clarify the notation we will use going forward
 
 ### Defining the Model 
 
-At its core, the linear regression model consists of the following two assumptions.^[I say "core" because I omit (i) technical assumptions needed to ensure the estimator of the model parameters are well-defined, and (ii) additional "classical" assumptions about the error term that are needed to derive finite-sample properties of the estimator. These assumptions are introduced later in the post as necessary.]
+At its core, the linear regression model consists of the following two assumptions.^[I say "core" because I omit (i) technical assumptions needed to ensure the estimator of the model parameters are well-defined, and (ii) additional "classical" assumptions about the error term that are needed to derive finite-sample properties of the estimator. These assumptions are introduced later in the post as necessary.] ^[Older econometrics textbooks typically impose the "strict exogeneity" assumption, where we condition on $X_1, \ldots, X_n$ instead of only $X_i$. However, under iid sampling, conditioning on $X_i$ implies the stricter condition because of independence.] ^[Technically, the linear regression model should be introduced without the $i$ subscripts, since the assumptions are about the DGP. However, under iid sampling, the assumptions must hold for each unit $i$ as well. Moreover, the unit-level notation will be useful when deriving the estimator of the coefficients.]
 
 :::{.assumption-box #assump-linreg}
 **Assumption 1. The Linear Regression Model**
@@ -219,12 +225,93 @@ $$
 Y_i = \beta_1X_{i1} + \ldots + \beta_KX_{iK} + e_i \quad \forall \, i = 1, \ldots, n.
 $${#eq-linearity}
 
-**(B)** **(Strict Exogeneity)** The error $e_i$ has a conditional mean of zero given the regressors of all observations 
+**(B)** **(Exogeneity)** The error $e_i$ has a conditional mean of zero given the regressors of all observations: 
 $$
-\mathbb{E}[e_i \mid {X}_1 \ldots , {X}_n] = 0 \quad \forall \, i = 1, \ldots, n.
+\mathbb{E}[e_i \mid X_i] = 0 \quad \forall \, i = 1, \ldots, n.
 $${#eq-strict-exogeneity}
 :::
 
+Taken together, assumptions (A) and (B) imply that the CEF is a linear function of $x$:
+$$
+\begin{align}
+\mu(x) &= \mathbb{E}[\beta_1X_{i1} + \ldots + \beta_KX_{iK} + e_i \mid X_i = x] \\
+&= \beta_1 x_1 + \ldots + \beta_K x_K + \mathbb{E}[e_i \mid X_i = x] \\
+&= \beta_1 x_1 + \ldots + \beta_K x_K.
+\end{align}
+$${#eq-linear-cef}
+
+The assumption of exogeneity ensures that the properties of the CEF error $e$ previously discussed (see @eq-mean-zero, @eq-ortho, @eq-uncorr) also hold for the linear regression error $e_i$. Specifically, $e_i$ has **mean-zero** and is **orthogonal** and **uncorrelated** to any function of $X_i$. The proof is omitted because it is the same as before.
+
+### Interpreting the Assumptions
+
+It's worth spending a moment to understand what exactly is (and is not) being assumed in the linear regression model. 
+
+
+```{r}
+#| echo: false
+#| warning: false
+
+# ---- True function: nonlinear in parameters ----
+theta0 <- 0.8
+theta1 <- 0.5
+g <- function(x1) exp(theta0 + theta1 * x1)
+
+# ---- Simulate noisy data ----
+set.seed(123)
+n <- 150
+x1 <- runif(n, -10, 10)
+sigma <- 20  # noise level
+y <- g(x1) + rnorm(n, 0, sigma)
+
+train <- tibble(x1, y)
+
+# ---- Fit models (linear in parameters) ----
+m_deg1  <- lm(y ~ x1, data = train)
+m_deg4  <- lm(y ~ poly(x1, 4, raw = TRUE), data = train)
+m_exp   <- lm(y ~ exp(x1), data = train)  # linear in parameters
+
+# ---- Predictions for a smooth grid ----
+x_grid <- seq(-10, 10, length.out = 600)
+df_pred <- tibble(
+  x1 = x_grid,
+  `Poly deg 1`              = predict(m_deg1,  newdata = tibble(x1 = x_grid)),
+  `Poly deg 4`              = predict(m_deg4,  newdata = tibble(x1 = x_grid)),
+  `exp(X)`                  = predict(m_exp,   newdata = tibble(x1 = x_grid))
+) |>
+  pivot_longer(-x1, names_to = "series", values_to = "value")
+
+# ---- Plot ----
+ggplot() +
+  geom_point(data = train, aes(x = x1, y = y),
+             color = "gray", alpha = 0.5, size = 3) +
+  geom_line(data = df_pred,
+            aes(x = x1, y = value, color = series, linetype = series),
+            linewidth = 1.1) +
+  scale_color_manual(values = c(
+    "Poly deg 1"              = "skyblue",
+    "Poly deg 4"              = "darkorange",
+    "exp(X)"                  = "hotpink"
+  )) +
+  scale_linetype_manual(values = c(
+    "Poly deg 1"              = "solid",
+    "Poly deg 4"              = "solid",
+    "exp(X)"                  = "solid"
+  )) +
+  theme_minimal(base_size = 14) +
+  theme(
+    legend.position = c(0.15, 0.85),   # <— works in all ggplot2 versions
+    legend.background = element_rect(fill = alpha("white", 0.6), color = NA),
+    legend.title = element_blank()
+  ) +
+  labs(x = expression(X), y = "E[Y | X]")
+
+
+```
+
+
+### Solving for the (Population) Coefficients 
+
+#### Matrix Notation
 For notational compactness, it is useful to recast the model in matrix notation. First note that we can stack @eq-linearity as a system of $n$ equations 
 
 $$
@@ -245,12 +332,6 @@ where the $n \times K$ **design matrix** (or **data matrix**) stacks the regress
 $$
 \mathbf{X} = \begin{bmatrix} {X}_1' \\ \vdots \\ {X}_n' \end{bmatrix} = \begin{bmatrix} X_{11} & \ldots & X_{1K} \\ \vdots & \ddots & \vdots \\ X_{n1} & \ldots & X_{nK} \end{bmatrix}.
 $$
-
-#### Interpreting the Assumptions
-
-
-### Solving for the (Population) Coefficients 
-
 
 ### Deriving the Analog Estimator of the Coefficients 
 
