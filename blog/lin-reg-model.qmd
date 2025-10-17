@@ -3,9 +3,6 @@ title: "The Linear Regression Model and its OLS Estimation"
 description: "A detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters."
 date: 31 August 2025
 categories: [Linear Regression]
-bibliography: lin-reg-model.bib
-nocite: |
-  @*
 draft: true
 ---
 ```{r setup, include=FALSE}

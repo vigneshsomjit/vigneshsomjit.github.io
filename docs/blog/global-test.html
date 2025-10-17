@@ -6,10 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-10-15">
-<meta name="description" content="Introducing frequentist statistical inference under the random sampling framework.">
+<meta name="dcterms.date" content="2025-10-16">
 
-<title>Statistical Inference I: Random Sampling – Vignesh Somjit</title>
+<title>Multiple Inference – Vignesh Somjit</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,30 +56,10 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -124,6 +103,10 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+<meta name="quarto:status" content="draft">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -161,7 +144,7 @@ window.Quarto = {
 <body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
+  <header id="quarto-header" class="headroom fixed-top"><div id="quarto-draft-alert" class="alert alert-warning"><i class="bi bi-pencil-square"></i>Draft</div>
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
@@ -191,41 +174,20 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#reasoning-about-uncertainty" id="toc-reasoning-about-uncertainty" class="nav-link" data-scroll-target="#reasoning-about-uncertainty">Reasoning About Uncertainty</a></li>
-  <li><a href="#the-frequentist-thought-experiment" id="toc-the-frequentist-thought-experiment" class="nav-link" data-scroll-target="#the-frequentist-thought-experiment">The Frequentist Thought Experiment</a>
-  <ul class="collapse">
-  <li><a href="#alternative-thought-experiments" id="toc-alternative-thought-experiments" class="nav-link" data-scroll-target="#alternative-thought-experiments">Alternative Thought Experiments</a></li>
-  </ul></li>
-  <li><a href="#the-random-sampling-framework" id="toc-the-random-sampling-framework" class="nav-link" data-scroll-target="#the-random-sampling-framework">The Random Sampling Framework</a>
-  <ul class="collapse">
-  <li><a href="#evaluating-the-random-sampling-assumption" id="toc-evaluating-the-random-sampling-assumption" class="nav-link" data-scroll-target="#evaluating-the-random-sampling-assumption">Evaluating the Random Sampling Assumption</a></li>
-  </ul></li>
-  
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
+<main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Statistical Inference I: Random Sampling</h1>
+<h1 class="title">Multiple Inference</h1>
   <div class="quarto-categories">
-    <div class="quarto-category">Mathematical Statistics</div>
+    <div class="quarto-category">Econometrics</div>
   </div>
   </div>
 
-<div>
-  <div class="description">
-    Introducing frequentist statistical inference under the random sampling framework.
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
@@ -234,7 +196,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 15, 2025</p>
+      <p class="date">October 16, 2025</p>
     </div>
   </div>
   
@@ -246,85 +208,70 @@ window.Quarto = {
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This post is the first in a three-part series on <strong>statistical inference</strong> — which I broadly define for now as the process of deriving conclusions about underlying truths from observed data. In this sense, statistical inference forms the foundation of empirical research, and a clear grasp of its underlying ideas is essential for conducting and critically evaluating empirical work. The goal of this post is to introduce the <strong>frequentist</strong> formalization of statistical inference. The subsequent posts discuss the two major types of inference in the frequentist paradigm: <a href="statistical-inference-2"><strong>point estimation</strong></a> and <a href="statistical-inference-3"><strong>hypothesis testing</strong></a>.</p>
-</section>
-<section id="reasoning-about-uncertainty" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="reasoning-about-uncertainty">Reasoning About Uncertainty</h2>
-<p>Uncertainty is inherent in any general conclusion we make from data because we only observe a finite manifestation of a much larger, unobserved process. For example, consider the March 2009 Current Population Survey (CPS) dataset, which surveyed 50,742 individuals in the US and recorded their demographic and labor market characteristics.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn1"><p><sup>1</sup>&nbsp;To put this number into perspective, the population of the US was 306.8 million in 2009.</p></div></div><div class="cell">
+<p>Following the empirical example in Duflo, Dupas, and Kremer (2011), we are interested in estimating the following regression model <span id="eq-ind-reg"><span class="math display">\[
+Y_{ij} = \alpha T_j + \boldsymbol X'_{ij} \boldsymbol \beta + e_{ij} \quad i = 1, \ldots, n_j \quad j = 1, \ldots, J,
+\tag{1}\]</span></span> where <span class="math inline">\(Y_{ij}\)</span> is the test score of student <span class="math inline">\(i\)</span> in school <span class="math inline">\(j\)</span>, <span class="math inline">\(T_j\)</span> is a binary variable indicating whether or not school <span class="math inline">\(j\)</span> was tracking, and <span class="math inline">\(\boldsymbol X'_{ij}\)</span> is a <span class="math inline">\(d_x \times 1\)</span> vector that includes a constant and other student and school control variables.</p>
+<p>The schools record each student’s score on <span class="math inline">\(d_y\)</span> separate sections of the test. Suppose we are interested in estimating separate regressions of the form in <a href="#eq-ind-reg" class="quarto-xref">Equation&nbsp;1</a> for each of these test scores. Let <span class="math inline">\(\boldsymbol Y_{ij} \equiv \begin{bmatrix} Y_{ij1}, \ldots, Y_{ijd_y} \end{bmatrix}'\)</span> , <span class="math inline">\(\boldsymbol \alpha \equiv \begin{bmatrix} \alpha_1, \ldots, \alpha_{d_y} \end{bmatrix}'\)</span>, <span class="math inline">\(\mathbf{B} \equiv \begin{bmatrix} \beta_1', \ldots, \beta_{d_y}' \end{bmatrix}'\)</span>, <span class="math inline">\(\boldsymbol e_{ij} \equiv \begin{bmatrix} e_{ij1} \ldots, e_{ijd_y} \end{bmatrix}'\)</span>. Then we can write the system of <span class="math inline">\(d_y\)</span> regressions as <span class="math display">\[
+\boldsymbol Y_{ij} = \boldsymbol \alpha T_j + \boldsymbol X'_{ij} \mathbf{B} + \boldsymbol e_{ij} \quad i = 1, \ldots, n_j \quad j = 1, \ldots, J.
+\]</span></p>
+<div id="d599440b" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>cps <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">here</span>(<span class="st">"hasen-econometrics-datasets"</span>, <span class="st">"cps09mar"</span>, <span class="st">"cps09mar.xlsx"</span>), </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">col_names =</span> <span class="cn">TRUE</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cps)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode stata code-with-copy"><code class="sourceCode stata"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>* Load the <span class="kw">data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">global</span> <span class="kw">data</span> <span class="st">"~/Git/vigneshsomjit.github.io/hasen-econometrics-datasets/DDK2011"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">use</span> <span class="st">"$data/DDK2011.dta"</span>, <span class="kw">clear</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>* Store variables <span class="kw">in</span> macros</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> outcomes wordscore sentscore letterscore spellscore additions_score substractions_score multiplications_score</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> controls agetest girl bottomhalf etpteacher lowstream</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> treatment tracking</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>* Loop <span class="bn">over</span> outcomes </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="kw">foreach</span> <span class="fu">y</span> <span class="kw">of</span> <span class="kw">local</span> outcomes {</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    * Store inverse <span class="kw">of</span> <span class="kw">SD</span> <span class="kw">of</span> control <span class="fu">group</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> <span class="kw">sum</span> <span class="ot">`y'</span> <span class="kw">if</span> <span class="ot">`treatment'</span> == 0</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> <span class="kw">scale</span> = 1/<span class="fu">r</span>(<span class="fu">sd</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    * Estimate the regression and <span class="kw">scale</span> the coefficient</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> <span class="kw">reg</span> <span class="ot">`y'</span> <span class="ot">`treatment'</span> <span class="ot">`controls'</span>, <span class="kw">vce</span>(<span class="kw">cluster</span> schoolid)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">quietly</span> <span class="kw">lincom</span> <span class="ot">`treatment'</span> * <span class="ot">`scale'</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    * Store the results </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> b = <span class="fu">r</span>(estimate)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> se = <span class="fu">r</span>(se)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> t = <span class="fu">r</span>(t)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">local</span> <span class="kw">p</span> = <span class="fu">r</span>(<span class="kw">p</span>)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    * Append to <span class="fu">matrix</span> </span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">matrix</span> <span class="kw">effects</span> = <span class="fu">nullmat</span>(<span class="kw">effects</span>) \ (<span class="ot">`b'</span>, <span class="ot">`se'</span>, <span class="ot">`t'</span>, <span class="ot">`p'</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>*Label <span class="fu">matrix</span> </span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span> <span class="ot">colnames</span> <span class="kw">effects</span> = coef se t <span class="kw">p</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span> <span class="ot">rownames</span> <span class="kw">effects</span> = <span class="ot">`outcomes'</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">matrix</span> <span class="ot">list</span> <span class="kw">effects</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-display">
+<style>div.jp-Notebook .datagrid-container {min-height: 448px; }</style>
+</div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 12
-    age female  hisp education earnings hours  week union uncov region  race
-  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
-1    52      0     0        12   146000    45    52     0     0      1     1
-2    38      0     0        18    50000    45    52     0     0      1     1
-3    38      0     0        14    32000    40    51     0     0      1     1
-4    41      1     0        13    47000    40    52     0     0      1     1
-5    42      0     0        13   161525    50    52     1     0      1     1
-6    66      1     0        13    33000    40    52     0     0      1     1
-# ℹ 1 more variable: marital &lt;dbl&gt;</code></pre>
+<pre><code>
+effects[7,4]
+                   coef         se          t          p
+   wordscore  .14447841  .10102279  1.4301567   .1555064
+   sentscore  .10568769  .08410808    1.25657  .21157131
+ letterscore  .26383718  .09923162  2.6588015    .009012
+  spellscore  .16041144  .10070153  1.5929394  .11404336
+additions_~e  .16563474  .07356356  2.2515869  .02633487
+substracti~e  .10596988  .06667975  1.5892363  .11487721
+multiplica~e  .10575871  .06536277  1.6180268  .10852081</code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">mean</span>(cps<span class="sc">$</span>earnings))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 55092</code></pre>
-</div>
-</div>
-<p>The average earnings of individuals in this dataset is $55,092. However, we recognize that the specific average we find depends on the households we happen to observe in the dataset. We can easily imagine that if we had surveyed a different set of households, we would have obtained a different average. Thus, it is intuitively clear that there is uncertainty in how representative this number is of the average earnings of <em>all</em> individuals in the US.</p>
-<p><strong>Statistical inference</strong> involves quantifying the uncertainty in the (generalized) conclusions we make from observed data. Doing so requires us to formalize the <em>source</em> of this uncertainty, which we achieve by combining mathematical abstraction and thought experiments.</p>
-</section>
-<section id="the-frequentist-thought-experiment" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="the-frequentist-thought-experiment">The Frequentist Thought Experiment</h2>
-<p>Let’s denote the observed data as the scalar vectors <span class="math display">\[
-\boldsymbol x_i = (x_{i1}, \ldots, x_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n
-\]</span> where <span class="math inline">\(i\)</span> indexes the observational unit, <span class="math inline">\(x_{ik}\)</span> is the value of the <span class="math inline">\(k\)</span>-th variable for the <span class="math inline">\(i\)</span>-th unit, <span class="math inline">\(K\)</span> is the number of variables, and <span class="math inline">\(n\)</span> is the number of units. For example, <span class="math inline">\(\boldsymbol x_i\)</span> is the <span class="math inline">\(i\)</span>-th row of the CPS dataset above, <span class="math inline">\(x_{11}\)</span> is the age of the first individual, <span class="math inline">\(x_{24}\)</span> is the education of the second individual, and so on.</p>
-<p>As a mathematical abstraction, we will view the observed data <span class="math inline">\(\{\boldsymbol x_i\}_{i=1}^n\)</span> as a realization of the random vectors <span class="math display">\[
-\boldsymbol X_i = (X_{i1}, \ldots, X_{iK})' \in \mathbb{R}^K \quad \text{for } i = 1, \ldots, n.
-\]</span> The <strong>data generating process</strong> (<strong>DGP</strong>) <span class="math inline">\(F\)</span> is then the <em>joint distribution</em> of <span class="math inline">\((\boldsymbol X_1, \ldots, \boldsymbol X_n)\)</span>. As things stand, these quantities seem like vacuous mathematical objects. To see their relevance in reasoning about the uncertainty in our observed data, let’s consider the following thought experiment. Fix some DGP <span class="math inline">\(F\)</span> and repeatedly draw from it. For each new draw <span class="math inline">\(\{\boldsymbol X_i\}_{i=1}^n\)</span>, we would obtain a different realization <span class="math inline">\(\{\boldsymbol x_i\}_{i=1}^n\)</span> based on the probabilistic structure induced by <span class="math inline">\(F\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> The <strong>frequentist</strong> perspective of statistical inference frames uncertainty in terms of how frequently we would observe data similar to <span class="math inline">\(\{\boldsymbol x_i\}_{i=1}^n\)</span> in such (hypothetical) repeated draw.</p>
-<div class="no-row-height column-margin column-container"><div id="fn2"><p><sup>2</sup>&nbsp;As far as I know, there is no formal definition of <strong>draw</strong> in statistics. Here, I simply mean we collect <span class="math inline">\(n\)</span> random variables whose joint distribution is given by <span class="math inline">\(F\)</span>.</p></div><div id="fn3"><p><sup>3</sup>&nbsp;In this way, the quantities <span class="math inline">\(\{\boldsymbol X_i\}_{i=1}^n\)</span> and <span class="math inline">\(F\)</span> are <em>theoretical</em> constructs that formalize the frequentist thought experiment. In contrast, <span class="math inline">\(\{\boldsymbol x_i\}_{i=1}^n\)</span> is the <em>actual</em> data we observe.</p></div></div><p>Let’s revisit the CPS dataset and see how the thought experiment helps motivate the notation we have developed. We view each each variable (column) in the CPS — age, sex, race, earnings, etc. — as random vectors. For example, <span class="math inline">\(X_{11}\)</span> denotes the age of the first individual in <em>any</em> draw from the DGP. This is in contrast to the realized value <span class="math inline">\(x_{11}\)</span>, which denotes the realized age of the first individual in the <em>specific</em> draw we observe. More generally, the random variable <span class="math inline">\(X_{i1}\)</span> captures the frequentist idea of variability in the age of the <span class="math inline">\(i\)</span>-th observational unit across repeated draws from <span class="math inline">\(F\)</span>.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Intuitively, we can think about the random vectors <span class="math inline">\(\{\boldsymbol X_i\}_{i=1}^n\)</span> as the data <em>before</em> viewing the specific draw, and the deterministic realizations <span class="math inline">\(\{\boldsymbol x_i\}_{i=1}^n\)</span> as the data <em>after</em> viewing the draw.</p>
-<section id="alternative-thought-experiments" class="level3">
-<h3 class="anchored" data-anchor-id="alternative-thought-experiments">Alternative Thought Experiments</h3>
-<p>It should be noted that the frequentist perspective is a <em>mental model</em> that helps us reason about uncertainty. Therefore, we must still consider whether it is a reasonable description of how uncertainty arises in our conclusions from observational data. An alternative explanation for the source of uncertainty is the <strong>Bayesian perspective</strong>. Here, we do not assume that the DGP is a fixed distribution as in the frequentist perspective. Instead, the data is treated as fixed once realized, and uncertainty in our conclusions is formalized by placing a probability distribution over the possible DGPs that could have generated the specific instance of the data.</p>
-<p>There is no universal answer to which perspective is correct. The choice between the two is typically driven by the context of the empirical problem at hand. As far as applied microeconomics is concerned, the frequentist perspective can almost always be justified as a reasonable description of uncertainty in our conclusions.</p>
-</section>
-</section>
-<section id="the-random-sampling-framework" class="level2 page-columns page-full">
-<h2 class="anchored" data-anchor-id="the-random-sampling-framework">The Random Sampling Framework</h2>
-<p>So far, we have introduced the frequentist thought experiment in a general setting, where uncertainty is formalized in terms of repeated draws from some fixed joint distribution <span class="math inline">\(F\)</span> on <span class="math inline">\(\mathbb{R}^{Kn}\)</span>. However, this generality makes it difficult to conceptualize the form of the DGP and what “repeated sampling” from it entails. To make things tractable, we impose simplifying assumptions on the dependence structure across <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span>.</p>
-<p>The most common approach is to assume that the random vectors <span class="math inline">\(\boldsymbol X_1, \ldots, \boldsymbol X_n\)</span> are <strong>independent</strong> and <strong>identically distributed</strong> (<strong>iid</strong>) with some common but unknown marginal distribution <span class="math inline">\(G\)</span> on <span class="math inline">\(\mathbb{R}^K\)</span>. Statisticians refer to <span class="math inline">\(\boldsymbol X_1, \ldots , \boldsymbol X_n\)</span> as a <strong>random sample</strong> from <span class="math inline">\(G\)</span> if they satisfy these two properties. Under this assumption, the DGP simplifies considerably. Because of independence, the joint distribution can be written as the product of the marginals: <span id="eq-dgp"><span class="math display">\[
-F(\boldsymbol X_1, \ldots, \boldsymbol X_n) = G(\boldsymbol X_1) \times \ldots \times G(\boldsymbol X_n) = \prod _{i=1}^n G(\boldsymbol X_i).
-\tag{1}\]</span></span> The factorization in <a href="#eq-dgp" class="quarto-xref">Equation&nbsp;1</a> shows us that the DGP <span class="math inline">\(F\)</span> is fully characterized by the single marginal distribution <span class="math inline">\(G\)</span>. In other words, under random sampling, drawing once from <span class="math inline">\(F\)</span> is equivalent to independently drawing <span class="math inline">\(n\)</span> random variables from <span class="math inline">\(G\)</span>. Since <span class="math inline">\(G\)</span> now fully specifies the DGP, we will henceforth refer to it as the DGP and denote it as <span class="math inline">\(F\)</span>.<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p>
-<div class="no-row-height column-margin column-container"><div id="fn4"><p><sup>4</sup>&nbsp;That is, the random sampling assumption allows us to simplify the DGP from a joint distribution over <span class="math inline">\(R^{Kn}\)</span> to a single marginal distribution over <span class="math inline">\(R^K\)</span>.</p></div></div><section id="evaluating-the-random-sampling-assumption" class="level3 page-columns page-full">
-<h3 class="anchored" data-anchor-id="evaluating-the-random-sampling-assumption">Evaluating the Random Sampling Assumption</h3>
-<p>The random sampling assumption is <em>one</em> potential way to characterize the dependence structure across the observed data points. It is popular because (i) it is often reasonable when working with cross-sectional datasets<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, and (ii) it is the backbone of several statistical theorems and methods.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> However, it does not necessarily have to hold. For example, we often work with data where the units are connected via some underlying factor (location, industry, etc.). In such cases, the assumption of independence across individual units is violated. An alternative approach in such cases is to instead assume mutual independence across <strong>clusters</strong> of units. Another example of a violation to the independence assumption is <strong>time-series</strong> data, where the individual unit is indexed by time. Here, consecutive observations are usually correlated and independence is instead formulated in terms of <a href="https://en.wikipedia.org/wiki/Stationary_process"><strong>stationarity</strong></a> and other concepts outside the scope of this post.</p>
-<div class="no-row-height column-margin column-container"><div id="fn5"><p><sup>5</sup>&nbsp;For example, if we collected data on a random subset of individuals from a large common population, it is reasonable to assume that the characteristics of one individual are independent of another individual and that all individuals’ characteristics follow the same distribution.</p></div><div id="fn6"><p><sup>6</sup>&nbsp;Crucial theorems in asymptotic statistical theory, like the Law of Large Numbers and the Central Limit Theorem, require the random sampling assumption to hold.</p></div></div></section>
-</section>
 
 
 
-<div id="quarto-appendix" class="default"><section id="acknowledgements" class="level1 appendix"><h2 class="anchored quarto-appendix-heading">Acknowledgements</h2><div class="quarto-appendix-contents">
-
-<p>The structure of my exposition here was inspired by Alexander Torgovitsky’s lecture notes for Empirical Analysis I at The University of Chicago.</p>
-
-
-
-</div></section><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-hansen2022probability" class="csl-entry" role="listitem">
-Hansen, Bruce E. 2022. <em>Probability and Statistics for Economists</em>. Princeton University Press.
-</div>
-</div></section></div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

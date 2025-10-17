@@ -27,7 +27,6 @@ website:
         <i class="bi bi-github" style="font-size: 1.25rem;"></i>
       </a>
 
-
 format:
   html:
     theme: cosmo

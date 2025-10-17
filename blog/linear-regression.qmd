@@ -4,6 +4,7 @@ description: "I motivate linear regression broadly as a way to estimate the cond
 date: today
 categories: [Linear Regression]
 reference-location: margin
+draft: true
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +15,7 @@ library(dplyr)
 
 ## The Conditional Expectation Function 
 
-Much of modern empirical economics research can be understood as an organized attempt to answer variants of the *causal* question: "How does $X$ affect $Y$?" For example, [Eissa and Liebmann (1996)](https://academic.oup.com/qje/article/111/2/605/1938452) ask how taxes affect labor supply; [Donaldson and Hornbeck (2016)](https://academic.oup.com/qje/article/131/2/799/2606976) ask how railroads affect economic growth; [Angrist and Krueger (1991)](https://academic.oup.com/qje/article-abstract/106/4/979/1873496) ask how the education affects earnings, and so on. 
+Much of modern empirical economics research can be understood as an organized attempt to answer variants of the *causal* question: "How does $X$ affect $Y$?" For example, [Eissa and Liebman (1996)](https://academic.oup.com/qje/article/111/2/605/1938452) ask how taxes affect labor supply; [Donaldson and Hornbeck (2016)](https://academic.oup.com/qje/article/131/2/799/2606976) ask how railroads affect economic growth; [Angrist and Krueger (1991)](https://academic.oup.com/qje/article-abstract/106/4/979/1873496) ask how the education affects earnings, and so on. 
 
 Formally, we view $X$ and $Y$ as random variables jointly distributed according to some fixed, unknown distribution $F$, called the **data generating process** (**DGP**).^[Also called the **population**.] To study questions like the ones posed above, we are especially interested in a particular feature of the DGP: the **conditional expectation function** (**CEF**),
 $$
@@ -215,10 +216,10 @@ Before proceeding, it's useful to clarify the notation we will use going forward
 
 ### Defining the Model 
 
-At its core, the linear regression model consists of the following two assumptions.^[I say "core" because I omit (i) technical assumptions needed to ensure the estimator of the model parameters are well-defined, and (ii) additional "classical" assumptions about the error term that are needed to derive finite-sample properties of the estimator. These assumptions are introduced later in the post as necessary.] ^[Older econometrics textbooks typically impose the "strict exogeneity" assumption, where we condition on $X_1, \ldots, X_n$ instead of only $X_i$. However, under iid sampling, conditioning on $X_i$ implies the stricter condition because of independence.] ^[Technically, the linear regression model should be introduced without the $i$ subscripts, since the assumptions are about the DGP. However, under iid sampling, the assumptions must hold for each unit $i$ as well. Moreover, the unit-level notation will be useful when deriving the estimator of the coefficients.]
+The linear regression model is commonly defined by the following two fundamental assumptions about the underlying data-generating process.^[I omit (i) technical assumptions needed to ensure the estimator of the model parameters are well-defined, and (ii) additional "classical" assumptions about the error term that are needed to derive finite-sample properties of the estimator. These assumptions are introduced later in the post as necessary.] ^[Older econometrics textbooks typically impose the "strict exogeneity" assumption, where we condition on $X_1, \ldots, X_n$ instead of only $X_i$. However, under iid sampling, conditioning on $X_i$ implies the stricter condition because of independence.] ^[Technically, the linear regression model should be introduced without the $i$ subscripts, since the assumptions are about the DGP. However, under iid sampling, the assumptions must hold for each unit $i$ as well. Moreover, the unit-level notation will be useful when deriving the estimator of the coefficients.]
 
 :::{.assumption-box #assump-linreg}
-**Assumption 1. The Linear Regression Model**
+**Assumption 1. The Linear Regression Model (Traditional Formulation)**
 
 **(A)** **(Linearity)** The regressand $Y_i$ is a linear combination of the regressors $X_{i1}, \ldots, X_{iK}$, plus some random variable $e_i$ called the **error**:
 $$
@@ -236,16 +237,50 @@ $$
 \begin{align}
 \mu(x) &= \mathbb{E}[\beta_1X_{i1} + \ldots + \beta_KX_{iK} + e_i \mid X_i = x] \\
 &= \beta_1 x_1 + \ldots + \beta_K x_K + \mathbb{E}[e_i \mid X_i = x] \\
-&= \beta_1 x_1 + \ldots + \beta_K x_K.
+&= \beta_1 x_1 + \ldots + \beta_K x_K \\ 
+&= x' \beta,
 \end{align}
 $${#eq-linear-cef}
+where $\beta \equiv [\beta_1, \ldots, \beta_K]'$ is the vector of **coefficients**.
 
-The assumption of exogeneity ensures that the properties of the CEF error $e$ previously discussed (see @eq-mean-zero, @eq-ortho, @eq-uncorr) also hold for the linear regression error $e_i$. Specifically, $e_i$ has **mean-zero** and is **orthogonal** and **uncorrelated** to any function of $X_i$. The proof is omitted because it is the same as before.
+However, since our focus is on using the linear regression model to estimate the CEF, it is natural to treat @eq-linear-cef as the defining assumption of the model.
+
+:::{.assumption-box #assump-linreg2}
+**Assumption 2. The Linear Regression Model (CEF Formulation)**
+
+There exists a fixed coefficient vector $\beta \in \mathbb{R}^K$ such that the conditional expectation function of $Y_i$ given $X_i = x$ is linear in $x$:
+$$
+\mu(x) \equiv \mathbb{E}[Y_i \mid X_i = x] = x' \beta \quad \forall \, x \in \mathbb{R}^K.
+$${#eq-linreg-cef}
+:::
+
+As in @eq-cef-err, we can *define* the **linear regression error** as
+
+$$
+e_i \equiv Y_i - X_i' \beta.
+$${#eq-linreg-err}
+
+We can now recover @eq-linearity by simply rearranging the above definition. Additionally, the *assumption* in @eq-linreg-cef and the *definition* in @eq-linreg-err together imply that the previously discussed properties of the CEF error $e$ all hold for the linear regression error $e_i$. Specifically, $e_i$ is **mean-independent**, has **mean-zero**, and is **orthogonal** and **uncorrelated** to any function of $X_i$. The proofs are omitted because they are the same as before (see @eq-mean-ind, @eq-mean-zero, @eq-ortho, @eq-uncorr).
 
 ### Interpreting the Assumptions
 
-It's worth spending a moment to understand what exactly is (and is not) being assumed in the linear regression model. 
-
+It's worth spending a moment to understand what exactly is (and is not) being assumed in the linear regression model. The assumption of linearity states that (i) $Y_i$ is a linear function of $X_i$ *in terms of the coefficients* $\beta$, and (ii) the error $e_i$ is **additive**. Both these assumptions are non-trivial in the sense that they can be violated in practice. For example, it is entirely possible that the true DGP is given by a function like 
+$$
+Y_i = \exp(\beta X_{i}) \times e_i, \quad e_i \sim N(0,\sigma^2).  
+$$
+Nevertheless, the linearity assumption is not as restrictive as it may seem at first glance. Consider the figure below, which plots data where the CEF seems to be approximately exponential (i.e. non-linear) in the univariate regressor $X_{i1}$. The blue plot corresponds to the CEF estimated using the linear regression model 
+$$
+Y_i = \beta_1 X_{i1} + e_i.
+$$
+It's obvious that this model is unlikely to reflect the true DGP. However, observe that nothing prevents us from adding non-linear functions of $X_{i1}$ to our regression model. For example, the pink plot corresponds to the CEF estimated using a linear regression model that includes both $X_{i1}$ and $\exp(X_{i1})$ as regressors:
+$$
+Y_i = \beta_1 X_{i1} + \beta_2 \exp(X_{i1}) + e_i.
+$$
+This fits the data much better while preserving linearity in the coefficients. Alternatively, the orange plot is the CEF estimated using the polynomial regression model
+$$
+Y_i = \beta_0 + \beta_1 X_{i1} + \beta_2 X_{i1}^2 + \beta_3 X_{i1}^3 + \beta_4 X_{i1}^4 + e_i.
+$$
+This also preserves linearity while fitting the data well. The overall point here is that the functional form of the CEF $\mu(x)$ in terms of the regressors $X_i$ is very flexible despite the linearity assumption.
 
 ```{r}
 #| echo: false
@@ -265,18 +300,18 @@ y <- g(x1) + rnorm(n, 0, sigma)
 
 train <- tibble(x1, y)
 
-# ---- Fit models (linear in parameters) ----
-m_deg1  <- lm(y ~ x1, data = train)
-m_deg4  <- lm(y ~ poly(x1, 4, raw = TRUE), data = train)
-m_exp   <- lm(y ~ exp(x1), data = train)  # linear in parameters
+# ---- Fit models (linear in parameters, no intercept) ----
+m_deg1  <- lm(y ~ x1 - 1, data = train)
+m_deg4  <- lm(y ~ poly(x1, 4, raw = TRUE) - 1, data = train)
+m_exp   <- lm(y ~ x1 + exp(x1) - 1, data = train)  # <— now includes both x and exp(x)
 
 # ---- Predictions for a smooth grid ----
 x_grid <- seq(-10, 10, length.out = 600)
 df_pred <- tibble(
   x1 = x_grid,
-  `Poly deg 1`              = predict(m_deg1,  newdata = tibble(x1 = x_grid)),
-  `Poly deg 4`              = predict(m_deg4,  newdata = tibble(x1 = x_grid)),
-  `exp(X)`                  = predict(m_exp,   newdata = tibble(x1 = x_grid))
+  `Poly deg 1` = predict(m_deg1, newdata = tibble(x1 = x_grid)),
+  `Poly deg 4` = predict(m_deg4, newdata = tibble(x1 = x_grid)),
+  `x + exp(X)` = predict(m_exp, newdata = tibble(x1 = x_grid))
 ) |>
   pivot_longer(-x1, names_to = "series", values_to = "value")
 
@@ -288,24 +323,22 @@ ggplot() +
             aes(x = x1, y = value, color = series, linetype = series),
             linewidth = 1.1) +
   scale_color_manual(values = c(
-    "Poly deg 1"              = "skyblue",
-    "Poly deg 4"              = "darkorange",
-    "exp(X)"                  = "hotpink"
+    "Poly deg 1" = "skyblue",
+    "Poly deg 4" = "darkorange",
+    "x + exp(X)" = "hotpink"
   )) +
   scale_linetype_manual(values = c(
-    "Poly deg 1"              = "solid",
-    "Poly deg 4"              = "solid",
-    "exp(X)"                  = "solid"
+    "Poly deg 1" = "solid",
+    "Poly deg 4" = "solid",
+    "x + exp(X)" = "solid"
   )) +
   theme_minimal(base_size = 14) +
   theme(
-    legend.position = c(0.15, 0.85),   # <— works in all ggplot2 versions
+    legend.position = c(0.15, 0.85),
     legend.background = element_rect(fill = alpha("white", 0.6), color = NA),
     legend.title = element_blank()
   ) +
   labs(x = expression(X), y = "E[Y | X]")
-
-
 ```
 
 
