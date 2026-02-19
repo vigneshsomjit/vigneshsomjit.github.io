@@ -1,0 +1,77 @@
+---
+title: "Saturated Regression Models"
+description: "Blah blah blah"
+date: today
+categories: [Linear Regression]
+draft: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(here)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+
+cps <- read_excel(
+  here("hasen-econometrics-datasets", "cps09mar", "cps09mar.xlsx"), 
+  col_names = TRUE
+)
+
+cps <- cps |>
+  filter(race %in% c(1, 2)) |>
+  mutate(
+    black = factor(if_else(race == 2, 1, 0), levels = c(0,1), labels = c("White", "Black")),
+    male  = factor(if_else(female == 0, 1, 0), levels = c(0,1), labels = c("Female", "Male")), 
+    region = factor(region, labels = c("Northeast", "Midwest", "South", "West"))
+  ) |>
+  select(earnings, region, black, male)
+
+```
+
+```{r}
+# Design matrix using interaction terms 
+X1 <- model.matrix(
+  ~ black * male * region,
+  data = cps
+)
+```
+
+```{r}
+# Design matrix using cell indicator 
+cps <- cps |>
+  mutate(cell = interaction(black, male, region, drop = TRUE))
+
+X2 <- model.matrix(~ 0 + cell, data = cps)
+
+```
+
+```{r}
+# OLS with two different (but saturated) design matrices, and verify same fit
+
+y <- cps$earnings
+
+# ----- OLS via QR (handles rank deficiency safely) -----
+ols_qr <- function(X, y) {
+  qrX <- qr(X)
+  beta_hat <- qr.coef(qrX, y)          # one valid LS solution (uses pivoting if needed)
+  y_hat <- qr.fitted(qrX, y)           # fitted values = projection of y onto Col(X)
+  e_hat <- y - y_hat
+  list(beta = beta_hat, yhat = y_hat, resid = e_hat, rss = sum(e_hat^2))
+}
+
+fit1 <- ols_qr(X1, y)   # from ~ black * male * region
+fit2 <- ols_qr(X2, y)   # from ~ 0 + cell
+
+stopifnot(isTRUE(all.equal(fit1$yhat, fit2$yhat, tolerance = 1e-10)))
+stopifnot(isTRUE(all.equal(fit1$resid, fit2$resid, tolerance = 1e-10)))
+stopifnot(isTRUE(all.equal(fit1$rss,  fit2$rss,  tolerance = 1e-10)))
+
+```

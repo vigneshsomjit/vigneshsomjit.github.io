@@ -2,11 +2,20 @@
   {
     "listing": "/blog/blog-index.html",
     "items": [
+      "/blog/cov-matrices.html",
+      "/blog/inverse-cov-matrix.html",
+      "/blog/linear-reg-rationale.html",
+      "/blog/linear-regression.html",
+      "/blog/saturated-regressions.html",
+      "/blog/sem-intro.html",
+      "/blog/statistical-inference-1.html",
       "/blog/statistical-inference-2.html",
       "/blog/statistical-inference-3.html",
-      "/blog/statistical-inference-1.html",
       "/blog/summary-index.html",
-      "/blog/linalg-basics.html"
+      "/blog/linalg-basics.html",
+      "/blog/lin-reg-model.html",
+      "/blog/maximum-likelihood.html",
+      "/blog/statistical-modeling.html"
     ]
   }
 ]

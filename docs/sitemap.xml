@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vigneshsomjit.github.io/index.html</loc>
-    <lastmod>2025-09-20T01:50:55.199Z</lastmod>
+    <lastmod>2025-12-22T22:04:58.927Z</lastmod>
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/about.html</loc>
@@ -14,7 +14,7 @@
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/blog/blog-index.html</loc>
-    <lastmod>2025-08-08T04:19:36.367Z</lastmod>
+    <lastmod>2025-12-22T22:04:56.807Z</lastmod>
   </url>
   <url>
     <loc>https://vigneshsomjit.github.io/blog/bootstrap.html</loc>
@@ -71,5 +71,9 @@
   <url>
     <loc>https://vigneshsomjit.github.io/blog/global-test.html</loc>
     <lastmod>2025-10-16T05:44:15.090Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vigneshsomjit.github.io/blog/saturated-regressions.html</loc>
+    <lastmod>2025-12-22T22:45:17.399Z</lastmod>
   </url>
 </urlset>
