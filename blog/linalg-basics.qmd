@@ -6,6 +6,7 @@ categories: [Linear Algebra]
 bibliography: linalg-basics.bib
 nocite: |
   @*
+draft: true
 ---
 ```{r setup, include=FALSE}
 library(ggplot2)

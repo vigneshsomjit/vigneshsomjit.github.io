@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -34,14 +34,15 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-dfb324f25d9b1687192fa8be62ac8f9c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -80,9 +81,8 @@ ul.task-list li input[type="checkbox"] {
 
     const options = {
       valueNames: ['listing-date','listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      page: 10,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
+      
+      searchColumns: ["listing-categories"],
     };
 
     window['quarto-listings'] = window['quarto-listings'] || {};
@@ -114,7 +114,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -140,6 +140,8 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Vignesh Somjit</span>
     </a>
@@ -185,7 +187,7 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(14)</span></div><div class="category" data-category="TGluZWFyJTIwQWxnZWJyYQ==">Linear Algebra <span class="quarto-category-count">(2)</span></div><div class="category" data-category="TGluZWFyJTIwUmVncmVzc2lvbg==">Linear Regression <span class="quarto-category-count">(4)</span></div><div class="category" data-category="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==">Mathematical Statistics <span class="quarto-category-count">(7)</span></div><div class="category" data-category="UHJvYmFiaWxpdHk=">Probability <span class="quarto-category-count">(1)</span></div><div class="category" data-category="U3RydWN0dXJhbCUyMEVxdWF0aW9uJTIwTW9kZWxpbmc=">Structural Equation Modeling <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(0)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
 
@@ -199,321 +201,9 @@ window.Quarto = {
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="UHJvYmFiaWxpdHk=" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096809" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="170">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/cov-matrices.html" class="no-external">Covariance Matrix</a>
-</h3>
-<div class="listing-categories">
 
-<div class="listing-category" onclick="window.quartoListingCategory('UHJvYmFiaWxpdHk='); return false;">Probability</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/cov-matrices.html" class="no-external">
-<p>The covariance matrix is a fundamental object that appears frequently in econometrics. I review its definition and properties.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/cov-matrices.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcyUyQ0xpbmVhciUyMEFsZ2VicmE=" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096812" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="744">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/inverse-cov-matrix.html" class="no-external">Inverse Covariance Matrix</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGluZWFyJTIwQWxnZWJyYQ=='); return false;">Linear Algebra</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/inverse-cov-matrix.html" class="no-external">
-<p>I derive the inverse covariance matrix and interpreting its elements.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/inverse-cov-matrix.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-categories="TGluZWFyJTIwUmVncmVzc2lvbg==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096824" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2504">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/linear-reg-rationale.html" class="no-external">Linear Regression as an Approximation Method</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGluZWFyJTIwUmVncmVzc2lvbg=='); return false;">Linear Regression</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/linear-reg-rationale.html" class="no-external">
-<p>Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/linear-reg-rationale.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-categories="TGluZWFyJTIwUmVncmVzc2lvbg==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096827" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3055">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/linear-regression.html" class="no-external">Linear Regression</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGluZWFyJTIwUmVncmVzc2lvbg=='); return false;">Linear Regression</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/linear-regression.html" class="no-external">
-<p>I motivate linear regression broadly as a way to estimate the conditional expectation function, describe the three perspectives on linear regression, and introduce the OLS estimator.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/linear-regression.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="TGluZWFyJTIwUmVncmVzc2lvbg==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766443338507" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="1">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/saturated-regressions.html" class="no-external">Saturated Regression Models</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGluZWFyJTIwUmVncmVzc2lvbg=='); return false;">Linear Regression</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/saturated-regressions.html" class="no-external">
-<p>Intuition for the perspective that linear regression is the process of approximating the conditional expectation function (CEF).</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/saturated-regressions.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-categories="U3RydWN0dXJhbCUyMEVxdWF0aW9uJTIwTW9kZWxpbmc=" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096835" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="775">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/sem-intro.html" class="no-external">An Introduction to Structural Equation Modeling</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('U3RydWN0dXJhbCUyMEVxdWF0aW9uJTIwTW9kZWxpbmc='); return false;">Structural Equation Modeling</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/sem-intro.html" class="no-external">
-<p>I walk through the basics of structural equation modeling, focusing on model specification and estimation.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/sem-intro.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096837" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1352">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/statistical-inference-1.html" class="no-external">Statistical Inference I: Random Sampling</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/statistical-inference-1.html" class="no-external">
-<p>Introducing frequentist statistical inference under the random sampling framework.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/statistical-inference-1.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096838" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="9" data-listing-word-count-sort="1798">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/statistical-inference-2.html" class="no-external">Statistical Inference II: Point Estimation</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/statistical-inference-2.html" class="no-external">
-<p>I describe point estimation under the frequentist framework and motivate the need for statistical models.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/statistical-inference-2.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096841" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="11" data-listing-word-count-sort="2183">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/statistical-inference-3.html" class="no-external">Statistical Inference III: Hypothesis Testing and Confidence Intervals</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/statistical-inference-3.html" class="no-external">
-<p>I introduce key concepts in hypothesis testing using the running example of the normal sampling model.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/statistical-inference-3.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==" data-listing-date-sort="1766383200000" data-listing-file-modified-sort="1766441096851" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="988">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/summary-index.html" class="no-external">Summary Index</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/summary-index.html" class="no-external">
-<p>I provide a detailed treatment of the summary index used in Anderson (2008) for multiple inference.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/summary-index.html" class="no-external">
-<div class="listing-date">
-Dec 22, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-categories="TGluZWFyJTIwQWxnZWJyYQ==" data-listing-date-sort="1758344400000" data-listing-file-modified-sort="1766441096820" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3826">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/linalg-basics.html" class="no-external">Basic Concepts in Linear Algebra</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGluZWFyJTIwQWxnZWJyYQ=='); return false;">Linear Algebra</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/linalg-basics.html" class="no-external">
-<p>Discussion of fundamental concepts in linear algebra, including vector spaces, linear combination and independence, basis vectors, and subspaces.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/linalg-basics.html" class="no-external">
-<div class="listing-date">
-Sep 20, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-categories="TGluZWFyJTIwUmVncmVzc2lvbg==" data-listing-date-sort="1756616400000" data-listing-file-modified-sort="1766441096814" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2835">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/lin-reg-model.html" class="no-external">The Linear Regression Model and its OLS Estimation</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TGluZWFyJTIwUmVncmVzc2lvbg=='); return false;">Linear Regression</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/lin-reg-model.html" class="no-external">
-<p>A detailed discussion of the linear regression model and the ordinary least squares (OLS) estimation method for its parameters.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/lin-reg-model.html" class="no-external">
-<div class="listing-date">
-Aug 31, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="12" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==" data-listing-date-sort="1755061200000" data-listing-file-modified-sort="1766441096831" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="161">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/maximum-likelihood.html" class="no-external">Maximum Likelihood Estimation</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/maximum-likelihood.html" class="no-external">
-<p>MLE is one of the most important estimation principles in statistics and is widely used in econometrics. I introduce the concept and its properties in this post.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/maximum-likelihood.html" class="no-external">
-<div class="listing-date">
-Aug 13, 2025
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-categories="TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw==" data-listing-date-sort="1755061200000" data-listing-file-modified-sort="1766441096847" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="990">
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../blog/statistical-modeling.html" class="no-external">How to Think About Statistical Inference</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('TWF0aGVtYXRpY2FsJTIwU3RhdGlzdGljcw=='); return false;">Mathematical Statistics</div>
-
-</div>
-<div class="delink listing-description"><a href="../blog/statistical-modeling.html" class="no-external">
-<p>Building a mental framework for how data, models, inference, and probability come together.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../blog/statistical-modeling.html" class="no-external">
-<div class="listing-date">
-Aug 13, 2025
-</div>
-</a>
-</div>
-</div>
 </div>
 <div class="listing-no-matching d-none">No matching items</div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
 </div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -566,13 +256,14 @@ Aug 13, 2025
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

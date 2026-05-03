@@ -7,6 +7,7 @@ reference-location: margin
 bibliography: [statistical-inference.bib]
 nocite: |
   @*
+draft: true
 ---
 
 ```{r setup, include=FALSE}

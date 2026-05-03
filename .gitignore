@@ -1,5 +1,6 @@
 /.quarto/
 .Rproj.user
-.Rhistory 
+.Rhistory
 .RData
 .Ruserdata
+**/*.quarto_ipynb

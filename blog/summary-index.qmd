@@ -5,6 +5,7 @@ date: today
 categories: [Mathematical Statistics]
 reference-location: margin
 bibliography: summary-index.bib
+draft: true 
 ---
 ## Introduction 
 
